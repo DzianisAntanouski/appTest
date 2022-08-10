@@ -1,0 +1,15 @@
+{
+  "generator-ui5-ts-app": {
+    "application": "typescript",
+    "namespace": "webapp",
+    "framework": "SAPUI5",
+    "frameworkVersion": "1.102.5",
+    "author": "dzianis antanouski",
+    "initrepo": true,
+    "tstypes": "@sapui5/ts-types-esm",
+    "tstypesVersion": "1.102.5",
+    "appId": "webapp.typescript",
+    "appURI": "webapp/typescript",
+    "setupCompleted": true
+  }
+}

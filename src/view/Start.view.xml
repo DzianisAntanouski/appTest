@@ -1,0 +1,10 @@
+<mvc:View
+	controllerName="webapp.typescript.controller.Start"
+	displayBlock="true"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc">
+
+	<Button text="Manage tests" press=".navToMain"/>
+	<Button text="Run test" press=".navToTesting"/>
+
+</mvc:View>

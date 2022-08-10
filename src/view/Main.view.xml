@@ -1,0 +1,86 @@
+<mvc:View
+	controllerName="webapp.typescript.controller.Main"
+	displayBlock="true"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+
+	<Page id="wrapper"
+		title="Quastions and Answers"
+		backgroundDesign= "Solid"
+		showNavButton="true"
+		showFooter="{= ${/edit}}">
+		<subHeader>
+			<OverflowToolbar>
+				<ToolbarSpacer/>				
+				<Button text="Edit Mode" press=".onPressEdit"/>
+				<Button text="Delete" type="Reject" enabled="{= ${/edit}}"/>	
+			</OverflowToolbar>
+		</subHeader>
+		<SplitContainer
+			id="SplitContDemo"			
+			initialDetail="detail"
+			initialMaster="master">
+			<detailPages>			
+				<Page
+					id="detailDetail"
+					title="Answers"
+					backgroundDesign= "Solid"
+					showNavButton="false"
+					showFooter="false">
+					
+					<VBox class="sapUiSmallMargin">
+						<Table id="answerstable" items="{answers}" mode="MultiSelect">
+							<infoToolbar>
+								<OverflowToolbar>
+									<Label text="{question}"/>
+								</OverflowToolbar>
+							</infoToolbar>
+							<columns>
+								<Column>
+									
+								</Column>
+							</columns>
+							<items>
+								<ColumnListItem vAlign="Middle">
+									<cells>									
+										<Text text="{}" />									
+									</cells>
+								</ColumnListItem>
+							</items>
+						</Table>
+						<Button text="Next" press=".onPressNext"/>
+					</VBox>					
+				</Page>			
+			</detailPages>
+			<masterPages>
+				<Page
+					id="master2"
+					title="Questions"
+					backgroundDesign= "List"
+					showNavButton="false"
+					showFooter="true">
+					<List id="qList" itemPress=".onListItemPress" items="{path: '/questions'}">
+						<items>
+							<StandardListItem fieldGroupIds="[questions]" title="{question}" type="Active" highlight="None"/>						
+						</items>
+					</List>
+					<footer>
+						<OverflowToolbar>
+							<ToolbarSpacer/>				
+								<Button text="Add question" press=".onPressAddQuestion"/>
+								<Button text="Cancel" />
+						</OverflowToolbar>
+					</footer>					
+				</Page>
+			</masterPages>
+		</SplitContainer>
+		<footer>
+			<OverflowToolbar>
+				<ToolbarSpacer/>				
+					<Button text="Save" />
+					<Button text="Cancel" />
+			</OverflowToolbar>
+		</footer>
+	</Page>
+</mvc:View>

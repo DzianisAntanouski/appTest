@@ -1,0 +1,103 @@
+{
+	"_version": "1.12.0",
+
+	"sap.app": {
+		"id": "webapp.typescript",
+		"type": "application",
+		"i18n": "i18n/i18n.properties",
+		"title": "{{appTitle}}",
+		"description": "{{appDescription}}",
+		"applicationVersion": {
+			"version": "1.0.0"
+		}
+	},
+
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {
+
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		}
+	},
+
+	"sap.ui5": {
+		"rootView": {
+			"viewName": "webapp.typescript.view.App",
+			"type": "XML",
+			"async": true,
+			"id": "app"
+		},
+
+		"dependencies": {
+			"minUI5Version": "1.102.5",
+			"libs": {
+				"sap.ui.core": {},
+				"sap.ui.layout": {},
+				"sap.ui.unified": {},
+				"sap.m": {}
+			}
+		},
+
+		"handleValidation": true,
+
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "webapp.typescript.i18n.i18n"
+				}
+			}
+		},
+
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"viewType": "XML",
+				"viewPath": "webapp.typescript.view",
+				"controlId": "app",
+				"controlAggregation": "pages",
+				"async": true
+			},
+			"routes": [
+				{
+					"pattern": "",
+					"name": "start",
+					"target": "start"
+				},
+				{
+					"pattern": "manage",
+					"name": "main",
+					"target": "main"
+				},
+				{
+					"pattern": "testing",
+					"name": "test",
+					"target": "test"
+				}
+			],
+			"targets": {
+				"start": {
+					"viewId": "start",
+					"viewName": "Start"
+				},
+				"main": {
+					"viewId": "main",
+					"viewName": "Main"
+				},
+				"test": {
+					"viewId": "test",
+					"viewName": "Test"
+				}
+			}
+		}
+	}
+}
