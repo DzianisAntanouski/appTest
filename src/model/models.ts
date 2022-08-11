@@ -20,11 +20,14 @@ class Question implements IQuestion {
 }
 
 export default {
-
 	createDeviceModel : () => {
 		const oModel = new JSONModel(Device);
 		oModel.setDefaultBindingMode(BindingMode.OneWay);
 		return oModel;
+	},
+
+	createQuestion : (question?: string, answers?: string[], rightAnswer?: number[]) => {
+		return new Question(question, answers, rightAnswer)
 	},
 
 	createQListModel : () => {

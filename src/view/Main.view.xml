@@ -62,7 +62,7 @@
 					showFooter="true">
 					<List id="qList" itemPress=".onListItemPress" items="{path: '/questions'}">
 						<items>
-							<StandardListItem fieldGroupIds="[questions]" title="{question}" type="Active" highlight="None"/>						
+							<StandardListItem fieldGroupIds="questions" title="{question}" type="Active" highlight="None"/>						
 						</items>
 					</List>
 					<footer>
