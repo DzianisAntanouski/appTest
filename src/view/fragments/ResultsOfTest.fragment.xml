@@ -1,0 +1,29 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Dialog title="Results of the test" fieldGroupIds="dialogGroup" class="sapUiView">
+
+		<List itemPress=".onListItemPress" items="{/questions}" class="sapUiContentPadding">
+			<items>
+				<CustomListItem >
+					<content>
+						<Table fieldGroupIds="table" items="{answers}" mode="MultiSelect">
+							<columns>
+								<Column>
+									<Text text="{question}" />
+								</Column>
+							</columns>
+							<items>
+								<ColumnListItem type="Active" highlight="None">
+									<cells>
+										<Text text="{}" />
+									</cells>
+								</ColumnListItem>
+							</items>
+                         
+						</Table>
+					</content>
+				</CustomListItem>
+			</items>
+		</List>
+    </Dialog>
+</core:FragmentDefinition>

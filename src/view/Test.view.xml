@@ -1,0 +1,40 @@
+<mvc:View controllerName="webapp.typescript.controller.Test" displayBlock="true"
+	xmlns="sap.m"
+	xmlns:table="sap.ui.table"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:u="sap.ui.unified"
+	xmlns:core="sap.ui.core">
+	<Page id="test" title="Questions" titleLevel="H2" titleAlignment="Center" backgroundDesign= "List" showNavButton="false" showFooter="true">
+		<List itemPress=".onListItemPress" items="{/questions}" class="sapUiContentPadding">
+			<items>
+				<CustomListItem >
+					<content>
+						<Table fieldGroupIds="table" items="{answers}" mode="MultiSelect">
+							<columns>
+								<Column>
+									<Text text="{question}" />
+								</Column>
+							</columns>
+							<items>
+								<ColumnListItem type="Active" highlight="None" id="">
+									
+										<Text text="{}"  />
+							
+								</ColumnListItem>
+							</items>
+						</Table>
+					</content>
+				</CustomListItem>
+			</items>
+		</List>
+		
+		<footer>
+			<OverflowToolbar>
+				<ToolbarSpacer/>				
+					<Button text="Submit" press='onSubmitPress'/>
+					<Button text="Cancel" press='onCancelPress' />
+			</OverflowToolbar>
+		</footer>
+	</Page>
+
+</mvc:View>
