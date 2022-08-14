@@ -1,6 +1,4 @@
 import BaseController from "./BaseController";
-import JSONModel from "sap/ui/model/json/JSONModel";
-import models from "../model/models";
 import ListBase from "sap/m/ListBase";
 import Context from "sap/ui/model/Context";
 import MessageBox from "sap/m/MessageBox";
