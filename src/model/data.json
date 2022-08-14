@@ -1,0 +1,20 @@
+{
+    "questions": [
+        {
+            "question": "Which type of model in SAP UI5 do you now?",
+            "answers": ["ResourceModel", "JSONModel", "XMLModel", "ODataModel"],
+            "rightAnswer": [1, 2, 3, 4]
+        },
+        {
+            "question": "Which binding type do you now?",
+            "answers": ["one-way", "two-way", "one-time", "single-time"],
+            "rightAnswer": [1, 2, 3]
+        },
+        {
+            "question": "Which view type do you now?",
+            "answers": ["XML", "oData", "JS", "HTML"],
+            "rightAnswer": [1, 2, 3]
+        }
+    ],
+    "edit": false
+}
