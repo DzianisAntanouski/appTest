@@ -11,6 +11,7 @@ import Dialog from "sap/m/Dialog";
 import UI5Element from "sap/ui/core/Element";
 import Input from "sap/m/Input";
 import CheckBox from "sap/m/CheckBox";
+import { QuestionTest } from "../db/db";
 
 /**
  * @namespace webapp.typescript.controller
@@ -29,8 +30,9 @@ export default class Main extends BaseController {
   };
   private formatter = formatter;
 
-  public onInit(): void {
+  public onInit() {
     const qListModel: JSONModel = this.getOwnerComponent().getModel() as JSONModel;
+    // void this.fireBaseRead();
     const oContext: Context = new Context(qListModel, "/questions/0");
     this.getView().byId("detailDetail").setBindingContext(oContext);
     // this.highlightSwitcher();
@@ -114,10 +116,14 @@ export default class Main extends BaseController {
       ],
       aChecked
     );
-    const oModel: JSONModel = this.getModel() as JSONModel;
-    const aState: object[] = oModel.getProperty("/questions") as [];
-    aState.push(newQuestion);
-    oModel.setProperty("/questions", aState);
+    void new QuestionTest().create(newQuestion).then(() => {
+      void this.fireBaseRead();
+      // const oModel: JSONModel = this.getModel() as JSONModel;
+      // const aState: object[] = oModel.getProperty("/questions") as [];
+      // aState.push(newQuestion);
+      // oModel.setProperty("/questions", aState);
+    });
+
     this.clearFragmentInputs();
     void this.oFragment.then((oMessagePopover) => (oMessagePopover as Dialog).close());
   }

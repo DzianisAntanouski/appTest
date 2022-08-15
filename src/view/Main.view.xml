@@ -9,6 +9,7 @@
 		title="Quastions and Answers"
 		backgroundDesign= "Solid"
 		showNavButton="true"
+		navButtonPress=".onNavBack"
 		showFooter="{= ${/edit}}">
 		<subHeader>
 			<OverflowToolbar>
