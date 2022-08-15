@@ -9,6 +9,12 @@
 		"description": "{{appDescription}}",
 		"applicationVersion": {
 			"version": "1.0.0"
+		},
+		"dataSources": {
+			"JSONmodel": {
+				"uri": "model/data.json",		
+				"type": "JSON"
+			}
 		}
 	},
 
@@ -50,6 +56,12 @@
 		},
 
 		"models": {
+			"": {
+                "dataSource": "JSONmodel",
+                "settings": {
+                    "defaultBindingMode": "TwoWay"                    
+                }
+			},
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {
