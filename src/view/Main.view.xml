@@ -31,7 +31,7 @@
 					showFooter="false">
 					
 					<VBox class="sapUiSmallMargin">
-						<Table id="answerstable" items="{answers}" mode="MultiSelect">
+						<Table id="answerstable" items="{answers}" mode="{= ${/edit} ? 'MultiSelect' : 'None'}">
 							<infoToolbar>
 								<OverflowToolbar>
 									<Label text="{question}"/>
@@ -44,8 +44,11 @@
 							</columns>
 							<items>
 								<ColumnListItem vAlign="Middle">
-									<cells>									
-										<Text text="{}" />									
+									<cells>	
+										<HBox >								
+											<Text text="{}" visible="{= !${/edit}}" />
+											<Input value="{}" visible="{= ${/edit}}" width="500px"/>	
+										</HBox>								
 									</cells>
 								</ColumnListItem>
 							</items>
@@ -60,10 +63,17 @@
 					title="Questions"
 					backgroundDesign= "List"
 					showNavButton="false"
-					showFooter="true">
-					<List id="qList" itemPress=".onListItemPress" items="{path: '/questions'}">
+					showFooter="{= ${/edit}}">
+					<List id="qList" itemPress=".onListItemPress" items="{path: '/questions'}" width="400px">
 						<items>
-							<StandardListItem fieldGroupIds="questions" title="{question}" type="Active" highlight="None"/>						
+							<!-- <StandardListItem fieldGroupIds="questions" title="{question}" type="Active" highlight="None"/> -->
+							<InputListItem type="Active" fieldGroupIds="questions" highlight="None">
+								<HBox >
+									<Input value="{question}" visible="{= ${/edit}}" width="250px"/>
+									<CheckBox visible="{= ${/edit}}"/>
+									<Text text="{question}" visible="{= !${/edit}}"/>
+								</HBox>
+							</InputListItem>						
 						</items>
 					</List>
 					<footer>

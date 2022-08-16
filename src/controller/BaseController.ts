@@ -9,6 +9,7 @@ import History from "sap/ui/core/routing/History";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import { QuestionTest } from "../db/db";
 
+
 /**
  * @namespace webapp.typescript.controller
  */
@@ -31,14 +32,15 @@ export default abstract class BaseController extends Controller {
 
   public async fireBaseRead(): Promise<void> {
     const qListModel: JSONModel = this.getOwnerComponent().getModel() as JSONModel;
-    const testingGet: object = await new QuestionTest().read();
-    const aKeys: object[] = Object.keys(testingGet).map((elem) => {
-      testingGet[elem].id = elem;
-      return testingGet[elem] as object;
+    const fetchData: object = await new QuestionTest().read();
+    const aKeys: object[] = Object.keys(fetchData).map((elem: string) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      fetchData[elem].id = elem [elem as keyof typeof fetchData];
+      return fetchData[elem] as object;
     });
-    console.log(aKeys);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     qListModel.setProperty("/questions", aKeys);
+    qListModel.setProperty("/edit", false);
   }
   /**
    * Convenience method for getting the i18n resource bundle of the component.
