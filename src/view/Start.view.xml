@@ -6,5 +6,6 @@
 
 	<Button text="Manage tests" press=".navToMain"/>
 	<Button text="Run test" press=".navToTesting"/>
+	<Button text="test" press=".test"/>
 
 </mvc:View>

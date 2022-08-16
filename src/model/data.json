@@ -13,7 +13,7 @@
         {
             "question": "Which view type do you now?",
             "answers": ["XML", "oData", "JS", "HTML"],
-            "rightAnswer": [1, 2, 3]
+            "rightAnswer": [1, 3, 4]
         }
     ],
     "edit": false

@@ -11,8 +11,7 @@
 			"version": "1.0.0"
 		},
 		"dataSources": {
-			"JSONmodel": {
-				"uri": "model/data.json",		
+			"JSONmodel": {						
 				"type": "JSON"
 			}
 		}

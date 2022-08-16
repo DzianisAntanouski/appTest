@@ -6,6 +6,9 @@ import ResourceModel from "sap/ui/model/resource/ResourceModel";
 import ResourceBundle from "sap/base/i18n/ResourceBundle";
 import Router from "sap/ui/core/routing/Router";
 import History from "sap/ui/core/routing/History";
+import JSONModel from "sap/ui/model/json/JSONModel";
+import { QuestionTest } from "../db/db";
+
 
 /**
  * @namespace webapp.typescript.controller
@@ -27,6 +30,18 @@ export default abstract class BaseController extends Controller {
     return UIComponent.getRouterFor(this);
   }
 
+  public async fireBaseRead(): Promise<void> {
+    const qListModel: JSONModel = this.getOwnerComponent().getModel() as JSONModel;
+    const fetchData: object = await new QuestionTest().read();
+    const aKeys: object[] = Object.keys(fetchData).map((elem: string) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      fetchData[elem].id = elem [elem as keyof typeof fetchData];
+      return fetchData[elem] as object;
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    qListModel.setProperty("/questions", aKeys);
+    qListModel.setProperty("/edit", false);
+  }
   /**
    * Convenience method for getting the i18n resource bundle of the component.
    * @returns The i18n resource bundle of the component
@@ -77,7 +92,7 @@ export default abstract class BaseController extends Controller {
     if (sPreviousHash !== undefined) {
       window.history.go(-1);
     } else {
-      this.getRouter().navTo("main", {}, undefined, true);
+      this.getRouter().navTo("start", {}, undefined, true);
     }
   }
 }
