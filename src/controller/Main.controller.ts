@@ -12,6 +12,8 @@ import UI5Element from "sap/ui/core/Element";
 import Input from "sap/m/Input";
 import CheckBox from "sap/m/CheckBox";
 import { QuestionTest } from "../db/db";
+import RadioButton from "sap/m/RadioButton";
+import { FetchData, IData, IQuestion, IResult } from "../interface/Interface";
 
 /**
  * @namespace webapp.typescript.controller
@@ -32,18 +34,18 @@ export default class Main extends BaseController {
 
   public onInit() {
     const qListModel: JSONModel = this.getOwnerComponent().getModel() as JSONModel;
-    // void this.fireBaseRead();
     const oContext: Context = new Context(qListModel, "/questions/0");
     this.getView().byId("detailDetail").setBindingContext(oContext);
-    // this.highlightSwitcher();
+    void this.byId('SplitContDemo')._oMasterNav.setWidth('40%')
   }
 
   private highlightSwitcher(): void {
     const oContext: Context = this.getView().byId("detailDetail").getBindingContext() as Context;
     const sPath: string = oContext.getPath();
-
     const sIndex: string = sPath.slice(sPath.search(/\/?[0-9]+/) + 1);
-    const oControls: Array<Control> = this.getView().getControlsByFieldGroupId("questions");
+    const oControls: Array<Control> = this.getView()
+      .getControlsByFieldGroupId("questions")
+      .filter((elem) => elem.getMetadata().getElementName() === "sap.m.InputListItem");
     oControls.forEach((elem) => elem.setProperty("highlight", MessageType.None));
     oControls[+sIndex].setProperty("highlight", MessageType.Information);
   }
@@ -54,13 +56,32 @@ export default class Main extends BaseController {
       const oContext: Context = oListItem.getBindingContext() as Context;
       this.getView().byId("detailDetail").setBindingContext(oContext);
     }
-
     this.highlightSwitcher();
+    if (this.getModel().getProperty("/edit")) {
+      void this.setChecked();
+    }
   }
 
+  public setChecked(): void {
+    const rightAnswer: number[] = (
+      (this.getView().byId("detailDetail").getBindingContext() as Context).getObject() as IQuestion
+    ).rightAnswer;
+    this.getView()
+      .getControlsByFieldGroupId("checkBoxRightAnswers")
+      .filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.CheckBox")
+      .forEach((checkBox, index) => {
+        if (rightAnswer.includes(index + 1)) {
+          (checkBox as CheckBox).setSelected(true);
+        } else {
+          (checkBox as CheckBox).setSelected(false);
+        }
+      });
+  }
   public onPressEdit(): void {
     const qListModel: JSONModel = this.getModel() as JSONModel;
     qListModel.setProperty("/edit", !qListModel.getProperty("/edit"));
+    qListModel.setProperty("/selected", false);
+    void this.setChecked();
   }
 
   public onPressNext(oEvent: Event): void {
@@ -68,15 +89,17 @@ export default class Main extends BaseController {
     const oContext: Context = (oEvent.getSource() as Control).getBindingContext() as Context;
     const sPath: string = oContext.getPath();
     let sIndex: string = sPath.slice(sPath.search(/\/?[0-9]+/) + 1);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const aData: object[] = this.getModel().getProperty("/questions");
+
+    const aData: FetchData[] = this.getModel().getProperty("/questions") as FetchData[];
     if (+sIndex + 1 === aData.length) {
       sIndex = "-1";
     }
     const oNextContext: Context = new Context(qListModel, `/questions/${+sIndex + 1}`);
     this.getView().byId("detailDetail").setBindingContext(oNextContext);
-
     this.highlightSwitcher();
+    if (this.getModel().getProperty("/edit")) {
+      void this.setChecked();
+    }
   }
 
   private clearFragmentInputs(): void {
@@ -118,10 +141,6 @@ export default class Main extends BaseController {
     );
     void new QuestionTest().create(newQuestion).then(() => {
       void this.fireBaseRead();
-      // const oModel: JSONModel = this.getModel() as JSONModel;
-      // const aState: object[] = oModel.getProperty("/questions") as [];
-      // aState.push(newQuestion);
-      // oModel.setProperty("/questions", aState);
     });
 
     this.clearFragmentInputs();
@@ -144,5 +163,59 @@ export default class Main extends BaseController {
     const oModel: JSONModel = this.getModel() as JSONModel;
     oModel.setProperty("/newQuestion", JSON.parse(JSON.stringify(this.newQuestion)));
     void this.oFragment.then((oMessagePopover) => (oMessagePopover as Dialog).open());
+    (this.getModel() as JSONModel).setProperty("/edit", true);
+  }
+
+  public deleteQuestion() {
+    const qListModel: JSONModel = this.getModel() as JSONModel;
+    const oControls: Array<Control> = this.getView()
+      .getControlsByFieldGroupId("questions")
+      .filter((elem) => elem.getMetadata().getElementName() === "sap.m.RadioButton");
+    if ((oControls as RadioButton[]).filter((elem) => elem.getSelected()).length) {
+      const sSelectedControl = (oControls as RadioButton[])
+        .filter((elem) => elem.getSelected())[0]
+        .getBindingContext()
+        ?.getPath();
+      const sId: string = qListModel.getProperty(`${sSelectedControl as string}/id`) as string;
+      if (
+        sId === "-N9XmlXWpj9AYMgOf9ZP" ||
+        sId === "-N9XmlYFApDUau1JhiWP" ||
+        sId === "-N9XmlYrgklZsErXDoIs"
+      ) {
+        console.log("This question under developer protection");
+      } else {
+        void new QuestionTest().delete(sId).then(() => void this.fireBaseRead());
+      }
+    }
+  }
+  public onLiveChange(): void {
+    const qListModel: JSONModel = this.getModel() as JSONModel;
+    qListModel.setProperty("/changed", true);
+  }
+
+  public onSelect(): void {
+    const qListModel: JSONModel = this.getModel() as JSONModel;
+    qListModel.setProperty("/selected", true);
+  }
+  public onPressFinish(): void {
+    const qListModel: JSONModel = this.getModel() as JSONModel;
+    qListModel.setProperty("/edit", !qListModel.getProperty("/edit"));
+    const oControls: Array<Control> = this.getView()
+      .getControlsByFieldGroupId("questions")
+      .filter((elem) => elem.getMetadata().getElementName() === "sap.m.RadioButton");
+    oControls.forEach((oControl) => (oControl as RadioButton).setSelected(false));
+
+    if (this.getModel().getProperty("/changed")) {
+      const qListModel = this.getModel() as JSONModel;
+      const oData: IData[] = (qListModel.getData() as IData).questions as IData[];
+      const result: IResult[] = oData.map((elem) => {
+        return {
+          id: elem.id,
+          body: { answers: elem.answers, question: elem.question, rightAnswer: elem.rightAnswer },
+        };
+      }) as unknown as IResult[];
+
+      void result.forEach((elem) => void new QuestionTest().patch(elem.id, elem.body));
+    }
   }
 }

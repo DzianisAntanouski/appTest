@@ -27,4 +27,16 @@ export class QuestionTest {
       { method: "DELETE" }
     );
   }
+  public async patch(id: string, question: object) {
+    return await fetch(
+      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/questions/${id}.json`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(question),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
 }
