@@ -8,7 +8,7 @@ import Router from "sap/ui/core/routing/Router";
 import History from "sap/ui/core/routing/History";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import { QuestionTest } from "../db/db";
-
+import { FetchData } from "../interface/Interface";
 
 /**
  * @namespace webapp.typescript.controller
@@ -29,10 +29,8 @@ export default abstract class BaseController extends Controller {
   public getRouter(): Router {
     return UIComponent.getRouterFor(this);
   }
+
   public async fireBaseRead(): Promise<void> {
-    interface FetchData {
-      [key: string]: { id: string };
-    }
     const qListModel: JSONModel = this.getOwnerComponent().getModel() as JSONModel;
     const fetchData: FetchData = (await new QuestionTest().read()) as FetchData;
     const aKeys: object[] = Object.keys(fetchData).map((elem: string) => {
@@ -42,7 +40,6 @@ export default abstract class BaseController extends Controller {
     });
     qListModel.setProperty("/questions", aKeys);
     qListModel.setProperty("/edit", false);
-    console.log(aKeys)
   }
   /**
    * Convenience method for getting the i18n resource bundle of the component.
