@@ -16,4 +16,8 @@ export default {
       return value;
     }
   },
+
+  formatAnswers(value: string) {
+    return value
+  }
 };

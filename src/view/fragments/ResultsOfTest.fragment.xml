@@ -1,29 +1,49 @@
 <core:FragmentDefinition xmlns="sap.m"
     xmlns:core="sap.ui.core">
-    <Dialog title="Results of the test" fieldGroupIds="dialogGroup" class="sapUiView">
+	<Dialog title="Results of the test" fieldGroupIds="dialogGroup" class="sapUiView">
 
-		<List itemPress=".onListItemPress" items="{/questions}" class="sapUiContentPadding">
-			<items>
-				<CustomListItem >
-					<content>
-						<Table fieldGroupIds="table" items="{answers}" mode="MultiSelect">
-							<columns>
-								<Column>
-									<Text text="{question}" />
-								</Column>
-							</columns>
-							<items>
-								<ColumnListItem type="Active" highlight="None">
-									<cells>
-										<Text text="{}" />
-									</cells>
-								</ColumnListItem>
-							</items>
-                         
-						</Table>
-					</content>
-				</CustomListItem>
-			</items>
-		</List>
-    </Dialog>
+		<Table items="{/additional}">
+			<columns>
+				<Column>
+					<Text text="Questions" />
+				</Column>
+				<Column>
+					<Text text="Right Answers" />
+				</Column>
+				<Column>
+					<Text text="Your answers" />
+				</Column>
+			</columns>
+
+			<ColumnListItem  highlight="None" >
+				<cells>
+					<Text text="{questionWord}" />
+					<List items="{rightAnswersWord}" >
+						<items>
+							<CustomListItem>
+								<content>
+									<Text text= "{}" />
+								</content>
+							</CustomListItem>
+						</items>
+					</List>
+					<List items="{clientAnswersWord}" >
+						<items>
+							<CustomListItem >
+								<content>
+									<ObjectStatus text="{word}" icon="sap-icon://{= ${isTrueAnswers} ? 'sys-enter-2' : 'error' }" state="{= ${isTrueAnswers} ? 'Success' : 'Error' }" />
+								</content>
+							</CustomListItem>
+						</items>
+					</List>
+				</cells>
+			</ColumnListItem>
+
+
+		</Table>
+		<buttons>
+			<Button text="Cancel"  press="onCancelFragment" />
+			
+		</buttons>
+	</Dialog>
 </core:FragmentDefinition>

@@ -29,18 +29,20 @@ export default abstract class BaseController extends Controller {
   public getRouter(): Router {
     return UIComponent.getRouterFor(this);
   }
-
   public async fireBaseRead(): Promise<void> {
+    interface FetchData {
+      [key: string]: { id: string };
+    }
     const qListModel: JSONModel = this.getOwnerComponent().getModel() as JSONModel;
-    const fetchData: object = await new QuestionTest().read();
+    const fetchData: FetchData = (await new QuestionTest().read()) as FetchData;
     const aKeys: object[] = Object.keys(fetchData).map((elem: string) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      fetchData[elem].id = elem [elem as keyof typeof fetchData];
-      return fetchData[elem] as object;
+      // map wont modify elem
+      fetchData[elem].id = elem;
+      return fetchData[elem];
     });
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     qListModel.setProperty("/questions", aKeys);
     qListModel.setProperty("/edit", false);
+    console.log(aKeys)
   }
   /**
    * Convenience method for getting the i18n resource bundle of the component.
