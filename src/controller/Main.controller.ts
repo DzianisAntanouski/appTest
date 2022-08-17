@@ -13,7 +13,7 @@ import Input from "sap/m/Input";
 import CheckBox from "sap/m/CheckBox";
 import { QuestionTest } from "../db/db";
 import RadioButton from "sap/m/RadioButton";
-import { FetchData, IData, IQuestion, IResult } from "../interface/Interface";
+import { FetchData, IData, IQuestion, IResult, ITest } from "../interface/Interface";
 
 /**
  * @namespace webapp.typescript.controller
@@ -32,11 +32,19 @@ export default class Main extends BaseController {
   };
   private formatter = formatter;
 
-  public onInit() {
+  public onInit() {    
     const qListModel: JSONModel = this.getOwnerComponent().getModel() as JSONModel;
     const oContext: Context = new Context(qListModel, "/questions/0");
     this.getView().byId("detailDetail").setBindingContext(oContext);
-    void this.byId('SplitContDemo')._oMasterNav.setWidth('40%')
+    void (this.byId("SplitContDemo") as ITest)._oMasterNav.setWidth("40%");
+    void this.getView().attachAfterRendering(this.changeUIAfterRendering.bind(this))
+  }
+
+  public changeUIAfterRendering(): void {     
+    if (this.getView().byId("detailDetail").getBindingContext()?.getObject()) {
+      void this.setChecked();
+      void this.highlightSwitcher();
+    }    
   }
 
   private highlightSwitcher(): void {
@@ -56,10 +64,8 @@ export default class Main extends BaseController {
       const oContext: Context = oListItem.getBindingContext() as Context;
       this.getView().byId("detailDetail").setBindingContext(oContext);
     }
-    this.highlightSwitcher();
-    if (this.getModel().getProperty("/edit")) {
-      void this.setChecked();
-    }
+    void this.highlightSwitcher();
+    void this.setChecked();
   }
 
   public setChecked(): void {
@@ -97,9 +103,7 @@ export default class Main extends BaseController {
     const oNextContext: Context = new Context(qListModel, `/questions/${+sIndex + 1}`);
     this.getView().byId("detailDetail").setBindingContext(oNextContext);
     this.highlightSwitcher();
-    if (this.getModel().getProperty("/edit")) {
-      void this.setChecked();
-    }
+    void this.setChecked();
   }
 
   private clearFragmentInputs(): void {

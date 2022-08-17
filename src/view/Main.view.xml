@@ -39,7 +39,7 @@
 							</infoToolbar>
 							<columns>
 								<Column />								
-								<Column width="50px" visible="{= ${/edit}}" />									
+								<Column width="50px" visible="true" />									
 							</columns>
 							<items>
 								<ColumnListItem vAlign="Middle">
@@ -48,7 +48,7 @@
 											<Text text="{}" visible="{= !${/edit}}" />
 											<Input value="{}" visible="{= ${/edit}}" width="500px" liveChange=".onLiveChange"/>												
 										</HBox>	
-										<CheckBox width="50px" fieldGroupIds="checkBoxRightAnswers"/>		
+										<CheckBox width="50px" editable="{= ${/edit}}" fieldGroupIds="checkBoxRightAnswers"/>		
 									</cells>
 								</ColumnListItem>
 							</items>
@@ -69,7 +69,7 @@
 							<!-- <StandardListItem fieldGroupIds="questions" title="{question}" type="Active" highlight="None"/> -->
 							<InputListItem type="Active" fieldGroupIds="questions" highlight="None">
 								<HBox >
-									<Input value="{question}" visible="{= ${/edit}}" width="250px" liveChange=".onLiveChange"/>
+									<Input value="{question}" visible="{= ${/edit}}" width="400px" liveChange=".onLiveChange"/>
 									<RadioButton visible="{= ${/edit}}" select=".onSelect" />
 									<Text text="{question}" visible="{= !${/edit}}" />
 								</HBox>
