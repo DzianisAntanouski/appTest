@@ -6,7 +6,7 @@
 	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
 
 	<Page id="wrapper"
-		title="Quastions and Answers"
+		title="Questions and Answers"
 		backgroundDesign= "Solid"
 		showNavButton="true"
 		navButtonPress=".onNavBack"
@@ -14,12 +14,12 @@
 		<subHeader>
 			<OverflowToolbar>
 				<ToolbarSpacer/>				
-				<Button text="Edit Mode" press=".onPressEdit"/>
-				<Button text="Delete" type="Reject" enabled="{= ${/edit}}"/>	
+				<Button text="Edit Mode" press=".onPressEdit" enabled="{= !${/edit}}"/>					
 			</OverflowToolbar>
 		</subHeader>
 		<SplitContainer
-			id="SplitContDemo"			
+			id="SplitContDemo"
+			masterButtonText="show Question"			
 			initialDetail="detail"
 			initialMaster="master">
 			<detailPages>			
@@ -31,24 +31,24 @@
 					showFooter="false">
 					
 					<VBox class="sapUiSmallMargin">
-						<Table id="answerstable" items="{answers}" mode="{= ${/edit} ? 'MultiSelect' : 'None'}">
+						<Table id="answerstable" items="{answers}">
 							<infoToolbar>
 								<OverflowToolbar>
 									<Label text="{question}"/>
 								</OverflowToolbar>
 							</infoToolbar>
 							<columns>
-								<Column>
-									
-								</Column>
+								<Column />								
+								<Column width="50px" visible="true" />									
 							</columns>
 							<items>
 								<ColumnListItem vAlign="Middle">
 									<cells>	
 										<HBox >								
 											<Text text="{}" visible="{= !${/edit}}" />
-											<Input value="{}" visible="{= ${/edit}}" width="500px"/>	
-										</HBox>								
+											<Input value="{}" visible="{= ${/edit}}" width="500px" liveChange=".onLiveChange"/>												
+										</HBox>	
+										<CheckBox width="50px" editable="{= ${/edit}}" fieldGroupIds="checkBoxRightAnswers"/>		
 									</cells>
 								</ColumnListItem>
 							</items>
@@ -58,20 +58,20 @@
 				</Page>			
 			</detailPages>
 			<masterPages>
-				<Page
+				<Page					
 					id="master2"
 					title="Questions"
 					backgroundDesign= "List"
 					showNavButton="false"
 					showFooter="{= ${/edit}}">
-					<List id="qList" itemPress=".onListItemPress" items="{path: '/questions'}" width="400px">
+					<List id="qList" itemPress=".onListItemPress" items="{path: '/questions'}" width="700px">
 						<items>
 							<!-- <StandardListItem fieldGroupIds="questions" title="{question}" type="Active" highlight="None"/> -->
 							<InputListItem type="Active" fieldGroupIds="questions" highlight="None">
 								<HBox >
-									<Input value="{question}" visible="{= ${/edit}}" width="250px"/>
-									<CheckBox visible="{= ${/edit}}"/>
-									<Text text="{question}" visible="{= !${/edit}}"/>
+									<Input value="{question}" visible="{= ${/edit}}" width="400px" liveChange=".onLiveChange"/>
+									<RadioButton visible="{= ${/edit}}" select=".onSelect" />
+									<Text text="{question}" visible="{= !${/edit}}" />
 								</HBox>
 							</InputListItem>						
 						</items>
@@ -80,7 +80,7 @@
 						<OverflowToolbar>
 							<ToolbarSpacer/>				
 								<Button text="Add question" press=".onPressAddQuestion"/>
-								<Button text="Cancel" />
+								<Button text="Delete" type="Reject" enabled="{= ${/selected}}" press=".deleteQuestion"/>
 						</OverflowToolbar>
 					</footer>					
 				</Page>
@@ -89,8 +89,7 @@
 		<footer>
 			<OverflowToolbar>
 				<ToolbarSpacer/>				
-					<Button text="Save" />
-					<Button text="Cancel" />
+					<Button text="Finish" press=".onPressFinish"/>
 			</OverflowToolbar>
 		</footer>
 	</Page>

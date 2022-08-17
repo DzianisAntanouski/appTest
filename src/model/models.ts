@@ -1,12 +1,9 @@
 import JSONModel from "sap/ui/model/json/JSONModel";
 import BindingMode from "sap/ui/model/BindingMode";
 import * as Device from "sap/ui/Device";
+import { IQuestion } from "../interface/Interface";
 
-export interface IQuestion {
-  question: string;
-  answers: string[];
-  rightAnswer: number[];
-}
+
 
 class Question implements IQuestion {
   question: string;
