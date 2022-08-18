@@ -1,4 +1,4 @@
-<mvc:View
+<!-- <mvc:View
 	controllerName="webapp.typescript.controller.Start"
 	displayBlock="true"
 	xmlns="sap.m"
@@ -8,4 +8,11 @@
 	<Button text="Run test" press=".navToTesting"/>
 	<Button text="test" press=".test"/>
 
+</mvc:View> -->
+<mvc:View xmlns="sap.f" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" controllerName="webapp.typescript.controller.Start" height="100%">
+	<FlexibleColumnLayout id="fcl">
+		<beginColumnPages>
+			<mvc:XMLView id="beginView" async="true" viewName="webapp.typescript.view.Master"/>
+		</beginColumnPages>
+	</FlexibleColumnLayout>
 </mvc:View>

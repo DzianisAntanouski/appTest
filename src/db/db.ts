@@ -1,7 +1,7 @@
 export class QuestionTest {
-  public async create(question: object) {
+  public async create(question: object, categoryName = "", subCategory = "", questions = "") {
     return (await fetch(
-      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/questions.json`,
+      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/Data${categoryName}${subCategory}${questions}.json`,
       {
         method: "POST",
         body: JSON.stringify(question),
@@ -13,23 +13,23 @@ export class QuestionTest {
       .then((response) => response.json())
       .then((response) => response as object)) as Response;
   }
-  public async read() {
+  public async read(categoryName = "", subCategory = "", questions = "") {
     return await fetch(
-      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/questions.json`,
+      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/Data${categoryName}${subCategory}${questions}.json`,
       { method: "GET" }
     )
       .then((res) => res.json())
       .then((res) => res as object);
   }
-  public async delete(id: string) {
+  public async delete(id: string, categoryName = "", subCategory = "") {
     return await fetch(
-      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/questions/${id}.json`,
+      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app${categoryName}${subCategory}/${id}.json`,
       { method: "DELETE" }
     );
   }
-  public async patch(id: string, question: object) {
+  public async patch(id: string, question: object, categoryName = "", subCategory = "") {
     return await fetch(
-      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/questions/${id}.json`,
+      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app${categoryName}${subCategory}/${id}.json`,
       {
         method: "PATCH",
         body: JSON.stringify(question),

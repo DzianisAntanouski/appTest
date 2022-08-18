@@ -30,15 +30,20 @@ export default abstract class BaseController extends Controller {
     return UIComponent.getRouterFor(this);
   }
 
-  public async fireBaseRead(): Promise<void> {
+  public async fireBaseRead(categoryName = "", subCategory = ""): Promise<void> {
     const qListModel: JSONModel = this.getOwnerComponent().getModel() as JSONModel;
-    const fetchData: FetchData = (await new QuestionTest().read()) as FetchData;
+    const fetchData: FetchData = (await new QuestionTest().read(categoryName, subCategory)) as FetchData;
     const aKeys: object[] = Object.keys(fetchData).map((elem: string) => {
       // map wont modify elem
       fetchData[elem].id = elem;
       return fetchData[elem];
     });
-    qListModel.setProperty("/questions", aKeys);
+
+    // add value into data base
+    // console.log(fetchData)
+    // Object.values(fetchData).forEach(elem => void new QuestionTest().create(elem, "/BackEnd", "/SAPUI5", "/questions"))
+    // await new QuestionTest().create()
+    qListModel.setProperty("/Data", aKeys);    
     qListModel.setProperty("/edit", false);
   }
   /**

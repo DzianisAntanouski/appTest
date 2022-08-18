@@ -32,7 +32,7 @@ export default class Main extends BaseController {
   };
   private formatter = formatter;
 
-  public onInit() {    
+  public onInit(): void {    
     const qListModel: JSONModel = this.getOwnerComponent().getModel() as JSONModel;
     const oContext: Context = new Context(qListModel, "/questions/0");
     this.getView().byId("detailDetail").setBindingContext(oContext);
@@ -57,7 +57,7 @@ export default class Main extends BaseController {
     oControls.forEach((elem) => elem.setProperty("highlight", MessageType.None));
     oControls[+sIndex].setProperty("highlight", MessageType.Information);
   }
-
+  
   public onListItemPress(oEvent: Event): void {
     const oListItem: Control = oEvent.getParameter("srcControl") as Control;
     if (oListItem.getBindingContext()) {
@@ -83,6 +83,7 @@ export default class Main extends BaseController {
         }
       });
   }
+  
   public onPressEdit(): void {
     const qListModel: JSONModel = this.getModel() as JSONModel;
     qListModel.setProperty("/edit", !qListModel.getProperty("/edit"));
