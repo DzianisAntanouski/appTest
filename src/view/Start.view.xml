@@ -1,14 +1,3 @@
-<!-- <mvc:View
-	controllerName="webapp.typescript.controller.Start"
-	displayBlock="true"
-	xmlns="sap.m"
-	xmlns:mvc="sap.ui.core.mvc">
-
-	<Button text="Manage tests" press=".navToMain"/>
-	<Button text="Run test" press=".navToTesting"/>
-	<Button text="test" press=".test"/>
-
-</mvc:View> -->
 <mvc:View xmlns="sap.f" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" controllerName="webapp.typescript.controller.Start" height="100%">
 	<FlexibleColumnLayout id="fcl">
 		<beginColumnPages>

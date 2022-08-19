@@ -13,7 +13,7 @@ import Input from "sap/m/Input";
 import CheckBox from "sap/m/CheckBox";
 import { QuestionTest } from "../db/db";
 import RadioButton from "sap/m/RadioButton";
-import { FetchData, IData, IQuestion, IResult, ITest } from "../interface/Interface";
+import { IData, IListItem, IQuestion, IResult, ITest } from "../interface/Interface";
 
 /**
  * @namespace webapp.typescript.controller
@@ -32,46 +32,75 @@ export default class Main extends BaseController {
   };
   private formatter = formatter;
 
-  public onInit(): void {    
-    const qListModel: JSONModel = this.getOwnerComponent().getModel() as JSONModel;
-    const oContext: Context = new Context(qListModel, "/questions/0");
-    this.getView().byId("detailDetail").setBindingContext(oContext);
+  public onInit(): void {
+    // void this.fireBaseRead();
+
     void (this.byId("SplitContDemo") as ITest)._oMasterNav.setWidth("40%");
-    void this.getView().attachAfterRendering(this.changeUIAfterRendering.bind(this))
+    void this.getView().attachAfterRendering(this.changeUIAfterRendering.bind(this));
+
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    void this.getOwnerComponent()
+      .getRouter()
+      .getRoute("main")
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      .attachPatternMatched(this.onPatternMatched, this);
   }
 
-  public changeUIAfterRendering(): void {     
+  public onPatternMatched(oEvent: Event) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const sPath: string = oEvent.getParameter("arguments").sPath as string;
+
+    this.getView().bindObject({
+      path: `${sPath.replace(/-/g, "/")}`,
+    });
+  }
+
+  public changeUIAfterRendering(): void {
     if (this.getView().byId("detailDetail").getBindingContext()?.getObject()) {
       void this.setChecked();
       void this.highlightSwitcher();
-    }    
+    }
   }
 
   private highlightSwitcher(): void {
-    const oContext: Context = this.getView().byId("detailDetail").getBindingContext() as Context;
-    const sPath: string = oContext.getPath();
-    const sIndex: string = sPath.slice(sPath.search(/\/?[0-9]+/) + 1);
+    const oControls: Array<Control> = this.getInputListItem();
+    const nIndex: number = oControls.findIndex((elem) => elem.getProperty("highlight") === "Information");
+    oControls.forEach((control) => control.setProperty("highlight", MessageType.None));
+    if (nIndex < 0 || nIndex === oControls.length - 1) {
+      oControls[0].setProperty("highlight", MessageType.Information);
+    } else {
+      oControls[nIndex + 1].setProperty("highlight", MessageType.Information);
+    }
+  }
+  private getInputListItem(): Array<Control> {
     const oControls: Array<Control> = this.getView()
       .getControlsByFieldGroupId("questions")
       .filter((elem) => elem.getMetadata().getElementName() === "sap.m.InputListItem");
-    oControls.forEach((elem) => elem.setProperty("highlight", MessageType.None));
-    oControls[+sIndex].setProperty("highlight", MessageType.Information);
+    return oControls;
   }
-  
   public onListItemPress(oEvent: Event): void {
     const oListItem: Control = oEvent.getParameter("srcControl") as Control;
     if (oListItem.getBindingContext()) {
       const oContext: Context = oListItem.getBindingContext() as Context;
       this.getView().byId("detailDetail").setBindingContext(oContext);
     }
-    void this.highlightSwitcher();
+
+    this.getInputListItem().forEach((control) => control.setProperty("highlight", MessageType.None));
+
+    if (oListItem.getMetadata().getElementName() === "sap.m.Text") {
+      (oListItem as IListItem).oParent.oParent.setProperty("highlight", MessageType.Information);
+    } else if (oListItem.getMetadata().getElementName() === "sap.m.HBox") {
+      (oListItem as IListItem).oParent.setProperty("highlight", MessageType.Information);
+    } else {
+      (oListItem as IListItem).setProperty("highlight", MessageType.Information);
+    }
+
+    // void this.highlightSwitcher();
     void this.setChecked();
   }
 
   public setChecked(): void {
-    const rightAnswer: number[] = (
-      (this.getView().byId("detailDetail").getBindingContext() as Context).getObject() as IQuestion
-    ).rightAnswer;
+    const rightAnswer: number[] = ((this.getView().byId("detailDetail").getBindingContext() as Context).getObject() as IQuestion).rightAnswer;
     this.getView()
       .getControlsByFieldGroupId("checkBoxRightAnswers")
       .filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.CheckBox")
@@ -83,7 +112,7 @@ export default class Main extends BaseController {
         }
       });
   }
-  
+
   public onPressEdit(): void {
     const qListModel: JSONModel = this.getModel() as JSONModel;
     qListModel.setProperty("/edit", !qListModel.getProperty("/edit"));
@@ -91,30 +120,18 @@ export default class Main extends BaseController {
     void this.setChecked();
   }
 
-  public onPressNext(oEvent: Event): void {
-    const qListModel: JSONModel = this.getModel() as JSONModel;
-    const oContext: Context = (oEvent.getSource() as Control).getBindingContext() as Context;
-    const sPath: string = oContext.getPath();
-    let sIndex: string = sPath.slice(sPath.search(/\/?[0-9]+/) + 1);
-
-    const aData: FetchData[] = this.getModel().getProperty("/questions") as FetchData[];
-    if (+sIndex + 1 === aData.length) {
-      sIndex = "-1";
-    }
-    const oNextContext: Context = new Context(qListModel, `/questions/${+sIndex + 1}`);
-    this.getView().byId("detailDetail").setBindingContext(oNextContext);
-    this.highlightSwitcher();
+  public onPressNext(): void {
+    void this.highlightSwitcher();
+    const oControls: Array<Control> = this.getInputListItem();
+    const oControl: Control = oControls.find((elem) => elem.getProperty("highlight") === "Information") as Control;
+    const oContext: Context = oControl.getBindingContext() as Context;
+    this.getView().byId("detailDetail").setBindingContext(oContext);
+    // this.highlightSwitcher();
     void this.setChecked();
   }
 
   private clearFragmentInputs(): void {
-    const aInputs: UI5Element[] = [
-      this.byId("newQ"),
-      this.byId("answer1"),
-      this.byId("answer1"),
-      this.byId("answer1"),
-      this.byId("answer1"),
-    ];
+    const aInputs: UI5Element[] = [this.byId("newQ"), this.byId("answer1"), this.byId("answer1"), this.byId("answer1"), this.byId("answer1")];
     aInputs.forEach((oInput) => (oInput as Input).setValue(""));
     this.getView()
       .getControlsByFieldGroupId("checkBox")
@@ -136,12 +153,7 @@ export default class Main extends BaseController {
       .map((elem) => +elem.getId().slice(-1));
     const newQuestion = models.createQuestion(
       getTemplate("question"),
-      [
-        getTemplate("answer/0"),
-        getTemplate("answer/1"),
-        getTemplate("answer/2"),
-        getTemplate("answer/3"),
-      ],
+      [getTemplate("answer/0"), getTemplate("answer/1"), getTemplate("answer/2"), getTemplate("answer/3")],
       aChecked
     );
     void new QuestionTest().create(newQuestion).then(() => {
@@ -182,11 +194,7 @@ export default class Main extends BaseController {
         .getBindingContext()
         ?.getPath();
       const sId: string = qListModel.getProperty(`${sSelectedControl as string}/id`) as string;
-      if (
-        sId === "-N9XmlXWpj9AYMgOf9ZP" ||
-        sId === "-N9XmlYFApDUau1JhiWP" ||
-        sId === "-N9XmlYrgklZsErXDoIs"
-      ) {
+      if (sId === "-N9XmlXWpj9AYMgOf9ZP" || sId === "-N9XmlYFApDUau1JhiWP" || sId === "-N9XmlYrgklZsErXDoIs") {
         console.log("This question under developer protection");
       } else {
         void new QuestionTest().delete(sId).then(() => void this.fireBaseRead());

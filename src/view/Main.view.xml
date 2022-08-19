@@ -64,7 +64,7 @@
 					backgroundDesign= "List"
 					showNavButton="false"
 					showFooter="{= ${/edit}}">
-					<List id="qList" itemPress=".onListItemPress" items="{path: '/questions'}" width="700px">
+					<List id="qList" itemPress=".onListItemPress" items="{path: 'questions'}" width="700px">
 						<items>
 							<!-- <StandardListItem fieldGroupIds="questions" title="{question}" type="Active" highlight="None"/> -->
 							<InputListItem type="Active" fieldGroupIds="questions" highlight="None">

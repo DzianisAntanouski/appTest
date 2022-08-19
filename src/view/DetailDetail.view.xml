@@ -6,28 +6,14 @@
 			<Button type="Transparent" icon="sap-icon://decline" press="handleClose"  tooltip="Close end column" />
 		</headerContent>
 		<content>
-			<Table>
-				<columns>
-					<Column><Label text="DetailDetail List" /></Column>
-				</columns>
-				<items>
-					<ColumnListItem vAlign="Middle">
-						<cells>
-							<Text text="No more columns"/>
-						</cells>
-					</ColumnListItem>
-					<ColumnListItem vAlign="Middle">
-						<cells>
-							<Text text="No more columns"/>
-						</cells>
-					</ColumnListItem>
-					<ColumnListItem vAlign="Middle">
-						<cells>
-							<Text text="No more columns"/>
-						</cells>
-					</ColumnListItem>			
-				</items>
-			</Table>
+			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleNavToManage" header="Manage test"
+				subheader="Subtitle"  frameType= "TwoByHalf">
+				<TileContent />
+			</GenericTile>
+			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleNavToTest" header="Run test"
+				subheader="Subtitle"  frameType= "TwoByHalf">
+				<TileContent />
+			</GenericTile>
 		</content>
 	</Page>
 </mvc:View>

@@ -2,28 +2,22 @@
     controllerName="webapp.typescript.controller.Detail" 
     height="100%">
 	<Page id="detailPage" title="Detail page">
-		<Table>
+		<Table items="{subCategory}">
 			<columns>
 				<Column><Label text="Detail List" /></Column>
 			</columns>
 			<items>
-				<ColumnListItem type="Navigation" vAlign="Middle" press="handleDetailPress">
+				<ColumnListItem type="Inactive" vAlign="Middle" >
 					<cells>
-						<Text text="Open end column"/>
+						<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleDetailPress" header="{name}"
+							subheader="Subtitle"  frameType= "TwoByHalf">
+							<TileContent />
+						</GenericTile>
 					</cells>
-				</ColumnListItem>
-				<ColumnListItem type="Navigation" vAlign="Middle" press="handleDetailPress">
-					<cells>
-						<Text text="Open end column"/>
-					</cells>
-				</ColumnListItem>
-				<ColumnListItem type="Navigation" vAlign="Middle" press="handleDetailPress">
-					<cells>
-						<Text text="Open end column"/>
-					</cells>
-				</ColumnListItem>				
+				</ColumnListItem>							
 			</items>
 		</Table>
+		
 	</Page>
 </mvc:View>
 
