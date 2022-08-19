@@ -1,6 +1,7 @@
 import MessageToast from "sap/m/MessageToast";
 import EventBus from "sap/ui/core/EventBus";
 import BaseController from "./BaseController";
+import Event from "sap/ui/base/Event";
 
 /**
  * @namespace webapp.typescript.controller
@@ -10,8 +11,8 @@ export default class Master extends BaseController {
   public onInit(): void {
     this.bus = this.getOwnerComponent().getEventBus();
   }
-  public handleMasterPress(): void {    
+  public handleMasterPress(oEvent: Event): void {
     MessageToast.show("Loading mid column...");
-    this.bus.publish("flexible", "setDetailPage");
+    this.bus.publish("flexible", "setDetailPage", oEvent);
   }
 }

@@ -8,16 +8,35 @@ import Fragment from "sap/ui/core/Fragment";
 import UI5Element from "sap/ui/core/Element";
 import formatter from "../model/formatter";
 import Table from "sap/m/Table";
-import { IQuestion } from '../model/models';
-import JSONModel from 'sap/ui/model/json/JSONModel';
-
+import JSONModel from "sap/ui/model/json/JSONModel";
+import { IQuestion } from "../interface/Interface";
+import Event from "sap/ui/base/Event";
 
 /**
  * @namespace webapp.typescript.controller
  */
 export default class Start extends BaseController {
-  formatter = formatter
+  formatter = formatter;
   oFragment: Promise<Dialog | Control | Control[]>;
+
+  public onInit(): void {
+    void this.fireBaseRead();
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    void this.getOwnerComponent()
+      .getRouter()
+      .getRoute("test")
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      .attachPatternMatched(this.onPatternMatched, this);
+  }
+
+  public onPatternMatched(oEvent: Event) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const sPath: string = oEvent.getParameter("arguments").sPath as string;
+
+    this.getView().bindObject({
+      path: `${sPath.replace(/-/g, "/")}`,
+    });
+  }
 
   onSubmitPress(): void {
     const checkedAnswers = this.getCheckedAnswers();
@@ -53,7 +72,9 @@ export default class Start extends BaseController {
   }
 
   resetAllSelectedAnswers(): void {
-    const arrayTable = this.getView().getControlsByFieldGroupId("table").filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.Table") as Table[]
+    const arrayTable = this.getView()
+      .getControlsByFieldGroupId("table")
+      .filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.Table") as Table[];
     arrayTable.map((value) => value.removeSelections(true));
   }
 
@@ -79,23 +100,33 @@ export default class Start extends BaseController {
   }
   setAnswers() {
     const model = this.getModel() as JSONModel;
-    const question = model.getProperty('/questions') as IQuestion[];
-    const rightAnswersWord = question.map(elem => elem.rightAnswer.map(el => { return elem.answers[el - 1] }))
-    const clientAnswers = this.getCheckedAnswers()
-    const clientAnswersWord = clientAnswers.map((el: string[]) =>
-      el.map(elem => {
-        const a = model.getProperty(elem) as string;
-        return a
+    const question = model.getProperty("/questions") as IQuestion[];
+    const rightAnswersWord = question.map((elem) =>
+      elem.rightAnswer.map((el) => {
+        return elem.answers[el - 1];
       })
     );
-    model.setProperty('/additional', []);
-    const isTrue = clientAnswersWord.map((elem, index) => elem.map(el => rightAnswersWord[index].includes(el)))
+    const clientAnswers = this.getCheckedAnswers();
+    const clientAnswersWord = clientAnswers.map((el: string[]) =>
+      el.map((elem) => {
+        const a = model.getProperty(elem) as string;
+        return a;
+      })
+    );
+    model.setProperty("/additional", []);
+    const isTrue = clientAnswersWord.map((elem, index) => elem.map((el) => rightAnswersWord[index].includes(el)));
     const objectclientAnswersWord = clientAnswersWord.map((el, index: number) =>
-      el.map((elem, i: number) => { return { word: elem, isTrueAnswers: isTrue[index][i] } })
-    )
+      el.map((elem, i: number) => {
+        return { word: elem, isTrueAnswers: isTrue[index][i] };
+      })
+    );
     clientAnswersWord.forEach((elem, index: number) => {
       const question = model.getProperty(`/questions/${index}/question`) as string;
-      model.setProperty(`/additional/${index}`, { rightAnswersWord: rightAnswersWord[index], clientAnswersWord: objectclientAnswersWord[index], questionWord: question });
-    })
+      model.setProperty(`/additional/${index}`, {
+        rightAnswersWord: rightAnswersWord[index],
+        clientAnswersWord: objectclientAnswersWord[index],
+        questionWord: question,
+      });
+    });
   }
 }

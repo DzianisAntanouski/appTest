@@ -85,12 +85,12 @@
 					"target": "start"
 				},
 				{
-					"pattern": "manage",
+					"pattern": "main{sPath}",
 					"name": "main",
 					"target": "main"
 				},
 				{
-					"pattern": "testing",
+					"pattern": "testing{sPath}",
 					"name": "test",
 					"target": "test"
 				}

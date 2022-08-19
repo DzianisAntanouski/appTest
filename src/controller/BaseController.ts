@@ -8,7 +8,7 @@ import Router from "sap/ui/core/routing/Router";
 import History from "sap/ui/core/routing/History";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import { QuestionTest } from "../db/db";
-import { FetchData } from "../interface/Interface";
+import { FetchData, ISubCategory } from "../interface/Interface";
 
 /**
  * @namespace webapp.typescript.controller
@@ -33,17 +33,21 @@ export default abstract class BaseController extends Controller {
   public async fireBaseRead(categoryName = "", subCategory = ""): Promise<void> {
     const qListModel: JSONModel = this.getOwnerComponent().getModel() as JSONModel;
     const fetchData: FetchData = (await new QuestionTest().read(categoryName, subCategory)) as FetchData;
-    const aKeys: object[] = Object.keys(fetchData).map((elem: string) => {
-      // map wont modify elem
-      fetchData[elem].id = elem;
+
+    const modelStructureToBinding: ISubCategory = {};
+    void Object.keys(fetchData).forEach((elem: string) => {
+      modelStructureToBinding[elem] = {
+        categoryName: elem,
+        subCategory: fetchData[elem] as unknown as FetchData,
+      };
+      Object.keys(fetchData[elem]).forEach((el) => {
+        modelStructureToBinding[elem]["subCategory"][el].name = el;
+      });
+
       return fetchData[elem];
     });
 
-    // add value into data base
-    // console.log(fetchData)
-    // Object.values(fetchData).forEach(elem => void new QuestionTest().create(elem, "/BackEnd", "/SAPUI5", "/questions"))
-    // await new QuestionTest().create()
-    qListModel.setProperty("/Data", aKeys);    
+    qListModel.setProperty("/Data", modelStructureToBinding);
     qListModel.setProperty("/edit", false);
   }
   /**

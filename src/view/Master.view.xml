@@ -4,21 +4,16 @@
     controllerName="webapp.typescript.controller.Master" 
     height="100%">
 	<Page id="masterPage" title="Master page">
-		<Table>
+		<Table items="{/Data}">
 			<columns>
 				<Column><Label text="Master List" /></Column>
 			</columns>
 			<items>
 				<ColumnListItem type="Navigation" vAlign="Middle" press="handleMasterPress">
 					<cells>
-						<Text text="{/Data/0/id}"/>
+						<Text text="{categoryName}"/>
 					</cells>
-				</ColumnListItem>
-				<ColumnListItem type="Navigation" vAlign="Middle" press="handleMasterPress">
-					<cells>
-						<Text text="{/Data/1/id}"/>
-					</cells>
-				</ColumnListItem>				
+				</ColumnListItem>								
 			</items>
 		</Table>
 	</Page>

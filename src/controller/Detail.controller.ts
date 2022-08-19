@@ -10,8 +10,8 @@ export default class Detail extends BaseController {
   public onInit(): void {
     this.bus = this.getOwnerComponent().getEventBus();
   }
-  public handleDetailPress () {    
+  public handleDetailPress(oEvent: Event): void {
     MessageToast.show("Loading end column...setDetailDetailPage");
-    this.bus.publish("flexible", "setDetailDetailPage");
+    this.bus.publish("flexible", "setDetailDetailPage", oEvent);
   }
 }

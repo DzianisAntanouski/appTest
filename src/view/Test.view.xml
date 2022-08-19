@@ -5,7 +5,7 @@
 	xmlns:u="sap.ui.unified"
 	xmlns:core="sap.ui.core">
 	<Page id="test" title="Questions" titleLevel="H2" navButtonPress=".onNavBack" titleAlignment="Center" backgroundDesign= "List" showNavButton="true" showFooter="true">
-		<List itemPress=".onListItemPress" items="{/questions}" class="sapUiContentPadding">
+		<List itemPress=".onListItemPress" items="{questions}" class="sapUiContentPadding">
 			<items>
 				<CustomListItem >
 					<content>
