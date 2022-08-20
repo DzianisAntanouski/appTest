@@ -33,7 +33,6 @@ export default class Main extends BaseController {
   private formatter = formatter;
 
   public onInit(): void {
-    // void this.fireBaseRead();
 
     void (this.byId("SplitContDemo") as ITest)._oMasterNav.setWidth("40%");
     void this.getView().attachAfterRendering(this.changeUIAfterRendering.bind(this));
@@ -156,12 +155,15 @@ export default class Main extends BaseController {
       [getTemplate("answer/0"), getTemplate("answer/1"), getTemplate("answer/2"), getTemplate("answer/3")],
       aChecked
     );
-    void new QuestionTest().create(newQuestion).then(() => {
-      void this.fireBaseRead();
-    });
+    // add getContextPath to BaseController
+    const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().slice(1).split("/")
 
+    void new QuestionTest().create(newQuestion, "/" + aPath[1], "/" + aPath[3])
+      .then(() => void this.fireBaseRead())
+      .then(() => (this.getModel() as JSONModel).setProperty("/edit", true));
     this.clearFragmentInputs();
     void this.oFragment.then((oMessagePopover) => (oMessagePopover as Dialog).close());
+    void (this.getModel() as JSONModel).setProperty("/edit", true)
   }
 
   public onPressAddQuestion(): void {
@@ -184,7 +186,6 @@ export default class Main extends BaseController {
   }
 
   public deleteQuestion() {
-    const qListModel: JSONModel = this.getModel() as JSONModel;
     const oControls: Array<Control> = this.getView()
       .getControlsByFieldGroupId("questions")
       .filter((elem) => elem.getMetadata().getElementName() === "sap.m.RadioButton");
@@ -193,12 +194,14 @@ export default class Main extends BaseController {
         .filter((elem) => elem.getSelected())[0]
         .getBindingContext()
         ?.getPath();
-      const sId: string = qListModel.getProperty(`${sSelectedControl as string}/id`) as string;
-      if (sId === "-N9XmlXWpj9AYMgOf9ZP" || sId === "-N9XmlYFApDUau1JhiWP" || sId === "-N9XmlYrgklZsErXDoIs") {
-        console.log("This question under developer protection");
-      } else {
-        void new QuestionTest().delete(sId).then(() => void this.fireBaseRead());
-      }
+        
+      const sId: string | undefined = (sSelectedControl as string).split("/").pop();
+      const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().slice(1).split("/")
+
+      void new QuestionTest().delete(sId as string, "/" + aPath[1], "/" + aPath[3])
+        .then(() => void this.fireBaseRead()
+        .then(() => (this.getModel() as JSONModel).setProperty("/edit", true))
+        .then(() => (oControls as RadioButton[]).forEach(elem => elem.setSelected(false))));
     }
   }
   public onLiveChange(): void {
@@ -220,15 +223,16 @@ export default class Main extends BaseController {
 
     if (this.getModel().getProperty("/changed")) {
       const qListModel = this.getModel() as JSONModel;
-      const oData: IData[] = (qListModel.getData() as IData).questions as IData[];
-      const result: IResult[] = oData.map((elem) => {
+      const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().slice(1).split("/")
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const oData: IData[] = (qListModel.getData()[aPath[0]][aPath[1]][aPath[2]][aPath[3]] as IData).questions as IData[];
+      const result: IResult[] = Object.values(oData).map((elem) => {
         return {
           id: elem.id,
           body: { answers: elem.answers, question: elem.question, rightAnswer: elem.rightAnswer },
         };
       }) as unknown as IResult[];
-
-      void result.forEach((elem) => void new QuestionTest().patch(elem.id, elem.body));
+      void result.forEach((elem) => void new QuestionTest().patch(elem.id, elem.body, "/" + aPath[1], "/" + aPath[3]));
     }
   }
 }

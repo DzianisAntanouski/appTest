@@ -1,5 +1,5 @@
 export class QuestionTest {
-  public async create(question: object, categoryName = "", subCategory = "", questions = "") {
+  public async create(question: object, categoryName = "", subCategory = "", questions = "/questions") {
     return (await fetch(
       `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/Data${categoryName}${subCategory}${questions}.json`,
       {
@@ -21,15 +21,15 @@ export class QuestionTest {
       .then((res) => res.json())
       .then((res) => res as object);
   }
-  public async delete(id: string, categoryName = "", subCategory = "") {
+  public async delete(id: string, categoryName = "", subCategory = "", questions = "/questions") {
     return await fetch(
-      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app${categoryName}${subCategory}/${id}.json`,
+      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/Data${categoryName}${subCategory}${questions}/${id}.json`,
       { method: "DELETE" }
     );
   }
-  public async patch(id: string, question: object, categoryName = "", subCategory = "") {
+  public async patch(id: string, question: object, categoryName = "", subCategory = "", questions = "/questions") {
     return await fetch(
-      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app${categoryName}${subCategory}/${id}.json`,
+      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/Data${categoryName}${subCategory}${questions}/${id}.json`,
       {
         method: "PATCH",
         body: JSON.stringify(question),
