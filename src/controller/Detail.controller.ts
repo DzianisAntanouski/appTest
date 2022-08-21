@@ -7,9 +7,11 @@ import BaseController from "./BaseController";
  */
 export default class Detail extends BaseController {
   bus: EventBus;
+
   public onInit(): void {
     this.bus = this.getOwnerComponent().getEventBus();
   }
+
   public handleDetailPress(oEvent: Event): void {
     MessageToast.show("Loading end column...setDetailDetailPage");
     this.bus.publish("flexible", "setDetailDetailPage", oEvent);

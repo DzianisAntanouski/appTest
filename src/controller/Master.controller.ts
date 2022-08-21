@@ -8,9 +8,11 @@ import Event from "sap/ui/base/Event";
  */
 export default class Master extends BaseController {
   bus: EventBus;
+  
   public onInit(): void {
     this.bus = this.getOwnerComponent().getEventBus();
   }
+
   public handleMasterPress(oEvent: Event): void {
     MessageToast.show("Loading mid column...");
     this.bus.publish("flexible", "setDetailPage", oEvent);

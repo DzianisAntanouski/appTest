@@ -13,7 +13,7 @@ import Input from "sap/m/Input";
 import CheckBox from "sap/m/CheckBox";
 import { QuestionTest } from "../db/db";
 import RadioButton from "sap/m/RadioButton";
-import { IData, IListItem, IQuestion, IResult, ITest } from "../interface/Interface";
+import { IData, IListItem, IQuestion, IResult, ITest, IArguments } from "../interface/Interface";
 
 /**
  * @namespace webapp.typescript.controller
@@ -33,22 +33,14 @@ export default class Main extends BaseController {
   private formatter = formatter;
 
   public onInit(): void {
-
     void (this.byId("SplitContDemo") as ITest)._oMasterNav.setWidth("40%");
     void this.getView().attachAfterRendering(this.changeUIAfterRendering.bind(this));
 
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    void this.getOwnerComponent()
-      .getRouter()
-      .getRoute("main")
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      .attachPatternMatched(this.onPatternMatched, this);
+    void this.getOwnerComponent().getRouter().getRoute("main").attachPatternMatched(this.onPatternMatched.bind(this), this);
   }
 
   public onPatternMatched(oEvent: Event) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const sPath: string = oEvent.getParameter("arguments").sPath as string;
-
+    const sPath: string = (oEvent.getParameter("arguments") as IArguments).sPath;
     this.getView().bindObject({
       path: `${sPath.replace(/-/g, "/")}`,
     });
@@ -71,12 +63,14 @@ export default class Main extends BaseController {
       oControls[nIndex + 1].setProperty("highlight", MessageType.Information);
     }
   }
+
   private getInputListItem(): Array<Control> {
     const oControls: Array<Control> = this.getView()
       .getControlsByFieldGroupId("questions")
       .filter((elem) => elem.getMetadata().getElementName() === "sap.m.InputListItem");
     return oControls;
   }
+
   public onListItemPress(oEvent: Event): void {
     const oListItem: Control = oEvent.getParameter("srcControl") as Control;
     if (oListItem.getBindingContext()) {
@@ -93,8 +87,6 @@ export default class Main extends BaseController {
     } else {
       (oListItem as IListItem).setProperty("highlight", MessageType.Information);
     }
-
-    // void this.highlightSwitcher();
     void this.setChecked();
   }
 
@@ -125,7 +117,6 @@ export default class Main extends BaseController {
     const oControl: Control = oControls.find((elem) => elem.getProperty("highlight") === "Information") as Control;
     const oContext: Context = oControl.getBindingContext() as Context;
     this.getView().byId("detailDetail").setBindingContext(oContext);
-    // this.highlightSwitcher();
     void this.setChecked();
   }
 
@@ -156,14 +147,15 @@ export default class Main extends BaseController {
       aChecked
     );
     // add getContextPath to BaseController
-    const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().slice(1).split("/")
+    const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().slice(1).split("/");
 
-    void new QuestionTest().create(newQuestion, "/" + aPath[1], "/" + aPath[3])
+    void new QuestionTest()
+      .create(newQuestion, "/" + aPath[1], "/" + aPath[3])
       .then(() => void this.fireBaseRead())
       .then(() => (this.getModel() as JSONModel).setProperty("/edit", true));
     this.clearFragmentInputs();
     void this.oFragment.then((oMessagePopover) => (oMessagePopover as Dialog).close());
-    void (this.getModel() as JSONModel).setProperty("/edit", true)
+    void (this.getModel() as JSONModel).setProperty("/edit", true);
   }
 
   public onPressAddQuestion(): void {
@@ -194,16 +186,19 @@ export default class Main extends BaseController {
         .filter((elem) => elem.getSelected())[0]
         .getBindingContext()
         ?.getPath();
-        
-      const sId: string | undefined = (sSelectedControl as string).split("/").pop();
-      const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().slice(1).split("/")
 
-      void new QuestionTest().delete(sId as string, "/" + aPath[1], "/" + aPath[3])
-        .then(() => void this.fireBaseRead()
-        .then(() => (this.getModel() as JSONModel).setProperty("/edit", true))
-        .then(() => (oControls as RadioButton[]).forEach(elem => elem.setSelected(false))));
+      const sId: string | undefined = (sSelectedControl as string).split("/").pop();
+      const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().slice(1).split("/");
+
+      void new QuestionTest().delete(sId as string, "/" + aPath[1], "/" + aPath[3]).then(
+        () =>
+          void this.fireBaseRead()
+            .then(() => (this.getModel() as JSONModel).setProperty("/edit", true))
+            .then(() => (oControls as RadioButton[]).forEach((elem) => elem.setSelected(false)))
+      );
     }
   }
+
   public onLiveChange(): void {
     const qListModel: JSONModel = this.getModel() as JSONModel;
     qListModel.setProperty("/changed", true);
@@ -223,7 +218,7 @@ export default class Main extends BaseController {
 
     if (this.getModel().getProperty("/changed")) {
       const qListModel = this.getModel() as JSONModel;
-      const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().slice(1).split("/")
+      const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().slice(1).split("/");
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const oData: IData[] = (qListModel.getData()[aPath[0]][aPath[1]][aPath[2]][aPath[3]] as IData).questions as IData[];
       const result: IResult[] = Object.values(oData).map((elem) => {

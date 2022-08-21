@@ -1,7 +1,7 @@
 <mvc:View xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"  
     controllerName="webapp.typescript.controller.Detail" 
     height="100%">
-	<Page id="detailPage" title="Detail page">
+	<Page id="detailPage" title="Test subcategory">
 		<Table items="{subCategory}">
 			<columns>
 				<Column><Label text="Detail List" /></Column>
