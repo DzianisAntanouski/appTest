@@ -3,7 +3,7 @@
     displayBlock="true" 
     controllerName="webapp.typescript.controller.Master" 
     height="100%">
-	<Page id="masterPage" title="Master page">
+	<Page id="masterPage" title="Test category">
 		<Table items="{/Data}">
 			<columns>
 				<Column><Label text="Master List" /></Column>

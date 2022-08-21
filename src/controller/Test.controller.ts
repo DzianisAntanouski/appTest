@@ -20,7 +20,6 @@ export default class Start extends BaseController {
   oFragment: Promise<Dialog | Control | Control[]>;
 
   public onInit(): void {
-    void this.fireBaseRead();
     // eslint-disable-next-line @typescript-eslint/unbound-method
     void this.getOwnerComponent()
       .getRouter()

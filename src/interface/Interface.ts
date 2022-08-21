@@ -10,6 +10,9 @@ export interface IData {
   questions: object;
 }
 
+export interface IArguments {
+  sPath: string
+}
 export interface ITest extends SplitContainer {
   _oMasterNav: NavContainer;
 }
