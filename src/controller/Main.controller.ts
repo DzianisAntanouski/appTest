@@ -147,7 +147,7 @@ export default class Main extends BaseController {
       aChecked
     );
     // add getContextPath to BaseController
-    const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().slice(1).split("/");
+    const aPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().slice(1).split("/");
 
     void new QuestionTest()
       .create(newQuestion, "/" + aPath[1], "/" + aPath[3])
