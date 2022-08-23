@@ -1,7 +1,19 @@
-<mvc:View xmlns="sap.f" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" controllerName="webapp.typescript.controller.Start" height="100%">
-	<FlexibleColumnLayout id="fcl">
-		<beginColumnPages>
-			<mvc:XMLView id="beginView" async="true" viewName="webapp.typescript.view.Master"/>
-		</beginColumnPages>
-	</FlexibleColumnLayout>
+<mvc:View xmlns="sap.f"
+	xmlns:m="sap.m"
+	xmlns:mvc="sap.ui.core.mvc" displayBlock="true" controllerName="webapp.typescript.controller.Start" height="100%">
+	<m:Page>
+		<m:customHeader>
+			<ShellBar title="Test Application">
+				
+				<profile>
+					<m:Avatar initials="sap-icon://user-settings" press='onPressAvatar' />
+				</profile>
+			</ShellBar>
+		</m:customHeader>
+		<FlexibleColumnLayout id="fcl">
+			<beginColumnPages>
+				<mvc:XMLView id="beginView" async="true" viewName="webapp.typescript.view.Master"/>
+			</beginColumnPages>
+		</FlexibleColumnLayout>
+	</m:Page>
 </mvc:View>
