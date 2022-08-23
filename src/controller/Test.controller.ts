@@ -22,7 +22,7 @@ export default class Start extends BaseController {
 
   public onInit(): void {
 
-    void this.getOwnerComponent().getRouter().getRoute("test")?.attachPatternMatched(this.onPatternMatched.bind(this), this);
+    this.getOwnerComponent().getRouter().getRoute("test")?.attachPatternMatched(this.onPatternMatched.bind(this), this);
   }
 
   public onPatternMatched(oEvent: Event) {

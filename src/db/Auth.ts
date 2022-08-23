@@ -16,4 +16,34 @@ export default class Auth {
           .then(response => response.json() as Promise<string>)
           .then(sToken => (sToken as unknown as IToken).idToken)
       }
+      static async newUser (email: string, password: string): Promise<string> {         
+        const apiKey = `AIzaSyC-14jeZmSOdG1HPzl5bdZ_aLBBFVEg_-8`
+        return await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
+          method: "POST",
+          body: JSON.stringify({
+            email, password,
+            returnSecureToken: true
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+          .then(response => response.json() as Promise<string>)          
+          // .then(sToken => (sToken as unknown as IToken)?.idToken) 
+      }
+      
+      static async anonymouslyUser (): Promise<string> {         
+        const apiKey = `AIzaSyC-14jeZmSOdG1HPzl5bdZ_aLBBFVEg_-8`
+        return await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
+          method: "POST",
+          body: JSON.stringify({
+            returnSecureToken: true
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+          .then(response => response.json() as Promise<string>)          
+          // .then(sToken => (sToken as unknown as IToken)?.idToken)
+      }
 }
