@@ -12,6 +12,7 @@ import JSONModel from "sap/ui/model/json/JSONModel";
 import { IQuestion } from "../interface/Interface";
 import Event from "sap/ui/base/Event";
 
+
 /**
  * @namespace webapp.typescript.controller
  */
@@ -20,19 +21,15 @@ export default class Start extends BaseController {
   oFragment: Promise<Dialog | Control | Control[]>;
 
   public onInit(): void {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    void this.getOwnerComponent()
-      .getRouter()
-      .getRoute("test")
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      .attachPatternMatched(this.onPatternMatched, this);
+
+    void this.getOwnerComponent().getRouter().getRoute("test")?.attachPatternMatched(this.onPatternMatched.bind(this), this);
   }
 
   public onPatternMatched(oEvent: Event) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const sPath: string = oEvent.getParameter("arguments").sPath as string;
 
-    this.getView().bindObject({
+    this.getView()?.bindObject({
       path: `${sPath.replace(/-/g, "/")}`,
     });
   }
@@ -40,6 +37,7 @@ export default class Start extends BaseController {
   onSubmitPress(): void {
     const checkedAnswers = this.getCheckedAnswers();
     if (this.checkBeforeSubmit(checkedAnswers)) {
+
       this.setAnswers();
       this.checkResultsOfTest();
     } else {
@@ -48,11 +46,10 @@ export default class Start extends BaseController {
   }
 
   getCheckedAnswers(): Array<Array<string>> {
-    const array: Array<Context[]> = this.getView()
-      .getControlsByFieldGroupId("table")
+    const array: Array<Context[]> | undefined = this.getView()?.getControlsByFieldGroupId("table")
       .filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.Table")
       .map((control) => (control as ListBase).getSelectedContexts());
-    return array.map((context) => context.map((el) => el.getPath()));
+    return array ? array.map((context) => context.map((el) => el.getPath())) : [];
   }
 
   checkBeforeSubmit(checkedAnswers: Array<Array<string>>) {
@@ -71,8 +68,7 @@ export default class Start extends BaseController {
   }
 
   resetAllSelectedAnswers(): void {
-    const arrayTable = this.getView()
-      .getControlsByFieldGroupId("table")
+    const arrayTable = this.getView()?.getControlsByFieldGroupId("table")
       .filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.Table") as Table[];
     arrayTable.map((value) => value.removeSelections(true));
   }
@@ -82,11 +78,11 @@ export default class Start extends BaseController {
     if (!this.oFragment) {
       const oView = this.getView();
       this.oFragment = Fragment.load({
-        id: oView.getId(),
+        id: oView?.getId(),
         name: "webapp.typescript.view.fragments.ResultsOfTest",
         controller: this,
       }).then((oMessagePopover) => {
-        oView.addDependent(oMessagePopover as UI5Element);
+        oView?.addDependent(oMessagePopover as UI5Element);
         return oMessagePopover;
       });
     }
@@ -98,9 +94,11 @@ export default class Start extends BaseController {
     void this.oFragment.then((oMessagePopover) => (oMessagePopover as Dialog).close());
   }
   setAnswers() {
+
+    const path = this.getView()?.getBindingContext()?.getPath();
     const model = this.getModel() as JSONModel;
-    const question = model.getProperty("/questions") as IQuestion[];
-    const rightAnswersWord = question.map((elem) =>
+    const question: IQuestion[] | [] = Object.values((model.getProperty(path ? path : '') as { name: string, questions: object }).questions);
+    const rightAnswersWord = question.map((elem: IQuestion) =>
       elem.rightAnswer.map((el) => {
         return elem.answers[el - 1];
       })
@@ -120,12 +118,14 @@ export default class Start extends BaseController {
       })
     );
     clientAnswersWord.forEach((elem, index: number) => {
-      const question = model.getProperty(`/questions/${index}/question`) as string;
+      const questionWord = question[index].question;
       model.setProperty(`/additional/${index}`, {
         rightAnswersWord: rightAnswersWord[index],
         clientAnswersWord: objectclientAnswersWord[index],
-        questionWord: question,
+        questionWord,
       });
     });
+
   }
+
 }
