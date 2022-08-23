@@ -89,4 +89,7 @@ export default class Start extends BaseController {
     const sPath: string = ((oEvent.getSource() as Control).getBindingContext() as Context).getPath();
     this.navTo("test", { sPath: sPath.replace(/\//g, "-") }, true);
   }
+  onPressAvatar(){
+    
+  }
 }
