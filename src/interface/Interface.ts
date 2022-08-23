@@ -55,3 +55,8 @@ export interface IOption {
   id: string;
   viewName: string;
 }
+
+// -------------StartController------------------------
+export interface IToken {
+  idToken: string
+}  
