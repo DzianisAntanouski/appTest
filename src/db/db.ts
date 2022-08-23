@@ -39,4 +39,18 @@ export class QuestionTest {
       }
     );
   }
+  public async createCategory(categoryName = "", subCategory = "") {
+    return (await fetch(
+      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/Data${categoryName}${subCategory}/createdBy.json`,
+      {
+        method: "POST",
+        body: JSON.stringify("test@mail.eu"),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((response) => response as Promise<object>)) as Response;
+  }
 }

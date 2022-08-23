@@ -3,10 +3,10 @@
     displayBlock="true" 
     controllerName="webapp.typescript.controller.Master" 
     height="100%">
-	<Page id="masterPage" title="Test category">
-		<Table items="{/Data}">
+	<Page id="masterPage" title="Categories" content="{/Data}">
+		<!-- <Table items="{/Data}">
 			<columns>
-				<Column><Label text="Master List" /></Column>
+				<Column><Label text="Categories List" /></Column>
 			</columns>
 			<items>
 				<ColumnListItem type="Navigation" vAlign="Middle" press="handleMasterPress">
@@ -15,7 +15,13 @@
 					</cells>
 				</ColumnListItem>								
 			</items>
-		</Table>
+		</Table> -->
+		<content>
+			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleMasterPress" header="{categoryName}"
+				frameType= "OneByOne">
+				<TileContent />
+			</GenericTile>
+		</content>
 	</Page>
 </mvc:View>
 
