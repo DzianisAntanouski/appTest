@@ -8,7 +8,7 @@ import Event from "sap/ui/base/Event";
  */
 export default class Master extends BaseController {
   bus: EventBus;
-  
+
   public onInit(): void {
     this.bus = this.getOwnerComponent().getEventBus();
   }
