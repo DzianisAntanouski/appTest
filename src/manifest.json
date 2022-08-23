@@ -85,6 +85,11 @@
 					"target": "start"
 				},
 				{
+					"pattern": "auth",
+					"name": "auth",
+					"target": "auth"
+				},
+				{
 					"pattern": "main{sPath}",
 					"name": "main",
 					"target": "main"
@@ -99,6 +104,10 @@
 				"start": {
 					"viewId": "start",
 					"viewName": "Start"
+				},
+				"auth": {
+					"viewId": "auth",
+					"viewName": "Auth"
 				},
 				"main": {
 					"viewId": "main",

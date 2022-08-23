@@ -1,0 +1,12 @@
+<mvc:View xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" controllerName="webapp.typescript.controller.Auth" height="100%">
+	<Page> 
+		<Text text="Auth Page" />
+		<VBox width="50%">
+			<Label text="email" />
+			<Input value="{authModel>/email}" />
+			<Label text="password" />
+			<Input value="{authModel>/password}" />
+		</VBox>
+		<Button enabled="{authModel>/btnVisible}" text="Auth" press="onPressAuth" />
+	</Page>
+</mvc:View>
