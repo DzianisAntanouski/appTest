@@ -9,7 +9,7 @@ import UI5Element from "sap/ui/core/Element";
 import formatter from "../model/formatter";
 import Table from "sap/m/Table";
 import JSONModel from "sap/ui/model/json/JSONModel";
-import { IQuestion } from "../interface/Interface";
+import { ICategory, IQuestion } from '../interface/Interface';
 import Event from "sap/ui/base/Event";
 
 
@@ -21,23 +21,31 @@ export default class Start extends BaseController {
   oFragment: Promise<Dialog | Control | Control[]>;
 
   public onInit(): void {
-
+    const newJsonModel = new JSONModel()
+    this.getView()?.setModel(newJsonModel, 'addModel')
     this.getOwnerComponent().getRouter().getRoute("test")?.attachPatternMatched(this.onPatternMatched.bind(this), this);
   }
 
   public onPatternMatched(oEvent: Event) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const sPath: string = oEvent.getParameter("arguments").sPath as string;
+    const arrayPathLength = sPath.split('-').length
+    const replacedPath = sPath.replace(/-/g, "/")
+    if (arrayPathLength > 3) {
+      this.getView()?.bindObject({
+        path: replacedPath,
+      });
+    } else {
+      this.getView()?.bindObject({
+        path: `${replacedPath}/questionsAll`
+      });
+    }
 
-    this.getView()?.bindObject({
-      path: `${sPath.replace(/-/g, "/")}`,
-    });
   }
-
+ 
   onSubmitPress(): void {
     const checkedAnswers = this.getCheckedAnswers();
     if (this.checkBeforeSubmit(checkedAnswers)) {
-
       this.setAnswers();
       this.checkResultsOfTest();
     } else {
@@ -68,8 +76,7 @@ export default class Start extends BaseController {
   }
 
   resetAllSelectedAnswers(): void {
-    const arrayTable = this.getView()?.getControlsByFieldGroupId("table")
-      .filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.Table") as Table[];
+    const arrayTable = this.getView()?.getControlsByFieldGroupId("table").filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.Table") as Table[];
     arrayTable.map((value) => value.removeSelections(true));
   }
 
@@ -94,7 +101,6 @@ export default class Start extends BaseController {
     void this.oFragment.then((oMessagePopover) => (oMessagePopover as Dialog).close());
   }
   setAnswers() {
-
     const path = this.getView()?.getBindingContext()?.getPath();
     const model = this.getModel() as JSONModel;
     const question: IQuestion[] | [] = Object.values((model.getProperty(path ? path : '') as { name: string, questions: object }).questions);
@@ -126,6 +132,11 @@ export default class Start extends BaseController {
       });
     });
 
+    this.getObjectForResults()
   }
-
+  getObjectForResults() {
+    const model = this.getModel() as JSONModel;
+    const arrayData = model.getProperty('/additional') as []
+    const objectData = { ...arrayData }
+}
 }
