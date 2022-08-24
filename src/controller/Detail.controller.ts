@@ -55,8 +55,8 @@ export default class Detail extends BaseController {
 						press: () => {              
 							const sText = (Core.byId("categoryName") as TextArea).getValue();
 							MessageToast.show("Note is: " + sText);
-              const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().split("/")
-              void new QuestionTest().createCategory(`/${aPath[2]}`, `/${sText}`)
+              const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().split("/");
+              void new QuestionTest().createCategory(`/${aPath[2]}`, `/${sText}`);
 							this.oSubmitDialog.close();
 						}
 					}),
