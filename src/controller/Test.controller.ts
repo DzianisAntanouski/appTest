@@ -68,7 +68,7 @@ export default class Start extends BaseController {
   }
 
   resetAllSelectedAnswers(): void {
-    const arrayTable = this.getView().getControlsByFieldGroupId("table")
+    const arrayTable = this.getView()?.getControlsByFieldGroupId("table")
       .filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.Table") as Table[];
     arrayTable.map((value) => value.removeSelections(true));
   }
