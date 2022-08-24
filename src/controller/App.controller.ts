@@ -1,3 +1,5 @@
+import JSONModel from "sap/ui/model/json/JSONModel";
+import { ICategory, IQuestion } from "../interface/Interface";
 import BaseController from "./BaseController";
 
 /**
@@ -7,6 +9,9 @@ export default class App extends BaseController {
   public onInit(): void {
     // apply content density mode to root view
     this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
-    void this.fireBaseRead();
+    const that = this
+    void this.fireBaseRead().then(() => that.setAllQuestions());
+
   }
+ 
 }

@@ -7,6 +7,7 @@
 			<Title text="{categoryName}" />
 			<ToolbarSpacer />
 			<Button text="Add subcategory" press="addCategory" type="Emphasized"/>
+			<Button text="Run {categoryName} test" press="onRunTest" type="Emphasized"/>
 		</Toolbar>
 	</customHeader>
 		<!-- <Toolbar >
@@ -36,5 +37,3 @@
 		</content>
 	</Page>
 </mvc:View>
-
-
