@@ -30,6 +30,7 @@ export interface IHBox extends HBox {
 // -------------BaseController-------------------------
 export interface FetchData {
   [key: string]: {
+    questions?: IQuestion;
     name: string;
     id: string;
   };

@@ -8,7 +8,7 @@ import Router from "sap/ui/core/routing/Router";
 import History from "sap/ui/core/routing/History";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import { QuestionTest } from "../db/db";
-import { FetchData, ISubCategory } from "../interface/Interface";
+import { FetchData, ICategory, IQuestion, ISubCategory } from "../interface/Interface";
 
 /**
  * @namespace webapp.typescript.controller
@@ -49,6 +49,16 @@ export default abstract class BaseController extends Controller {
 
     qListModel.setProperty("/Data", modelStructureToBinding);
     qListModel.setProperty("/edit", false);
+  }
+  setAllQuestions(): void {
+    const model = this.getModel() as JSONModel;
+    const data = (model.getData() as { Data: ICategory }).Data
+    const arrayData = Object.values(data);
+    arrayData.forEach(((elem: ICategory) => {
+      const questionsCategory = Object.values(elem.subCategory).map((el) => el.questions as IQuestion)
+      const questionsAll = Object.assign({}, ...questionsCategory) as IQuestion;
+      model.setProperty(`/Data/${elem.categoryName}/questionsAll`, { questions: questionsAll })
+    }))
   }
   /**
    * Convenience method for getting the i18n resource bundle of the component.
