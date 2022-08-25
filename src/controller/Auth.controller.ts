@@ -20,7 +20,7 @@ export default class Start extends BaseController {
     }
   }
    
-  
+
   public onPressAuth(): void {
     // const oAuthModel: JSONModel = this.getModel("authModel") as JSONModel;
     // oAuthModel.setProperty("/btnVisible", false);
@@ -66,4 +66,3 @@ export default class Start extends BaseController {
     }
   }
 }
-n
