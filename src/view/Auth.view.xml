@@ -8,5 +8,6 @@
 			<Input value="{authModel>/password}" />
 		</VBox>
 		<Button enabled="{authModel>/btnVisible}" text="Auth" press="onPressAuth" />
+		<Button enabled="true" text="check me" press="onCheckMe" />
 	</Page>
 </mvc:View>

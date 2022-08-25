@@ -64,3 +64,14 @@ export interface IOption {
 export interface IToken {
   idToken: string
 }  
+
+// -------------AuthController------------------------
+export interface IError {
+  error: {
+    message: string
+  }
+}
+
+export interface IFulfilled {
+  email: string
+}
