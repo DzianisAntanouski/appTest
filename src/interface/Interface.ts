@@ -26,6 +26,9 @@ export interface IListItem extends Control {
 export interface IHBox extends HBox {
   oParent: InputListItem;
 }
+export interface IParent extends Control {
+  oParent: Control
+}
 
 // -------------BaseController-------------------------
 export interface FetchData {
