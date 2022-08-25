@@ -19,7 +19,8 @@ export default class Start extends BaseController {
       (this.getView() as View).setModel(authModel, "authModel");
     }
   }
-
+   
+  
   public onPressAuth(): void {
     // const oAuthModel: JSONModel = this.getModel("authModel") as JSONModel;
     // oAuthModel.setProperty("/btnVisible", false);
@@ -65,3 +66,4 @@ export default class Start extends BaseController {
     }
   }
 }
+n
