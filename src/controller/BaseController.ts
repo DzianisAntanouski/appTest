@@ -55,7 +55,7 @@ export default abstract class BaseController extends Controller {
     const data = (model.getData() as { Data: ICategory }).Data
     const arrayData = Object.values(data);
     arrayData.forEach(((elem: ICategory) => {
-      const questionsCategory = Object.values(elem.subCategory).map((el) => el.questions)
+      const questionsCategory = Object.values(elem.subCategory).map((el) => el.questions as IQuestion)
       const questionsAll = Object.assign({}, ...questionsCategory) as IQuestion;
       model.setProperty(`/Data/${elem.categoryName}/questionsAll`, { questions: questionsAll })
     }))

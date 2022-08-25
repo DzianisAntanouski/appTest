@@ -1,11 +1,11 @@
 <core:FragmentDefinition xmlns="sap.m"       
     xmlns:core="sap.ui.core" >
-    <Dialog title="Add new question and check rigth answer" fieldGroupIds="dialogGroup" escapeHandler=".onPressFragmentClose" class="sapUiView">
+    <Dialog title="Add new question and check rigth answer" fieldGroupIds="dialogGroup" escapeHandler=".onPressFragmentClose">
         
         <Table selectionChange="selectionChange" updateFinished="onUpdateTable" id="newQuestionTable">                
             <columns>                    
-                <Column width="150px" demandPopin="true" />                        
-                <Column minScreenWidth="420px" demandPopin="true" /> 
+                <Column width="15%" demandPopin="true" />                        
+                <Column width="70%" demandPopin="true" /> 
                 <Column width="60px" demandPopin="true" /> 
 
             </columns>

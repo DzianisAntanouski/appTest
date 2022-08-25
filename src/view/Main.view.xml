@@ -6,6 +6,7 @@
 	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
 
 	<Page id="wrapper"
+		class="sapUiMediumMarginEnd"
 		title="Questions and Answers"
 		backgroundDesign= "Solid"
 		showNavButton="true"
@@ -64,13 +65,14 @@
 					backgroundDesign= "List"
 					showNavButton="false"
 					showFooter="{= ${/edit}}">
-					<List id="qList" itemPress=".onListItemPress" items="{path: 'questions'}" width="700px">
+					<List id="qList" itemPress=".onListItemPress" items="{path: 'questions'}" width="100%">
 						<items>
 							<!-- <StandardListItem fieldGroupIds="questions" title="{question}" type="Active" highlight="None"/> -->
 							<InputListItem type="Active" fieldGroupIds="questions" highlight="None">
-								<HBox >
-									<Input value="{question}" visible="{= ${/edit}}" width="400px" liveChange=".onLiveChange"/>
+								<HBox width="100%">
 									<RadioButton visible="{= ${/edit}}" select=".onSelect" />
+									<Input value="{question}" visible="{= ${/edit}}" width="350px" liveChange=".onLiveChange"/>
+									
 									<Text text="{question}" visible="{= !${/edit}}" />
 								</HBox>
 							</InputListItem>						
