@@ -26,9 +26,6 @@ export interface IListItem extends Control {
 export interface IHBox extends HBox {
   oParent: InputListItem;
 }
-export interface IParent extends Control {
-  oParent: Control
-}
 
 // -------------BaseController-------------------------
 export interface FetchData {
@@ -64,3 +61,14 @@ export interface IOption {
 export interface IToken {
   idToken: string
 }  
+
+// -------------AuthController------------------------
+export interface IError {
+  error: {
+    message: string
+  }
+}
+
+export interface IFulfilled {
+  email: string
+}

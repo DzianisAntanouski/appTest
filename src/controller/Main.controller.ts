@@ -13,8 +13,7 @@ import Input from "sap/m/Input";
 import CheckBox from "sap/m/CheckBox";
 import { QuestionTest } from "../db/db";
 import RadioButton from "sap/m/RadioButton";
-import { IData, IListItem, IQuestion, IResult, IArguments, IParent } from "../interface/Interface";
-import List from "sap/m/List";
+import { IData, IListItem, IQuestion, IResult, ITest, IArguments } from "../interface/Interface";
 
 /**
  * @namespace webapp.typescript.controller
@@ -34,7 +33,7 @@ export default class Main extends BaseController {
   private formatter = formatter;
 
   public onInit(): void {
-    // void (this.byId("SplitContDemo") as ITest)._oMasterNav.setWidth("40%");
+    void (this.byId("SplitContDemo") as ITest)._oMasterNav.setWidth("40%");
     void this.getView().attachAfterRendering(this.changeUIAfterRendering.bind(this));
 
     void this.getOwnerComponent().getRouter().getRoute("main").attachPatternMatched(this.onPatternMatched.bind(this), this);
@@ -45,13 +44,6 @@ export default class Main extends BaseController {
     this.getView().bindObject({
       path: `${sPath.replace(/-/g, "/")}`,
     });
-    (this.getModel() as JSONModel).setProperty("/selected", false);
-  }
-
-  public setActive(oEvent: Event): void {
-    if ((oEvent.getSource() as List).getItems().length) {
-      this.onPressNext();
-    }
   }
 
   public changeUIAfterRendering(): void {
@@ -79,12 +71,6 @@ export default class Main extends BaseController {
     return oControls;
   }
 
-  public findListItem(oControl: IParent): IListItem {
-    return oControl.getMetadata().getElementName() !== "sap.m.InputListItem"
-      ? this.findListItem(oControl.oParent as IParent)
-      : (oControl as IListItem).setProperty("highlight", MessageType.Information);
-  }
-
   public onListItemPress(oEvent: Event): void {
     const oListItem: Control = oEvent.getParameter("srcControl") as Control;
     if (oListItem.getBindingContext()) {
@@ -94,15 +80,13 @@ export default class Main extends BaseController {
 
     this.getInputListItem().forEach((control) => control.setProperty("highlight", MessageType.None));
 
-    this.findListItem(oListItem as IParent);
-
-    // if (oListItem.getMetadata().getElementName() === "sap.m.Text") {
-    //   (oListItem as IListItem).oParent.oParent.setProperty("highlight", MessageType.Information);
-    // } else if (oListItem.getMetadata().getElementName() === "sap.m.HBox") {
-    //   (oListItem as IListItem).oParent.setProperty("highlight", MessageType.Information);
-    // } else {
-    //   (oListItem as IListItem).setProperty("highlight", MessageType.Information);
-    // }
+    if (oListItem.getMetadata().getElementName() === "sap.m.Text") {
+      (oListItem as IListItem).oParent.oParent.setProperty("highlight", MessageType.Information);
+    } else if (oListItem.getMetadata().getElementName() === "sap.m.HBox") {
+      (oListItem as IListItem).oParent.setProperty("highlight", MessageType.Information);
+    } else {
+      (oListItem as IListItem).setProperty("highlight", MessageType.Information);
+    }
     void this.setChecked();
   }
 
@@ -123,6 +107,7 @@ export default class Main extends BaseController {
   public onPressEdit(): void {
     const qListModel: JSONModel = this.getModel() as JSONModel;
     qListModel.setProperty("/edit", !qListModel.getProperty("/edit"));
+    qListModel.setProperty("/selected", false);
     void this.setChecked();
   }
 
@@ -214,7 +199,7 @@ export default class Main extends BaseController {
     }
   }
 
-  public onLiveChange(oEvent: Event): void {
+  public onLiveChange(): void {
     const qListModel: JSONModel = this.getModel() as JSONModel;
     qListModel.setProperty("/changed", true);
   }
@@ -224,7 +209,6 @@ export default class Main extends BaseController {
     qListModel.setProperty("/selected", true);
   }
   public onPressFinish(): void {
-    (this.getModel() as JSONModel).setProperty("/selected", false);
     const qListModel: JSONModel = this.getModel() as JSONModel;
     qListModel.setProperty("/edit", !qListModel.getProperty("/edit"));
     const oControls: Array<Control> = this.getView()
