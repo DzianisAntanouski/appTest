@@ -9,26 +9,7 @@
 			<Button text="Add subcategory" press="addCategory" type="Emphasized"/>
 			<Button text="Run {categoryName} test" press="onRunTest" type="Emphasized"/>
 		</Toolbar>
-	</customHeader>
-		<!-- <Toolbar >
-			<ToolbarSpacer />
-			<Button text="Add subcategory" press="addCategory"/>
-		</Toolbar>
-		<Table items="{subCategory}">			
-			<columns>
-				<Column><Label text="Subcategories List" /></Column>
-			</columns>
-			<items>
-				<ColumnListItem type="Inactive" vAlign="Middle" >
-					<cells>
-						<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleDetailPress" header="{name}"
-							subheader="{path: 'createdBy', formatter: '.formatter.formatCreatedBy'}"  frameType= "TwoByHalf">
-							<TileContent />
-						</GenericTile>
-					</cells>
-				</ColumnListItem>							
-			</items>
-		</Table> -->
+	</customHeader>		
 		<content>
 			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleDetailPress" header="{name}"
 				subheader="{path: 'createdBy', formatter: '.formatter.formatCreatedBy'}"  frameType= "TwoByHalf">

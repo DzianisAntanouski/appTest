@@ -8,13 +8,9 @@ import Event from "sap/ui/base/Event";
 import Core from "sap/ui/core/Core";
 import EventBus from "sap/ui/core/EventBus";
 import BaseController from "./BaseController";
-import { QuestionTest } from "../db/db";
-import Context from "sap/ui/model/Context";
-import formatter from "../model/formatter";
-import View from "sap/ui/core/mvc/View";
-import Auth from '../db/Auth';
-
-
+import { QuestionTest } from '../db/db';
+import Context from 'sap/ui/model/Context';
+import formatter from '../model/formatter'
 
 /**
  * @namespace webapp.typescript.controller
@@ -23,7 +19,6 @@ export default class Detail extends BaseController {
 	bus: EventBus;
 	oSubmitDialog: Dialog;
 	formatter = formatter;
-
 
 	public onInit(): void {
 		this.bus = this.getOwnerComponent().getEventBus();
@@ -79,5 +74,4 @@ export default class Detail extends BaseController {
 		this.bus.publish("navigation", "navToTesting", oEvent);
 	
 	}
-
 }

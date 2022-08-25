@@ -1,4 +1,4 @@
-<mvc:View
+<!-- <mvc:View
 	controllerName="webapp.typescript.controller.Main"
 	displayBlock="true"
 	xmlns="sap.m"
@@ -65,13 +65,12 @@
 					backgroundDesign= "List"
 					showNavButton="false"
 					showFooter="{= ${/edit}}">
-					<List id="qList" itemPress=".onListItemPress" items="{path: 'questions'}" width="100%">
+					<List updateFinished="setActive" id="qList" itemPress=".onListItemPress" items="{path: 'questions'}" width="100%">
 						<items>
-							<!-- <StandardListItem fieldGroupIds="questions" title="{question}" type="Active" highlight="None"/> -->
 							<InputListItem type="Active" fieldGroupIds="questions" highlight="None">
 								<HBox width="100%">
 									<RadioButton visible="{= ${/edit}}" select=".onSelect" />
-									<Input value="{question}" visible="{= ${/edit}}" width="350px" liveChange=".onLiveChange"/>
+									<TextArea value="{question}" visible="{= ${/edit}}" width="350px" liveChange=".onLiveChange" />
 									
 									<Text text="{question}" visible="{= !${/edit}}" />
 								</HBox>
@@ -95,4 +94,93 @@
 			</OverflowToolbar>
 		</footer>
 	</Page>
+</mvc:View> -->
+
+<mvc:View
+	xmlns:l="sap.ui.layout"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	controllerName="webapp.typescript.controller.Main">
+	<Page id="wrapper"
+		class="sapUiMediumMarginEnd"
+		title="Questions and Answers"
+		backgroundDesign= "Solid"
+		showNavButton="true"
+		navButtonPress=".onNavBack"
+		showFooter="{= ${/edit}}">
+		<subHeader>
+			<OverflowToolbar>
+				<ToolbarSpacer/>				
+				<Button text="Edit Mode" press=".onPressEdit" enabled="{= !${/edit}}"/>	
+				<Button text="Delete" type="Reject" enabled="{= ${/selected}}" press=".deleteQuestion"/>				
+			</OverflowToolbar>
+		</subHeader>
+	<l:Splitter height="100%">
+		<Page	
+			id="master2"
+			title="Questions"
+			backgroundDesign= "List"
+			showNavButton="false"
+			showFooter="{= ${/edit}}">
+			<layoutData>
+				<l:SplitterLayoutData size="600px" />
+			</layoutData>
+			<List updateFinished="setActive" id="qList" itemPress=".onListItemPress" items="{path: 'questions'}" width="auto">
+				<items>
+					<InputListItem type="Active" fieldGroupIds="questions" highlight="None">
+						<HBox width="auto">
+							<FlexBox width="100%" renderType="Bare">
+								<RadioButton visible="{= ${/edit}}" select=".onSelect" />
+								<Input value="{question}" visible="{= ${/edit}}" width="100%" liveChange=".onLiveChange" />							
+								<Text text="{question}" visible="{= !${/edit}}" />
+							</FlexBox>
+						</HBox>
+					</InputListItem>						
+				</items>
+			</List>								
+		</Page>
+		<Page
+			id="detailDetail"
+			title="Answers"
+			backgroundDesign= "Solid"
+			showNavButton="false"
+			showFooter="false">
+			<layoutData>
+				<l:SplitterLayoutData size="auto" />
+			</layoutData>
+			<VBox class="sapUiSmallMargin">
+				<Table id="answerstable" items="{answers}">
+					<infoToolbar>
+						<OverflowToolbar>
+							<Label text="{question}"/>
+						</OverflowToolbar>
+					</infoToolbar>
+					<columns>
+						<Column />								
+						<Column width="50px" visible="true" />									
+					</columns>
+					<items>
+						<ColumnListItem vAlign="Middle">
+							<cells>	
+								<HBox renderType="Bare">								
+									<Text text="{}" visible="{= !${/edit}}" />
+									<Input value="{}" visible="{= ${/edit}}" width="100%" liveChange=".onLiveChange"/>												
+								</HBox>	
+								<CheckBox width="50px" editable="{= ${/edit}}" fieldGroupIds="checkBoxRightAnswers"/>		
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+				<Button text="Next" press=".onPressNext"/>
+			</VBox>					
+		</Page>		
+	</l:Splitter>
+	<footer>
+		<OverflowToolbar>
+			<ToolbarSpacer/>	
+				<Button text="Add question" press=".onPressAddQuestion"/>							
+				<Button text="Finish" press=".onPressFinish"/>
+		</OverflowToolbar>
+	</footer>
+</Page>
 </mvc:View>
