@@ -8,9 +8,13 @@ import Event from "sap/ui/base/Event";
 import Core from "sap/ui/core/Core";
 import EventBus from "sap/ui/core/EventBus";
 import BaseController from "./BaseController";
-import { QuestionTest } from '../db/db';
-import Context from 'sap/ui/model/Context';
-import formatter from '../model/formatter'
+import { QuestionTest } from "../db/db";
+import Context from "sap/ui/model/Context";
+import formatter from "../model/formatter";
+import View from "sap/ui/core/mvc/View";
+import Auth from '../db/Auth';
+
+
 
 /**
  * @namespace webapp.typescript.controller
@@ -23,51 +27,58 @@ export default class Detail extends BaseController {
   public onInit(): void {
     this.bus = this.getOwnerComponent().getEventBus();
   }
-  
+
   public handleDetailPress(oEvent: Event): void {
     MessageToast.show("Loading end column...setDetailDetailPage");
     this.bus.publish("flexible", "setDetailDetailPage", oEvent);
   }
 
   public addCategory(): void {
-			if (!this.oSubmitDialog) {
-				this.oSubmitDialog = new Dialog({
-					type: DialogType.Message,
-					title: "Confirm",
-					content: [
-						new Label({
-							text: "Do you want to submit this category?",
-							labelFor: "categoryName"
-						}),
-						new TextArea("categoryName", {
-							width: "100%",
-							placeholder: "Add category name (required)",
-							liveChange:  (oEvent: Event): void => {
-								const sText: string = (oEvent as unknown as Event).getParameter("value") as string;
-								this.oSubmitDialog.getBeginButton().setEnabled(sText.length > 0);
-							}
-						})
-					],
-					beginButton: new Button({
-						type: ButtonType.Emphasized,
-						text: "Submit",
-						enabled: false,
-						press: () => {              
-							const sText = (Core.byId("categoryName") as TextArea).getValue();
-							MessageToast.show("Note is: " + sText);
-              const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().split("/")
-              void new QuestionTest().createCategory(`/${aPath[2]}`, `/${sText}`)
-							this.oSubmitDialog.close();
-						}
-					}),
-					endButton: new Button({
-						text: "Cancel",
-						press: () => {
-							this.oSubmitDialog.close();
-						}
-					})
-				});
-			}
-			this.oSubmitDialog.open();
-  }
+    if (!this.oSubmitDialog) {
+      this.oSubmitDialog = new Dialog({
+        type: DialogType.Message,
+        title: "Confirm",
+        content: [
+          new Label({
+            text: "Do you want to submit this category?",
+            labelFor: "categoryName",
+          }),
+          new TextArea("categoryName", {
+            width: "100%",
+            placeholder: "Add category name (required)",
+            liveChange: (oEvent: Event): void => {
+              const sText: string = (oEvent as unknown as Event).getParameter(
+                "value"
+              ) as string;
+              this.oSubmitDialog.getBeginButton().setEnabled(sText.length > 0);
+            },
+          }),
+        ],
+        beginButton: new Button({
+          type: ButtonType.Emphasized,
+          text: "Submit",
+          enabled: false,
+          press: () => {
+            const sText = (Core.byId("categoryName") as TextArea).getValue();
+            MessageToast.show("Note is: " + sText);
+            const aPath: string[] = (
+              (this.getView() as View).getBindingContext() as Context
+            )
+              .getPath()
+              .split("/");
+            void new QuestionTest().createCategory(`/${aPath[2]}`, `/${sText}`);
+            this.oSubmitDialog.close();
+          },
+        }),
+        endButton: new Button({
+          text: "Cancel",
+          press: () => {
+            this.oSubmitDialog.close();
+          },
+        }),
+      });
+    }
+    this.oSubmitDialog.open();
+  }  
+
 }
