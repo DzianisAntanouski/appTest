@@ -11,8 +11,7 @@
 			"version": "1.0.0"
 		},
 		"dataSources": {
-			"supportModel": {						
-				"uri": "model/supportModel.json",
+			"JSONmodel": {						
 				"type": "JSON"
 			}
 		}
@@ -56,10 +55,9 @@
 		},
 
 		"models": {
-
-			"supportModel": {
-				"dataSource": "supportModel",
-				"settings": {
+			"": {
+                "dataSource": "JSONmodel",
+                "settings": {
                     "defaultBindingMode": "TwoWay"                    
                 }
 			},
