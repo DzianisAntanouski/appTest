@@ -58,6 +58,7 @@ export default class Start extends BaseController {
     //   console.log(result2);
     // }
 
+<<<<<<< HEAD
     const logInTry = await fnTryAuthorization(email, password);
     if ((logInTry as unknown as IFulfilled).email) { 
       (this.getModel("supportModel") as JSONModel).setProperty("/auth", logInTry)
@@ -65,5 +66,15 @@ export default class Start extends BaseController {
     } else {
       console.log(logInTry)
     }
+=======
+
+    // const logInTry = await fnTryAuthorization(email, password);
+    // if ((logInTry as unknown as IFulfilled).email) { 
+    //   (this.getModel("supportModel") as JSONModel).setProperty("/auth", logInTry)
+    // } else {
+    //   console.log(logInTry)
+    // }
+
+>>>>>>> f7225961c1401ec5e83563cd40ef33029bb286dc
   }
 }

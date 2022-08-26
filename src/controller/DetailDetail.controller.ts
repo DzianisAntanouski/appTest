@@ -15,8 +15,9 @@ export default class DetailDetail extends BaseController {
     MessageToast.show("Loading end column...");
     this.bus.publish("flexible", "setDetailPage");
   }
-  public handleNavToManage(oEvent: Event) {
-    this.bus.publish("navigation", "navToMain", oEvent);
+  public async handleNavToManage(oEvent: Event) {
+    if (!this.getModel("supportModel").getProperty("/auth")) await this.loadAuthorizationDialog() 
+    else this.bus.publish("navigation", "navToMain", oEvent);
   }
 
   public handleNavToTest(oEvent: Event) {

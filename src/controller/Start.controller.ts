@@ -6,7 +6,10 @@ import FlexibleColumnLayout from "sap/f/FlexibleColumnLayout";
 import Event from "sap/ui/base/Event";
 import Control from "sap/ui/core/Control";
 import Context from "sap/ui/model/Context";
-import { IOption } from "../interface/Interface";
+import { IError, IFulfilled, IOption } from "../interface/Interface";
+import Auth from "../db/Auth";
+
+
 
 /**
  * @namespace webapp.typescript.controller
@@ -89,7 +92,9 @@ export default class Start extends BaseController {
     const sPath: string = ((oEvent.getSource() as Control).getBindingContext() as Context).getPath();
     this.navTo("test", { sPath: sPath.replace(/\//g, "-") }, true);
   }
-  onPressAvatar(){
-    this.navTo("auth")
+
+  public async onPressAvatar(){ 
+    if (!this.getModel("supportModel").getProperty("/auth")) await this.loadAuthorizationDialog();
   }
+  
 }
