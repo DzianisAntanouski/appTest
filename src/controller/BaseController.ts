@@ -8,11 +8,9 @@ import Router from "sap/ui/core/routing/Router";
 import History from "sap/ui/core/routing/History";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import { QuestionTest } from "../db/db";
-import { FetchData, ICategory, IError, IFulfilled, IQuestion, ISubCategory } from "../interface/Interface";
+import { FetchData, ICategory, IQuestion, ISubCategory } from "../interface/Interface";
 import Auth from "../db/Auth";
 import Fragment from "sap/ui/core/Fragment";
-import View from 'sap/ui/core/mvc/View';
-import UI5Element from "sap/ui/core/Element";
 import Dialog from 'sap/m/Dialog';
 import Control from "sap/ui/core/Control";
 
@@ -26,37 +24,42 @@ export default abstract class BaseController extends Controller {
   public async tryAuthorization(
     email: string,
     password: string
-  ): Promise<IError | IFulfilled> {
-    const response = await Auth.fnRegisterNewUser(email, password);
-    (this.getModel("supportModel") as JSONModel).setProperty("/auth", response)
-    if (response?.email) { 
-      return response;
-    } else {
-      return response.error.message;
+  ): Promise<void> {
+    interface IResponse{
+      email: string
+      error: {
+        message: string
+      }
     }
+    let response: IResponse = await Auth.fnRegisterNewUser(email, password) as IResponse;    
+    if (!response?.email) { 
+      response = await Auth.fnAuthoriseUser(email, password) as IResponse;
+      if (!response?.email) {
+        alert (response.error.message)
+      }
+    } 
+    (this.getModel("supportModel") as JSONModel).setProperty("/auth", response)
   }
 
-  public async loadAuthorizationDialog() {
+  public loadAuthorizationDialog() {
 
       const oView = this.getView();
       this.oFragment = Fragment.load({
-        id: (oView as View).getId(),
+        id: oView.getId(),
         name: "webapp.typescript.view.fragments.authorizationDialog",
         controller: this,
       }).then((oFragment) => {
         this.oAuthorizationDialog = oFragment;
-        (oView as View).addDependent(oFragment as UI5Element);
+        oView.addDependent(oFragment as Dialog);
         (oFragment as Dialog).open();
-      });
-    
+      });    
   }
 
   public async onLogInButtonPress() { 
-    let email = this.getModel("supportModel").getProperty("/email"); 
-    let password = this.getModel("supportModel").getProperty("/password")
+    const email: string = this.getModel("supportModel").getProperty("/email") as string; 
+    const password = this.getModel("supportModel").getProperty("/password") as string
     await this.tryAuthorization(email, password); 
     (this.oAuthorizationDialog as unknown as Dialog).close();
-    console.log(this.getModel("supportModel").getProperty("/auth"))
   }
 
   public onCancelButtonPress() {

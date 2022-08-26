@@ -6,10 +6,7 @@ import FlexibleColumnLayout from "sap/f/FlexibleColumnLayout";
 import Event from "sap/ui/base/Event";
 import Control from "sap/ui/core/Control";
 import Context from "sap/ui/model/Context";
-import { IError, IFulfilled, IOption } from "../interface/Interface";
-import Auth from "../db/Auth";
-
-
+import { IOption } from "../interface/Interface";
 
 /**
  * @namespace webapp.typescript.controller
