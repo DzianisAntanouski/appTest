@@ -90,6 +90,6 @@ export default class Start extends BaseController {
     this.navTo("test", { sPath: sPath.replace(/\//g, "-") }, true);
   }
   onPressAvatar(){
-    
+    this.navTo("auth")
   }
 }

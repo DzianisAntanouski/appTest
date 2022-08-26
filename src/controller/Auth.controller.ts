@@ -16,7 +16,7 @@ export default class Start extends BaseController {
     });
 
     if (this.getView()) {
-      (this.getView() as View).setModel(authModel, "authModel");
+      this.getView().setModel(authModel, "authModel");
     }
   }
    
@@ -61,6 +61,7 @@ export default class Start extends BaseController {
     const logInTry = await fnTryAuthorization(email, password);
     if ((logInTry as unknown as IFulfilled).email) { 
       (this.getModel("supportModel") as JSONModel).setProperty("/auth", logInTry)
+      this.navTo("start")
     } else {
       console.log(logInTry)
     }
