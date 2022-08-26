@@ -96,4 +96,5 @@ export default class Start extends BaseController {
     if (!this.getModel("supportModel").getProperty("/auth")) await this.loadAuthorizationDialog();
     
   }
+  
 }
