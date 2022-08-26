@@ -1,0 +1,26 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form">
+    <Dialog title="Athorization"
+    >
+
+        <f:SimpleForm id="mainWorkCompletedSimpleForm">
+            <VBox>
+                <Label text="email" labelFor="emailInputId" required="true"/>
+                <Input value="{supportModel>/email}" id="emailInputId" />
+                <Label text="password" labelFor="passwordInputId" required="true"/>
+                <Input value="{supportModel>/password}" id="passwordInputId" type="Password"/>
+            </VBox>
+        </f:SimpleForm>
+        <buttons>
+            <Button id="LogInButton" 
+                text="Log In" 
+                type="Emphasized" 
+                press="onLogInButtonPress"/>
+            <Button id="CancelButton" 
+                text="Cancel" 
+                type="Transparent" 
+                press="onCancelButtonPress"/>
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

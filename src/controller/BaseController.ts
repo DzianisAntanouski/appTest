@@ -8,12 +8,62 @@ import Router from "sap/ui/core/routing/Router";
 import History from "sap/ui/core/routing/History";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import { QuestionTest } from "../db/db";
-import { FetchData, ICategory, IQuestion, ISubCategory } from "../interface/Interface";
+import { FetchData, ICategory, IError, IFulfilled, IQuestion, ISubCategory } from "../interface/Interface";
+import Auth from "../db/Auth";
+import Fragment from "sap/ui/core/Fragment";
+import View from 'sap/ui/core/mvc/View';
+import UI5Element from "sap/ui/core/Element";
+import Dialog from 'sap/m/Dialog';
+import Control from "sap/ui/core/Control";
 
 /**
  * @namespace webapp.typescript.controller
  */
 export default abstract class BaseController extends Controller {
+  oFragment: Promise<void | Dialog | Control | Control[]>
+  oAuthorizationDialog: Control | Control[];
+
+  public async tryAuthorization(
+    email: string,
+    password: string
+  ): Promise<IError | IFulfilled> {
+    const response = await Auth.fnRegisterNewUser(email, password);
+    (this.getModel("supportModel") as JSONModel).setProperty("/auth", response)
+    if (response?.email) { 
+      return response;
+    } else {
+      return response.error.message;
+    }
+  }
+
+  public async loadAuthorizationDialog() {
+
+      const oView = this.getView();
+      this.oFragment = Fragment.load({
+        id: (oView as View).getId(),
+        name: "webapp.typescript.view.fragments.authorizationDialog",
+        controller: this,
+      }).then((oFragment) => {
+        this.oAuthorizationDialog = oFragment;
+        (oView as View).addDependent(oFragment as UI5Element);
+        (oFragment as Dialog).open();
+      });
+    
+  }
+
+  public async onLogInButtonPress() { 
+    let email = this.getModel("supportModel").getProperty("/email"); 
+    let password = this.getModel("supportModel").getProperty("/password")
+    await this.tryAuthorization(email, password); 
+    (this.oAuthorizationDialog as unknown as Dialog).close();
+    console.log(this.getModel("supportModel").getProperty("/auth"))
+  }
+
+  public onCancelButtonPress() {
+    (this.oAuthorizationDialog as unknown as Dialog).destroy()
+    // (this.oAuthorizationDialog as unknown as Dialog).close()
+  }
+
   /**
    * Convenience method for accessing the component of the controller's view.
    * @returns The component of the controller's view

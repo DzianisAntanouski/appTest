@@ -1,6 +1,7 @@
 {
-  "auth": { "email": "aaaaa" },
-  "resultsByQuestions": [],
-  "currentTotalResult": null,
-  "results": []
+
+    "auth": null,
+    "email": "",
+    "password": ""
 }
+
