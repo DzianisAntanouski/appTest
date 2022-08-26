@@ -1,3 +1,5 @@
 {
-    "auth": null
+    "auth": null,
+    "email": "",
+    "password": ""
 }

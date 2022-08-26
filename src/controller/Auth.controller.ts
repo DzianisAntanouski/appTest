@@ -58,11 +58,11 @@ export default class Start extends BaseController {
     //   console.log(result2);
     // }
 
-    const logInTry = await fnTryAuthorization(email, password);
-    if ((logInTry as unknown as IFulfilled).email) { 
-      (this.getModel("supportModel") as JSONModel).setProperty("/auth", logInTry)
-    } else {
-      console.log(logInTry)
-    }
+    // const logInTry = await fnTryAuthorization(email, password);
+    // if ((logInTry as unknown as IFulfilled).email) { 
+    //   (this.getModel("supportModel") as JSONModel).setProperty("/auth", logInTry)
+    // } else {
+    //   console.log(logInTry)
+    // }
   }
 }
