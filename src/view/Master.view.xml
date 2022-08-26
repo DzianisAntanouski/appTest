@@ -4,19 +4,7 @@
     controllerName="webapp.typescript.controller.Master" 
     height="100%">
 	<Page id="masterPage" title="Categories" content="{/Data}">
-		<!-- <Table items="{/Data}">
-			<columns>
-				<Column><Label text="Categories List" /></Column>
-			</columns>
-			<items>
-				<ColumnListItem type="Navigation" vAlign="Middle" press="handleMasterPress">
-					<cells>
-						<Text text="{categoryName}"/>
-					</cells>
-				</ColumnListItem>								
-			</items>
-		</Table> -->
-		<content>
+        <content>
 			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleMasterPress" header="{categoryName}"
 				frameType= "OneByOne">
 				<TileContent />
@@ -24,5 +12,3 @@
 		</content>
 	</Page>
 </mvc:View>
-
-

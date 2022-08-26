@@ -13,6 +13,10 @@
 		"dataSources": {
 			"JSONmodel": {						
 				"type": "JSON"
+			},
+			"supportModel": {						
+				"uri": "model/supportModel.json",
+				"type": "JSON"
 			}
 		}
 	},
@@ -58,6 +62,12 @@
 			"": {
                 "dataSource": "JSONmodel",
                 "settings": {
+                    "defaultBindingMode": "TwoWay"                    
+                }
+			},
+			"supportModel": {
+				"dataSource": "supportModel",
+				"settings": {
                     "defaultBindingMode": "TwoWay"                    
                 }
 			},

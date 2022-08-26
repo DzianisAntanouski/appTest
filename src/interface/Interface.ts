@@ -60,6 +60,7 @@ export interface IOption {
 // -------------StartController------------------------
 export interface IToken {
   idToken: string
+
 }
 
 
@@ -70,4 +71,17 @@ export interface IResultQuestion {
   clientAnswersWord: { word: string, isTrueAnswers: boolean }[],
   questionWord: string,
   points: number,
+
+}  
+
+// -------------AuthController------------------------
+export interface IError {
+  error: {
+    message: string
+  }
+}
+
+export interface IFulfilled {
+  email: string
+
 }
