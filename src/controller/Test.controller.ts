@@ -9,7 +9,7 @@ import UI5Element from "sap/ui/core/Element";
 import formatter from "../model/formatter";
 import Table from "sap/m/Table";
 import JSONModel from "sap/ui/model/json/JSONModel";
-import { ICategory, IQuestion } from '../interface/Interface';
+import { ICategory, IQuestion, IResultQuestion } from '../interface/Interface';
 import Event from "sap/ui/base/Event";
 
 
@@ -42,12 +42,14 @@ export default class Start extends BaseController {
     }
 
   }
- 
+
   onSubmitPress(): void {
     const checkedAnswers = this.getCheckedAnswers();
     if (this.checkBeforeSubmit(checkedAnswers)) {
       this.setAnswers();
-      this.checkResultsOfTest();
+      this.openResultsOfTest();
+      this.setTotalResults();
+      this.getObjectForResults();
     } else {
       MessageBox.information("You should answer all the questions");
     }
@@ -80,7 +82,7 @@ export default class Start extends BaseController {
     arrayTable.map((value) => value.removeSelections(true));
   }
 
-  checkResultsOfTest(): void {
+  openResultsOfTest(): void {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     if (!this.oFragment) {
       const oView = this.getView();
@@ -100,43 +102,79 @@ export default class Start extends BaseController {
     this.resetAllSelectedAnswers();
     void this.oFragment.then((oMessagePopover) => (oMessagePopover as Dialog).close());
   }
-  setAnswers() {
-    const path = this.getView()?.getBindingContext()?.getPath();
-    const model = this.getModel() as JSONModel;
-    const question: IQuestion[] | [] = Object.values((model.getProperty(path ? path : '') as { name: string, questions: object }).questions);
-    const rightAnswersWord = question.map((elem: IQuestion) =>
+
+  calculateResults(index: number, rightAnswersWord: string[][], isTrue: boolean[][]): number {
+    const allRight = rightAnswersWord[index].length;
+    const clientRight = isTrue[index].filter(el => el === true).length
+    const clientFalse = isTrue[index].filter(el => el === false).length
+    return +(clientRight / allRight - clientFalse / allRight).toFixed(1)
+  }
+
+  getWordRightAnswers(question: IQuestion[] | []): string[][] {
+    return question.map((elem: IQuestion) =>
       elem.rightAnswer.map((el) => {
         return elem.answers[el - 1];
       })
     );
+  }
+
+  getWordClientAnswers(): string[][] {
     const clientAnswers = this.getCheckedAnswers();
-    const clientAnswersWord = clientAnswers.map((el: string[]) =>
+    const model = this.getModel() as JSONModel;
+    return clientAnswers.map((el: string[]) =>
       el.map((elem) => {
         const a = model.getProperty(elem) as string;
         return a;
       })
     );
-    model.setProperty("/additional", []);
-    const isTrue = clientAnswersWord.map((elem, index) => elem.map((el) => rightAnswersWord[index].includes(el)));
-    const objectclientAnswersWord = clientAnswersWord.map((el, index: number) =>
+  }
+
+  checkAnswers(clientAnswersWord: string[][], rightAnswersWord: string[][]): boolean[][] {
+    return clientAnswersWord.map((elem, index) => elem.map((el) => rightAnswersWord[index].includes(el)))
+  }
+
+  getObjectWordClientAnswers(clientAnswersWord: string[][], isTrue: boolean[][]): { word: string, isTrueAnswers: boolean }[][] {
+    return clientAnswersWord.map((el, index: number) =>
       el.map((elem, i: number) => {
         return { word: elem, isTrueAnswers: isTrue[index][i] };
       })
     );
+  }
+  setTotalResults() {
+    const model = this.getModel() as JSONModel;
+    const data = model.getProperty('/additional') as IResultQuestion[];
+    const number = data.reduce((prev, current) => prev + current.points, 0).toFixed(1)
+    model.setProperty('/additional/totalResult', number)
+    debugger
+  }
+  setAnswers() {
+    const path = this.getView()?.getBindingContext()?.getPath();
+    const model = this.getModel() as JSONModel;
+    const question: IQuestion[] | [] = Object.values((model.getProperty(path ? path : '') as { name: string, questions: object }).questions);
+    const rightAnswersWord = this.getWordRightAnswers(question)
+    const clientAnswersWord = this.getWordClientAnswers()
+    const isTrue = this.checkAnswers(clientAnswersWord, rightAnswersWord);
+    const objectclientAnswersWord = this.getObjectWordClientAnswers(clientAnswersWord, isTrue)
+    model.setProperty("/additional", []);
     clientAnswersWord.forEach((elem, index: number) => {
       const questionWord = question[index].question;
+      const point = this.calculateResults(index, rightAnswersWord, isTrue)
       model.setProperty(`/additional/${index}`, {
         rightAnswersWord: rightAnswersWord[index],
         clientAnswersWord: objectclientAnswersWord[index],
         questionWord,
+        points: point < 0 ? 0 : point,
       });
     });
 
-    this.getObjectForResults()
+
   }
   getObjectForResults() {
     const model = this.getModel() as JSONModel;
     const arrayData = model.getProperty('/additional') as []
     const objectData = { ...arrayData }
-}
+  }
+  onSaveResults() {
+
+  }
 }
