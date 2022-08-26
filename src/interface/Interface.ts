@@ -72,7 +72,14 @@ export interface IResultQuestion {
   questionWord: string,
   points: number,
 
-}  
+}
+
+export interface IResult {
+  email: string, 
+  category: string, 
+  subcategory: string, 
+  points: string
+}
 
 // -------------AuthController------------------------
 export interface IError {
