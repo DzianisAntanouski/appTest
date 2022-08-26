@@ -1,3 +1,6 @@
 {
-    "auth": null
+  "auth": { "email": "aaaaa" },
+  "resultsByQuestions": [],
+  "currentTotalResult": null,
+  "results": []
 }

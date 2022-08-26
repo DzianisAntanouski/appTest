@@ -92,4 +92,5 @@ export default class Start extends BaseController {
   onPressAvatar(){
     
   }
+  
 }

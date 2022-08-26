@@ -61,6 +61,7 @@ export default class Start extends BaseController {
     const logInTry = await fnTryAuthorization(email, password);
     if ((logInTry as unknown as IFulfilled).email) { 
       (this.getModel("supportModel") as JSONModel).setProperty("/auth", logInTry)
+      console.log(this.getModel('supportModel').getProperty('/auth'))
     } else {
       console.log(logInTry)
     }
