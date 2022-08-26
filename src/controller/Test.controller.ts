@@ -48,9 +48,8 @@ export default class Start extends BaseController {
     if (this.checkBeforeSubmit(checkedAnswers)) {
       this.setAnswers();
       this.openResultsOfTest();
-
-    this.setTotalResults()
-      this.getObjectForResults()
+      this.setTotalResults();
+      this.getObjectForResults();
     } else {
       MessageBox.information("You should answer all the questions");
     }
@@ -161,10 +160,10 @@ export default class Start extends BaseController {
       const questionWord = question[index].question;
       const point = this.calculateResults(index, rightAnswersWord, isTrue)
       model.setProperty(`/additional/${index}`, {
-          rightAnswersWord: rightAnswersWord[index],
-          clientAnswersWord: objectclientAnswersWord[index],
-          questionWord,
-          points: point < 0 ? 0 : point,
+        rightAnswersWord: rightAnswersWord[index],
+        clientAnswersWord: objectclientAnswersWord[index],
+        questionWord,
+        points: point < 0 ? 0 : point,
       });
     });
 
@@ -174,5 +173,8 @@ export default class Start extends BaseController {
     const model = this.getModel() as JSONModel;
     const arrayData = model.getProperty('/additional') as []
     const objectData = { ...arrayData }
+  }
+  onSaveResults() {
+
   }
 }
