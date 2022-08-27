@@ -27,6 +27,13 @@ export default class FetchDataBase {
       { method: "DELETE" }
     );
   }
+
+  static async deleteCategory(categoryName: string, subCategory: string) {
+    return await fetch(
+      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/Data/${categoryName}/${subCategory}/.json`,
+      { method: "DELETE" }
+    );
+  }
   static async patch(id: string, question: object, categoryName = "", subCategory = "", questions = "/questions") {
     return await fetch(
       `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/Data${categoryName}${subCategory}${questions}/${id}.json`,

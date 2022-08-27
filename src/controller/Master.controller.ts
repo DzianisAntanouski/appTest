@@ -14,7 +14,7 @@ export default class Master extends BaseController {
   }
 
   public handleMasterPress(oEvent: Event): void {
-    MessageToast.show("Loading mid column...");
+    MessageToast.show("Loading subCategories");
     this.bus.publish("flexible", "setDetailPage", oEvent);
   }
 }

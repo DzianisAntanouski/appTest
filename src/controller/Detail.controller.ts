@@ -26,7 +26,7 @@ export default class Detail extends BaseController {
 	}	
 
 	public handleDetailPress(oEvent: Event): void {
-		MessageToast.show("Loading end column...setDetailDetailPage");
+		MessageToast.show("Loading end column...");
 		this.bus.publish("flexible", "setDetailDetailPage", oEvent);
 	}
 

@@ -15,6 +15,7 @@ import FetchDataBase from "../db/FetchDB";
 import RadioButton from "sap/m/RadioButton";
 import { IData, IListItem, IQuestion, IResult, IArguments, IParent } from "../interface/Interface";
 import List from "sap/m/List";
+import MessageToast from "sap/m/MessageToast";
 
 /**
  * @namespace webapp.typescript.controller
@@ -41,11 +42,17 @@ export default class Main extends BaseController {
   }
 
   public onPatternMatched(oEvent: Event) {
+    if (!this.getModel("supportModel").getProperty("/auth")) {
+      this.navTo("start");
+      MessageToast.show("You don't have access for this page");
+      return
+    }     
     const sPath: string = (oEvent.getParameter("arguments") as IArguments).sPath;
     this.getView().bindObject({
       path: `${sPath.replace(/-/g, "/")}`,
     });
-    (this.getModel() as JSONModel).setProperty("/selected", false);
+    (this.getModel() as JSONModel).setProperty("/selected", false);    
+       
   }
 
   public setActive(oEvent: Event): void {
@@ -186,10 +193,11 @@ export default class Main extends BaseController {
     (this.getModel() as JSONModel).setProperty("/edit", true);
   }
 
-  // public onPressDeleteSubCategory() {
-  //   const sPath: string = (this.getView().getBindingContext() as Context).getPath()
-  //   debugger
-  // }
+  public onPressDeleteSubCategory() {
+    const sPath: string[] = (this.getView().getBindingContext() as Context).getPath().split('/')
+    
+    void FetchDataBase.deleteCategory(sPath[2], sPath[4]).then(() => {this.navTo("start")})   
+  }
 
   public onPressDeleteQuestion() {
     const oControls: Array<Control> = this.getView()
