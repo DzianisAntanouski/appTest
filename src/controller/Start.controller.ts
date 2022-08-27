@@ -90,8 +90,7 @@ export default class Start extends BaseController {
     this.navTo("test", { sPath: sPath.replace(/\//g, "-") }, true);
   }
 
-  public async onPressAvatar(){ 
-    if (!this.getModel("supportModel").getProperty("/auth")) await this.loadAuthorizationDialog();
-  }
-  
+  public onPressAvatar(){ 
+    if (!this.getModel("supportModel").getProperty("/auth")) this.loadAuthorizationDialog();
+  }  
 }

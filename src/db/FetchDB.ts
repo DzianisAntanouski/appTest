@@ -1,5 +1,5 @@
-export class QuestionTest {
-  public async create(question: object, categoryName = "", subCategory = "", questions = "/questions") {
+export default class FetchDataBase {
+  static async create(question: object, categoryName = "", subCategory = "", questions = "/questions") {
     return (await fetch(
       `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/Data${categoryName}${subCategory}${questions}.json`,
       {
@@ -13,7 +13,7 @@ export class QuestionTest {
       .then((response) => response.json())
       .then((response) => response as object)) as Response;
   }
-  public async read(categoryName = "", subCategory = "", questions = "") {
+  static async read(categoryName = "", subCategory = "", questions = "") {
     return await fetch(
       `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/Data${categoryName}${subCategory}${questions}.json`,
       { method: "GET" }
@@ -21,13 +21,13 @@ export class QuestionTest {
       .then((res) => res.json())
       .then((res) => res as object);
   }
-  public async delete(id: string, categoryName = "", subCategory = "", questions = "/questions") {
+  static async delete(id: string, categoryName = "", subCategory = "", questions = "/questions") {
     return await fetch(
       `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/Data${categoryName}${subCategory}${questions}/${id}.json`,
       { method: "DELETE" }
     );
   }
-  public async patch(id: string, question: object, categoryName = "", subCategory = "", questions = "/questions") {
+  static async patch(id: string, question: object, categoryName = "", subCategory = "", questions = "/questions") {
     return await fetch(
       `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/Data${categoryName}${subCategory}${questions}/${id}.json`,
       {
@@ -39,7 +39,7 @@ export class QuestionTest {
       }
     );
   }
-  public async createCategory(email: string, categoryName = "", subCategory = "") {
+  static async createCategory(email: string, categoryName = "", subCategory = "") {
     return (await fetch(
       `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/Data${categoryName}${subCategory}/createdBy.json`,
       {

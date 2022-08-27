@@ -11,7 +11,7 @@ import Dialog from "sap/m/Dialog";
 import UI5Element from "sap/ui/core/Element";
 import Input from "sap/m/Input";
 import CheckBox from "sap/m/CheckBox";
-import { QuestionTest } from "../db/db";
+import FetchDataBase from "../db/FetchDB";
 import RadioButton from "sap/m/RadioButton";
 import { IData, IListItem, IQuestion, IResult, IArguments, IParent } from "../interface/Interface";
 import List from "sap/m/List";
@@ -164,7 +164,7 @@ export default class Main extends BaseController {
     // add getContextPath to BaseController
     const aPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().slice(1).split("/");
 
-    void new QuestionTest()
+    void FetchDataBase
       .create(newQuestion, "/" + aPath[1], "/" + aPath[3])
       .then(() => void this.fireBaseRead())
       .then(() => (this.getModel() as JSONModel).setProperty("/edit", true));
@@ -205,7 +205,7 @@ export default class Main extends BaseController {
       const sId: string | undefined = (sSelectedControl as string).split("/").pop();
       const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().slice(1).split("/");
 
-      void new QuestionTest().delete(sId as string, "/" + aPath[1], "/" + aPath[3]).then(
+      void FetchDataBase.delete(sId as string, "/" + aPath[1], "/" + aPath[3]).then(
         () =>
           void this.fireBaseRead()
             .then(() => (this.getModel() as JSONModel).setProperty("/edit", true))
@@ -243,7 +243,7 @@ export default class Main extends BaseController {
           body: { answers: elem.answers, question: elem.question, rightAnswer: elem.rightAnswer },
         };
       }) as unknown as IResult[];
-      void result.forEach((elem) => void new QuestionTest().patch(elem.id, elem.body, "/" + aPath[1], "/" + aPath[3]));
+      void result.forEach((elem) => void FetchDataBase.patch(elem.id, elem.body, "/" + aPath[1], "/" + aPath[3]));
     }
   }
 }

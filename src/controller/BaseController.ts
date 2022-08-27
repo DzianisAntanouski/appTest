@@ -7,7 +7,7 @@ import ResourceBundle from "sap/base/i18n/ResourceBundle";
 import Router from "sap/ui/core/routing/Router";
 import History from "sap/ui/core/routing/History";
 import JSONModel from "sap/ui/model/json/JSONModel";
-import { QuestionTest } from "../db/db";
+import FetchDataBase from "../db/FetchDB";
 import { FetchData, ICategory, IQuestion, ISubCategory } from "../interface/Interface";
 import Auth from "../db/Auth";
 import Fragment from "sap/ui/core/Fragment";
@@ -42,7 +42,6 @@ export default abstract class BaseController extends Controller {
   }
 
   public loadAuthorizationDialog() {
-
       const oView = this.getView();
       this.oFragment = Fragment.load({
         id: oView.getId(),
@@ -85,7 +84,7 @@ export default abstract class BaseController extends Controller {
 
   public async fireBaseRead(categoryName = "", subCategory = ""): Promise<void> {
     const qListModel: JSONModel = this.getOwnerComponent().getModel() as JSONModel;
-    const fetchData: FetchData = (await new QuestionTest().read(categoryName, subCategory)) as FetchData;
+    const fetchData: FetchData = (await FetchDataBase.read(categoryName, subCategory)) as FetchData;
 
     const modelStructureToBinding: ISubCategory = {};
     void Object.keys(fetchData).forEach((elem: string) => {
