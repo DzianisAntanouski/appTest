@@ -4,6 +4,7 @@ import EventBus from "sap/ui/core/EventBus";
 import BaseController from "./BaseController";
 import Context from 'sap/ui/model/Context';
 import JSONModel from "sap/ui/model/json/JSONModel";
+import MessageBox from "sap/m/MessageBox";
 
 /**
  * @namespace webapp.typescript.controller
@@ -26,10 +27,10 @@ export default class DetailDetail extends BaseController {
     const sPath: string = (this.getView().getBindingContext() as Context).getPath()
     const sCreatedBy: object = ((this.getModel() as JSONModel).getProperty(sPath) as IOwner).createdBy
     if (!this.getModel("supportModel").getProperty("/auth")) this.loadAuthorizationDialog()
-    else if (Object.values(sCreatedBy)[0] === this.getModel("supportModel").getProperty("/auth/email")) {
+    else if (!sCreatedBy || Object.values(sCreatedBy)[0] === this.getModel("supportModel").getProperty("/auth/email")) {
       this.bus.publish("navigation", "navToMain", oEvent)
     }
-    else alert("Вы не являетесь владельцем!");
+    else MessageBox.error("You don’t have access to edit this test.");
   }
 
   public handleNavToTest(oEvent: Event) {

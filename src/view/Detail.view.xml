@@ -6,7 +6,7 @@
 		<Toolbar >
 			<Title text="{categoryName}" />
 			<ToolbarSpacer />
-			<Button text="Add subcategory" press="addCategory" type="Emphasized"/>
+			<Button text="Add subcategory" press="onPressAddCategory" type="Emphasized"/>
 			<Button text="Run {categoryName} test" press="onRunTest" type="Emphasized"/>
 		</Toolbar>
 	</customHeader>

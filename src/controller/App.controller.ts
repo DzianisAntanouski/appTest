@@ -11,7 +11,5 @@ export default class App extends BaseController {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const that = this
     void this.fireBaseRead().then(() => that.setAllQuestions());
-
-  }
- 
+  } 
 }

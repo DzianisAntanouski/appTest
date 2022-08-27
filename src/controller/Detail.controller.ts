@@ -8,7 +8,7 @@ import Event from "sap/ui/base/Event";
 import Core from "sap/ui/core/Core";
 import EventBus from "sap/ui/core/EventBus";
 import BaseController from "./BaseController";
-import { QuestionTest } from '../db/db';
+import FetchDataBase from '../db/FetchDB';
 import Context from 'sap/ui/model/Context';
 import formatter from '../model/formatter'
 import JSONModel from 'sap/ui/model/json/JSONModel';
@@ -23,16 +23,16 @@ export default class Detail extends BaseController {
 
 	public onInit(): void {
 		this.bus = this.getOwnerComponent().getEventBus();
-	}
+	}	
 
 	public handleDetailPress(oEvent: Event): void {
 		MessageToast.show("Loading end column...setDetailDetailPage");
 		this.bus.publish("flexible", "setDetailDetailPage", oEvent);
 	}
 
-	public addCategory(): void {
+	public onPressAddCategory(): void {		
 		if (!this.getModel("supportModel").getProperty("/auth")) this.loadAuthorizationDialog()
-		else {
+		if (this.getModel("supportModel").getProperty("/auth")) {
 			if (!this.oSubmitDialog) {
 				this.oSubmitDialog = new Dialog({
 					type: DialogType.Message,
@@ -60,7 +60,7 @@ export default class Detail extends BaseController {
 							MessageToast.show("Note is: " + sText);
 							const aPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().split("/")
 							const sEmail: string = (this.getModel("supportModel") as JSONModel).getProperty("/auth/email") as string
-							void new QuestionTest().createCategory(sEmail, `/${aPath[2]}`, `/${sText}`)
+							void FetchDataBase.createCategory(sEmail, `/${aPath[2]}`, `/${sText}`).then(() => void this.fireBaseRead())
 							this.oSubmitDialog.close();
 						}
 					}),

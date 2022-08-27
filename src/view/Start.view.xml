@@ -1,18 +1,29 @@
-<mvc:View xmlns="sap.f"
-	xmlns:m="sap.m"
+<mvc:View xmlns="sap.m"
+	xmlns:tnt="sap.tnt"
+	xmlns:f="sap.f"
 	xmlns:mvc="sap.ui.core.mvc" displayBlock="true" controllerName="webapp.typescript.controller.Start" height="100%">
-	<m:Page class="sapUiTinyMargin">
-		<m:customHeader>
-			<ShellBar title="Test Application">				
+	<Page class="sapUiTinyMargin">
+		<tnt:ToolHeader>
+			<Text text="Test Application" wrapping="false" />
+			<ToolbarSpacer />
+			<Button text="{= ${supportModel>/auth} ? ${supportModel>/auth/email} : 'Not auth' }{}" type="Transparent" />
+			<Avatar src="sap-icon://user" press='onPressAvatar' displaySize="XS" />
+		</tnt:ToolHeader>
+	
+		<!-- <m:customHeader>
+			<ShellBar title="Test Application">	
+				
+
 				<profile>
 					<m:Avatar initials="sap-icon://user-settings" press='onPressAvatar' />
+
 				</profile>
 			</ShellBar>
-		</m:customHeader>
-		<FlexibleColumnLayout id="fcl">
-			<beginColumnPages>
+		</m:customHeader> -->
+		<f:FlexibleColumnLayout id="fcl">
+			<f:beginColumnPages>
 				<mvc:XMLView id="beginView" async="true" viewName="webapp.typescript.view.Master"/>
-			</beginColumnPages>
-		</FlexibleColumnLayout>
-	</m:Page>
+			</f:beginColumnPages>
+		</f:FlexibleColumnLayout>
+	</Page>
 </mvc:View>
