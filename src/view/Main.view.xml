@@ -12,9 +12,10 @@
 		showFooter="{= ${/edit}}">
 		<subHeader>
 			<OverflowToolbar>
+				<Button text="Delete category" type="Reject" enabled="{= ${/edit}}" press=".onPressDeleteSubCategory"/>
 				<ToolbarSpacer/>				
 				<Button text="Edit Mode" press=".onPressEdit" enabled="{= !${/edit}}"/>	
-				<Button text="Delete" type="Reject" enabled="{= ${/selected}}" press=".deleteQuestion"/>				
+				<Button text="Delete" type="Reject" enabled="{= ${/selected}}" press=".onPressDeleteQuestion"/>				
 			</OverflowToolbar>
 		</subHeader>
 	<l:Splitter height="100%">

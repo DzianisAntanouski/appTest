@@ -63,8 +63,9 @@ export default class Main extends BaseController {
 
   private highlightSwitcher(): void {
     const oControls: Array<Control> = this.getInputListItem();
+    if (!oControls.length) return
     const nIndex: number = oControls.findIndex((elem) => elem.getProperty("highlight") === "Information");
-    oControls.forEach((control) => control.setProperty("highlight", MessageType.None));
+    oControls.forEach((control) => control.setProperty("highlight", MessageType.None));    
     if (nIndex < 0 || nIndex === oControls.length - 1) {
       oControls[0].setProperty("highlight", MessageType.Information);
     } else {
@@ -95,14 +96,7 @@ export default class Main extends BaseController {
     this.getInputListItem().forEach((control) => control.setProperty("highlight", MessageType.None));
 
     this.findListItem(oListItem as IParent);
-
-    // if (oListItem.getMetadata().getElementName() === "sap.m.Text") {
-    //   (oListItem as IListItem).oParent.oParent.setProperty("highlight", MessageType.Information);
-    // } else if (oListItem.getMetadata().getElementName() === "sap.m.HBox") {
-    //   (oListItem as IListItem).oParent.setProperty("highlight", MessageType.Information);
-    // } else {
-    //   (oListItem as IListItem).setProperty("highlight", MessageType.Information);
-    // }
+    
     void this.setChecked();
   }
 
@@ -192,7 +186,12 @@ export default class Main extends BaseController {
     (this.getModel() as JSONModel).setProperty("/edit", true);
   }
 
-  public deleteQuestion() {
+  // public onPressDeleteSubCategory() {
+  //   const sPath: string = (this.getView().getBindingContext() as Context).getPath()
+  //   debugger
+  // }
+
+  public onPressDeleteQuestion() {
     const oControls: Array<Control> = this.getView()
       .getControlsByFieldGroupId("questions")
       .filter((elem) => elem.getMetadata().getElementName() === "sap.m.RadioButton");

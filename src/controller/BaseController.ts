@@ -13,6 +13,8 @@ import Auth from "../db/Auth";
 import Fragment from "sap/ui/core/Fragment";
 import Dialog from 'sap/m/Dialog';
 import Control from "sap/ui/core/Control";
+import EventBus from "sap/ui/core/EventBus";
+import Context from 'sap/ui/model/Context';
 
 /**
  * @namespace webapp.typescript.controller
@@ -20,6 +22,8 @@ import Control from "sap/ui/core/Control";
 export default abstract class BaseController extends Controller {
   oFragment: Promise<void | Dialog | Control | Control[]>
   oAuthorizationDialog: Control | Control[];
+  bus: EventBus;
+  
 
   public async tryAuthorization(
     email: string,
@@ -55,10 +59,18 @@ export default abstract class BaseController extends Controller {
   }
 
   public async onLogInButtonPress() { 
+    this.bus = this.getOwnerComponent().getEventBus();
     const email: string = this.getModel("supportModel").getProperty("/email") as string; 
-    const password = this.getModel("supportModel").getProperty("/password") as string
-    await this.tryAuthorization(email, password); 
+    const password = this.getModel("supportModel").getProperty("/password") as string;    
+    await this.tryAuthorization(email, password);  
     (this.oAuthorizationDialog as unknown as Dialog).close();
+    if (this?.onPressAddCategory) {
+      this?.onPressAddCategory()
+    } else {
+      const sPath: string = (this.getView().getBindingContext() as Context).getPath()
+      this.bus.publish("navigation", "navToMain", {sPath, event: false})
+    }
+    
   }
 
   public onCancelButtonPress() {

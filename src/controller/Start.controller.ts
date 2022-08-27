@@ -80,8 +80,12 @@ export default class Start extends BaseController {
     return mViews[options.id] as unknown as Promise<XMLView>;
   }
 
-  public navToMain(a: string, b: string, oEvent: Event): void {
-    const sPath: string = ((oEvent.getSource() as Control).getBindingContext() as Context).getPath();
+  public navToMain(a: string, b: string, oEvent: Event | object): void {
+    interface IEvent {
+      event: boolean
+      sPath: string
+    }
+    const sPath: string = !(oEvent as IEvent).event ? (oEvent as IEvent).sPath  : (((oEvent as Event).getSource() as Control).getBindingContext() as Context).getPath();
     this.navTo("main", { sPath: sPath.replace(/\//g, "-") }, true);
   }
 
