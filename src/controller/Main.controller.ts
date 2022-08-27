@@ -214,7 +214,7 @@ export default class Main extends BaseController {
     }
   }
 
-  public onLiveChange(oEvent: Event): void {
+  public onLiveChange(): void {
     const qListModel: JSONModel = this.getModel() as JSONModel;
     qListModel.setProperty("/changed", true);
   }

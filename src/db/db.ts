@@ -39,12 +39,12 @@ export class QuestionTest {
       }
     );
   }
-  public async createCategory(categoryName = "", subCategory = "") {
+  public async createCategory(email: string, categoryName = "", subCategory = "") {
     return (await fetch(
       `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/Data${categoryName}${subCategory}/createdBy.json`,
       {
         method: "POST",
-        body: JSON.stringify("test@mail.eu"),
+        body: JSON.stringify(email),
         headers: {
           "Content-Type": "application/json",
         },

@@ -1,11 +1,9 @@
-import { IError, IFulfilled, IToken } from "../interface/Interface";
-
 export default class Auth {
 
   static async  fnAuthoriseUser(
     email: string,
     password: string
-  ): Promise<any> {
+  ): Promise<object> {
     const apiKey = `AIzaSyC-14jeZmSOdG1HPzl5bdZ_aLBBFVEg_-8`;
     return await fetch(
       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`,
@@ -20,14 +18,14 @@ export default class Auth {
           "Content-Type": "application/json",
         },
       }
-    ).then((response) => response.json() as Promise<any>);
+    ).then((response) => response.json() as Promise<object>);
     // .then(sToken => (sToken as unknown as IToken).idToken)
   }
   
   static async  fnRegisterNewUser(
     email: string,
     password: string
-  ): Promise<any> {
+  ): Promise<object> {
     const apiKey = `AIzaSyC-14jeZmSOdG1HPzl5bdZ_aLBBFVEg_-8`;
     return await fetch(
       `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`,
@@ -42,11 +40,11 @@ export default class Auth {
           "Content-Type": "application/json",
         },
       }
-    ).then((response) => response.json() as Promise<any>);
+    ).then((response) => response.json() as Promise<object>);
     // .then(sToken => (sToken as unknown as IToken)?.idToken)
   }
   
-  static async  fnPassUserAsAnonymous(): Promise<string> {
+  static async  fnPassUserAsAnonymous(): Promise<object> {
     const apiKey = `AIzaSyC-14jeZmSOdG1HPzl5bdZ_aLBBFVEg_-8`;
     return await fetch(
       `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`,
@@ -59,7 +57,7 @@ export default class Auth {
           "Content-Type": "application/json",
         },
       }
-    ).then((response) => response.json() as Promise<string>);
+    ).then((response) => response.json() as Promise<object>);
     // .then(sToken => (sToken as unknown as IToken)?.idToken)
   }
 

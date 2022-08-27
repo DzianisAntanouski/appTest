@@ -27,6 +27,9 @@ export interface IHBox extends HBox {
   oParent: InputListItem;
 }
 
+export interface IParent extends Control {
+  oParent: Control
+}
 // -------------BaseController-------------------------
 export interface FetchData {
   [key: string]: {
@@ -56,6 +59,7 @@ export interface IOption {
   id: string;
   viewName: string;
 }
+
 
 // -------------StartController------------------------
 export interface IToken {

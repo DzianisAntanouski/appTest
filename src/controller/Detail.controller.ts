@@ -11,6 +11,7 @@ import BaseController from "./BaseController";
 import { QuestionTest } from '../db/db';
 import Context from 'sap/ui/model/Context';
 import formatter from '../model/formatter'
+import JSONModel from 'sap/ui/model/json/JSONModel';
 
 /**
  * @namespace webapp.typescript.controller
@@ -29,8 +30,8 @@ export default class Detail extends BaseController {
 		this.bus.publish("flexible", "setDetailDetailPage", oEvent);
 	}
 
-	public async addCategory(): Promise<void> {
-		if (!this.getModel("supportModel").getProperty("/auth")) await this.loadAuthorizationDialog()
+	public addCategory(): void {
+		if (!this.getModel("supportModel").getProperty("/auth")) this.loadAuthorizationDialog()
 		else {
 			if (!this.oSubmitDialog) {
 				this.oSubmitDialog = new Dialog({
@@ -58,7 +59,8 @@ export default class Detail extends BaseController {
 							const sText = (Core.byId("categoryName") as TextArea).getValue();
 							MessageToast.show("Note is: " + sText);
 							const aPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().split("/")
-							void new QuestionTest().createCategory(`/${aPath[2]}`, `/${sText}`)
+							const sEmail: string = (this.getModel("supportModel") as JSONModel).getProperty("/auth/email") as string
+							void new QuestionTest().createCategory(sEmail, `/${aPath[2]}`, `/${sText}`)
 							this.oSubmitDialog.close();
 						}
 					}),
