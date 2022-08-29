@@ -213,7 +213,6 @@ export default class Start extends BaseController {
       .then(() => {
         void FetchDataBase.getAllResults().then((resp) => {
           const a = (Object.values(resp) as IResult[]).sort((a, b) => +b.points - +a.points);
-          debugger
           supportModel.setProperty('/results', a)
         })
 
