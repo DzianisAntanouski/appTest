@@ -47,7 +47,7 @@ export default abstract class BaseController extends Controller {
     localStorage.setItem("auth", JSON.stringify(response))
   }
 
-  public loadAuthorizationDialog() {
+  public loadAuthorizationDialog(oControl: Control) {
     const oView = this.getView();
     this.oFragment = Fragment.load({
       id: oView?.getId(),
@@ -57,7 +57,8 @@ export default abstract class BaseController extends Controller {
       this.oAuthorizationDialog = oFragment;
       oView?.addDependent(oFragment as Dialog);
       (oFragment as Dialog).open();
-    });
+      return oControl
+    });    
   }
 
   public async onLogInButtonPress(): Promise<void>{
@@ -66,14 +67,13 @@ export default abstract class BaseController extends Controller {
     const password = this.getModel("supportModel")?.getProperty("/password") as string;
     await this.tryAuthorization(email, password);
     (this.oAuthorizationDialog as Dialog).close();
-
+    const oInitControl = await this.oFragment.then(resolve => resolve).then(data => data)
     if (this.onPressAddCategory) {
       this.onPressAddCategory()
-    } else {
+    } else if (!oInitControl) {
       const sPath: string = (this.getView()?.getBindingContext() as Context).getPath()
       this.bus.publish("navigation", "navToMain", { sPath, event: false })
     }
-
   }
 
   public onCancelButtonPress(): void{
