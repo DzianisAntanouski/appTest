@@ -7,6 +7,7 @@ import Event from "sap/ui/base/Event";
 import Control from "sap/ui/core/Control";
 import Context from "sap/ui/model/Context";
 import { IOption } from "../interface/Interface";
+import JSONModel from 'sap/ui/model/json/JSONModel';
 
 /**
  * @namespace webapp.typescript.controller
@@ -94,7 +95,7 @@ export default class Start extends BaseController {
     this.navTo("test", { sPath: sPath.replace(/\//g, "-") }, true);
   }
 
-  public onPressAvatar(){ 
-    if (!this.getModel("supportModel").getProperty("/auth")) this.loadAuthorizationDialog();
+  public onPressAvatar(): void{ 
+    if (!(this.getModel("supportModel") as JSONModel).getProperty("/auth")) this.loadAuthorizationDialog();
   }  
 }

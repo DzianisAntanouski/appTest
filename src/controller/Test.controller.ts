@@ -208,9 +208,6 @@ export default class Start extends BaseController {
     const results = { email: emailText ? emailText : "Anonimus", category, subcategory, points }
     const prevResults = supportModel.getProperty('/results') as IResult[];
     supportModel.setProperty('/results', [...prevResults, results])
-    debugger;
-   
-
   }
 
   onShowStatistics() {
