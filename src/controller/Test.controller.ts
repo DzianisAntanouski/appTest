@@ -205,6 +205,7 @@ export default class Start extends BaseController {
     const subcategory = arrayBinding ? arrayBinding[4] ? arrayBinding[4] : '' : '';
     const points = supportModel.getProperty('/currentTotalResult') as string;
     const emailText = supportModel.getProperty('/auth/email') as string;
+
     const emailOrAnonimus = emailText ? emailText : "Anonimus";
     const results = { email: emailOrAnonimus, category, subcategory, points }
     const data = new Date().toString();
@@ -217,6 +218,7 @@ export default class Start extends BaseController {
         })
 
       })
+
 
 
 

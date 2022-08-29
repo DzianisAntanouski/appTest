@@ -7,6 +7,7 @@ import Event from "sap/ui/base/Event";
 import Control from "sap/ui/core/Control";
 import Context from "sap/ui/model/Context";
 import { IOption } from "../interface/Interface";
+import Fragment from "sap/ui/core/Fragment";
 
 /**
  * @namespace webapp.typescript.controller
@@ -15,6 +16,7 @@ export default class Start extends BaseController {
   oFlexibleColumnLayout: FlexibleColumnLayout;
   bus: EventBus;
   mViews: Promise<XMLView> | undefined;
+  oDiscardFragment: Control | Control[];
 
   public onInit(): void {
     this.bus = this.getOwnerComponent().getEventBus();
@@ -94,7 +96,34 @@ export default class Start extends BaseController {
     this.navTo("test", { sPath: sPath.replace(/\//g, "-") }, true);
   }
 
-  public onPressAvatar() {
-    if (!this.getModel("supportModel").getProperty("/auth")) this.loadAuthorizationDialog();
+
+  public onPressAvatar(oEvent){ 
+    if (!this.getModel("supportModel").getProperty("/auth")) this.loadAuthorizationDialog()
+    else { 
+      const oButton = oEvent.getSource();
+      const oView = this.getView();
+      this.oFragment = Fragment.load({
+        id: oView?.getId(),
+        name: "webapp.typescript.view.fragments.LogOutPopover",
+        controller: this,
+      }).then((oPopover) => {
+        this.oDiscardFragment = oPopover; 
+        oView?.addDependent.oPopover;
+        this.oDiscardFragment.openBy(oButton);
+      });
+    }
+  }  
+
+  public handleDiscardPopover() {
+    localStorage.setItem("auth", null);
+    this.getModel("supportModel").setProperty("/auth", null)
+    this.oDiscardFragment.close();
+  }
+
+  public onAfterPopoverClose() {
+    this.oDiscardFragment.destroy();
   }
 }
+
+
+
