@@ -49,7 +49,7 @@ export default class Start extends BaseController {
       this.setAnswers();
       this.openResultsOfTest();
       this.setTotalResults();
-      this.getObjectForResults();
+
     } else {
       MessageBox.information("You should answer all the questions");
     }
@@ -175,11 +175,11 @@ export default class Start extends BaseController {
     });
   }
 
-  getObjectForResults() {
-    const supportModel = this.getModel() as JSONModel;
-    const arrayData = supportModel.getProperty('/resultsByQuestions') as []
-    const objectData = { ...arrayData }
-  }
+  // getObjectForResults() {
+  //   const supportModel = this.getModel() as JSONModel;
+  //   const arrayData = supportModel.getProperty('/resultsByQuestions') as []
+  //   const objectData = { ...arrayData }
+  // }
 
   onSaveResults() {
     void this.oFragment.then((oMessagePopover) => (oMessagePopover as Dialog).close());
@@ -204,11 +204,12 @@ export default class Start extends BaseController {
     const subcategory = arrayBinding ? arrayBinding[4] ? arrayBinding[4] : '' : '';
 
     const points = supportModel.getProperty('/currentTotalResult') as number;
-    const emailText = supportModel.getProperty('/email') as string;
-    const results = { email: emailText, category, subcategory, points }
+    const emailText = supportModel.getProperty('/auth/email') as string;
+    const results = { email: emailText ? emailText : "Anonimus", category, subcategory, points }
     const prevResults = supportModel.getProperty('/results') as IResult[];
     supportModel.setProperty('/results', [...prevResults, results])
-    debugger
+    debugger;
+   
 
   }
 
