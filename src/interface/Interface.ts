@@ -78,7 +78,7 @@ export interface IResultQuestion {
 
 }
 
-export interface IResult {
+export interface IResults {
   email: string, 
   category: string, 
   subcategory: string, 
