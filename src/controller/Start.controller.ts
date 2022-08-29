@@ -8,7 +8,6 @@ import Control from "sap/ui/core/Control";
 import Context from "sap/ui/model/Context";
 import { IOption } from "../interface/Interface";
 import Fragment from "sap/ui/core/Fragment";
-import Dialog from "sap/m/Dialog";
 
 /**
  * @namespace webapp.typescript.controller
@@ -88,7 +87,7 @@ export default class Start extends BaseController {
       event: boolean
       sPath: string
     }
-    const sPath: string = (oEvent as IEvent)?.sPath ? (oEvent as IEvent).sPath  : (((oEvent as Event).getSource() as Control).getBindingContext() as Context).getPath();
+    const sPath: string = (oEvent as IEvent)?.sPath ? (oEvent as IEvent).sPath : (((oEvent as Event).getSource() as Control).getBindingContext() as Context).getPath();
     this.navTo("main", { sPath: sPath.replace(/\//g, "-") }, true);
   }
 
@@ -96,6 +95,7 @@ export default class Start extends BaseController {
     const sPath: string = ((oEvent.getSource() as Control).getBindingContext() as Context).getPath();
     this.navTo("test", { sPath: sPath.replace(/\//g, "-") }, true);
   }
+
 
   public onPressAvatar(oEvent){ 
     if (!this.getModel("supportModel").getProperty("/auth")) this.loadAuthorizationDialog()
@@ -124,3 +124,6 @@ export default class Start extends BaseController {
     this.oDiscardFragment.destroy();
   }
 }
+
+
+

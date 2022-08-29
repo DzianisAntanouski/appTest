@@ -26,7 +26,6 @@ export default abstract class BaseController extends Controller {
   onPressAddCategory: () => void;
   onPressAvatar: () => void;
 
-
   public async tryAuthorization(
     email: string,
     password: string
