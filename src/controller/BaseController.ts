@@ -26,7 +26,6 @@ export default abstract class BaseController extends Controller {
   onPressAddCategory: () => void;
   onPressAvatar: () => void;
 
-
   public async tryAuthorization(
     email: string,
     password: string
@@ -59,7 +58,6 @@ export default abstract class BaseController extends Controller {
       (oFragment as Dialog).open();
     });
   }
-
   public async onLogInButtonPress() {
     this.bus = this.getOwnerComponent().getEventBus();
     const email: string = this.getModel("supportModel")?.getProperty("/email") as string;

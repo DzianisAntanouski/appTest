@@ -1,4 +1,4 @@
-export default class Auth {
+export default class Auth {  
 
   static async  fnAuthoriseUser(
     email: string,

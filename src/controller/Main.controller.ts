@@ -42,7 +42,7 @@ export default class Main extends BaseController {
   }
 
   public onPatternMatched(oEvent: Event) {
-    if (!this.getModel("supportModel").getProperty("/auth")) {
+    if (!(this.getModel("supportModel") as JSONModel).getProperty("/auth")) {
       this.navTo("start");
       MessageToast.show("You don't have access for this page");
       return
@@ -151,7 +151,7 @@ export default class Main extends BaseController {
 
   public onPressFragmentAdd(): void {
     const getTemplate = (sProp: string): string => {
-      return this.getModel().getProperty(`/newQuestion/${sProp}`) as string;
+      return (this.getModel() as JSONModel).getProperty(`/newQuestion/${sProp}`) as string;
     };
     const aChecked: number[] = this.getView()
       .getControlsByFieldGroupId("checkBox")
@@ -239,7 +239,7 @@ export default class Main extends BaseController {
       .filter((elem) => elem.getMetadata().getElementName() === "sap.m.RadioButton");
     oControls.forEach((oControl) => (oControl as RadioButton).setSelected(false));
 
-    if (this.getModel().getProperty("/changed")) {
+    if ((this.getModel() as JSONModel).getProperty("/changed")) {
       const qListModel = this.getModel() as JSONModel;
       const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().slice(1).split("/");
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access

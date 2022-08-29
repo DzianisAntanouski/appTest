@@ -31,8 +31,8 @@ export default class Detail extends BaseController {
 	}
 
 	public onPressAddCategory(): void {		
-		if (!this.getModel("supportModel").getProperty("/auth")) this.loadAuthorizationDialog()
-		if (this.getModel("supportModel").getProperty("/auth")) {
+		if (!(this.getModel("supportModel") as JSONModel).getProperty("/auth")) this.loadAuthorizationDialog()
+		if ((this.getModel("supportModel") as JSONModel).getProperty("/auth")) {
 			if (!this.oSubmitDialog) {
 				this.oSubmitDialog = new Dialog({
 					type: DialogType.Message,
