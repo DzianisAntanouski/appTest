@@ -2,6 +2,9 @@
 
     "auth": null,
     "email": "",
-    "password": ""
+    "password": "",
+    "resultsByQuestions": [],
+    "currentTotalResult": null,
+    "results": []
 }
 

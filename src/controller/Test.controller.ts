@@ -204,10 +204,11 @@ export default class Start extends BaseController {
     const subcategory = arrayBinding ? arrayBinding[4] ? arrayBinding[4] : '' : '';
 
     const points = supportModel.getProperty('/currentTotalResult') as number;
-    const email = supportModel.getProperty('/auth/email') as string;
-    const results = { email, category, subcategory, points }
+    const emailText = supportModel.getProperty('/email') as string;
+    const results = { email: emailText, category, subcategory, points }
     const prevResults = supportModel.getProperty('/results') as IResult[];
     supportModel.setProperty('/results', [...prevResults, results])
+    debugger
 
   }
 
