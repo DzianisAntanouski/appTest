@@ -87,7 +87,7 @@ export default class Start extends BaseController {
       event: boolean
       sPath: string
     }
-    const sPath: string = (oEvent as IEvent)?.sPath ? (oEvent as IEvent).sPath  : (((oEvent as Event).getSource() as Control).getBindingContext() as Context).getPath();
+    const sPath: string = (oEvent as IEvent)?.sPath ? (oEvent as IEvent).sPath : (((oEvent as Event).getSource() as Control).getBindingContext() as Context).getPath();
     this.navTo("main", { sPath: sPath.replace(/\//g, "-") }, true);
   }
 
@@ -96,7 +96,9 @@ export default class Start extends BaseController {
     this.navTo("test", { sPath: sPath.replace(/\//g, "-") }, true);
   }
 
+
   public onPressAvatar(): void{ 
     if (!(this.getModel("supportModel") as JSONModel).getProperty("/auth")) this.loadAuthorizationDialog();      
   }  
-}
+
+
