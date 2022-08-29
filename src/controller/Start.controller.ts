@@ -8,6 +8,7 @@ import Control from "sap/ui/core/Control";
 import Context from "sap/ui/model/Context";
 import { IOption } from "../interface/Interface";
 import JSONModel from 'sap/ui/model/json/JSONModel';
+import Auth from "../db/Auth";
 
 /**
  * @namespace webapp.typescript.controller
@@ -97,5 +98,11 @@ export default class Start extends BaseController {
 
   public onPressAvatar(): void{ 
     if (!(this.getModel("supportModel") as JSONModel).getProperty("/auth")) this.loadAuthorizationDialog();
+    // const idToken: string = this.getModel('supportModel').getProperty('/auth')?.idToken
+    const refreshToken: string = this.getModel('supportModel').getProperty('/auth')?.refreshToken
+    // const email: string = this.getModel('supportModel').getProperty('/auth')?.email
+    // void Auth.checkToken(idToken)
+    void Auth.checkToken(refreshToken)
+    // void Auth.checkToken(email)    
   }  
 }

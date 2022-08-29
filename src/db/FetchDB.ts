@@ -60,4 +60,18 @@ export default class FetchDataBase {
       .then((response) => response.json())
       .then((response) => response as Promise<object>)) as Response;
   }
+  static async saveUser(email: string, idToken: string) {
+    return await fetch(
+      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/userAuth/${email}.json`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({
+          idToken
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
 }
