@@ -23,54 +23,59 @@ export default abstract class BaseController extends Controller {
   oFragment: Promise<void | Dialog | Control | Control[]>
   oAuthorizationDialog: Control | Control[];
   bus: EventBus;
-  
+  onPressAddCategory: () => void;
+  onPressAvatar: () => void;
+
 
   public async tryAuthorization(
     email: string,
     password: string
   ): Promise<void> {
-    interface IResponse{
+    interface IResponse {
       email: string
       error: {
         message: string
       }
     }
-    let response: IResponse = await Auth.fnRegisterNewUser(email, password) as IResponse;    
-    if (!response?.email) { 
+    let response: IResponse = await Auth.fnRegisterNewUser(email, password) as IResponse;
+    if (!response?.email) {
       response = await Auth.fnAuthoriseUser(email, password) as IResponse;
       if (!response?.email) {
-        alert (response.error.message)
+        alert(response.error.message)
       }
-    } 
+    }
     (this.getModel("supportModel") as JSONModel).setProperty("/auth", response)
   }
 
   public loadAuthorizationDialog() {
-      const oView = this.getView();
-      this.oFragment = Fragment.load({
-        id: oView.getId(),
-        name: "webapp.typescript.view.fragments.authorizationDialog",
-        controller: this,
-      }).then((oFragment) => {
-        this.oAuthorizationDialog = oFragment;
-        oView.addDependent(oFragment as Dialog);
-        (oFragment as Dialog).open();
-      });    
+    const oView = this.getView();
+    this.oFragment = Fragment.load({
+      id: oView?.getId(),
+      name: "webapp.typescript.view.fragments.authorizationDialog",
+      controller: this,
+    }).then((oFragment) => {
+      this.oAuthorizationDialog = oFragment;
+      oView?.addDependent(oFragment as Dialog);
+      (oFragment as Dialog).open();
+    });
   }
 
-  public async onLogInButtonPress() { 
+  public async onLogInButtonPress() {
     this.bus = this.getOwnerComponent().getEventBus();
-    const email: string = this.getModel("supportModel").getProperty("/email") as string; 
-    const password = this.getModel("supportModel").getProperty("/password") as string;    
-    await this.tryAuthorization(email, password);  
+    const email: string = this.getModel("supportModel")?.getProperty("/email") as string;
+    const password = this.getModel("supportModel")?.getProperty("/password") as string;
+    await this.tryAuthorization(email, password);
     (this.oAuthorizationDialog as unknown as Dialog).close();
-    if (this?.onPressAddCategory) {
-      this?.onPressAddCategory()
+
+    if (this.onPressAddCategory) {
+      this.onPressAddCategory()
+    } else if (this?.onPressAvatar) {
+      this?.onPressAvatar()
     } else {
-      const sPath: string = (this.getView().getBindingContext() as Context).getPath()
-      this.bus.publish("navigation", "navToMain", {sPath, event: false})
+      const sPath: string = (this.getView()?.getBindingContext() as Context).getPath()
+      this.bus.publish("navigation", "navToMain", { sPath, event: false })
     }
-    
+
   }
 
   public onCancelButtonPress() {
@@ -138,8 +143,8 @@ export default abstract class BaseController extends Controller {
    * @param [sName] The model name
    * @returns The model instance
    */
-  public getModel(sName?: string): Model {
-    return this.getView().getModel(sName);
+  public getModel(sName?: string): Model | undefined {
+    return this.getView()?.getModel(sName);
   }
 
   /**
@@ -149,7 +154,7 @@ export default abstract class BaseController extends Controller {
    * @returns The current base controller instance
    */
   public setModel(oModel: Model, sName?: string): BaseController {
-    this.getView().setModel(oModel, sName);
+    this.getView()?.setModel(oModel, sName);
     return this;
   }
 
