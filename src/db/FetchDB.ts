@@ -70,25 +70,24 @@ export default class FetchDataBase {
         body: JSON.stringify({
           idToken
         }),
+      })
+    }
 
-  static async postResults(results: IResults, date: string, categoryName = "", subCategory = "") {
+    static async postResults(results: IResults, date: string, categoryName = "", subCategory = "") {
     return (await fetch(
       `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/results/${categoryName}/${subCategory}/${date}.json`,
       {
         method: "PATCH",
         body: JSON.stringify(results),
-
         headers: {
           "Content-Type": "application/json",
         },
       }
-
-    );
-
     )
       .then((response) => response.json())
       .then((response) => response as Promise<object>)) as Response;
   }
+  
   static async postAllResults(results: IResults, data: string) {
     return (await fetch(
       `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/allResults/${data}.json`,
