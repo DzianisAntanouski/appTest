@@ -11,6 +11,7 @@ import Table from "sap/m/Table";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import { ICategory, IQuestion, IResult, IResultQuestion } from '../interface/Interface';
 import Event from "sap/ui/base/Event";
+import FetchDataBase from "../db/FetchDB";
 
 
 /**
@@ -194,24 +195,35 @@ export default class Start extends BaseController {
         }
       },
     });
-    this.writeResult()
+    this.setResult()
   }
 
-  writeResult() {
+  setResult() {
     const supportModel = this.getModel('supportModel') as JSONModel;
     const arrayBinding = this.getView()?.getBindingContext()?.getPath().split('/')
     const category = arrayBinding ? arrayBinding[2] : '';
     const subcategory = arrayBinding ? arrayBinding[4] ? arrayBinding[4] : '' : '';
-
-    const points = supportModel.getProperty('/currentTotalResult') as number;
+    const points = supportModel.getProperty('/currentTotalResult') as string;
     const emailText = supportModel.getProperty('/auth/email') as string;
-    const results = { email: emailText ? emailText : "Anonimus", category, subcategory, points }
-    const prevResults = supportModel.getProperty('/results') as IResult[];
-    supportModel.setProperty('/results', [...prevResults, results])
-    debugger;
-   
+    const emailOrAnonimus = emailText ? emailText : "Anonimus";
+    const results = { email: emailOrAnonimus, category, subcategory, points }
+    const data = new Date().toString();
+    void FetchDataBase.postResults(results, data, category, subcategory)
+    void FetchDataBase.postAllResults(results, data)
+      .then(() => {
+        void FetchDataBase.getAllResults().then((resp) => {
+          const a = (Object.values(resp) as IResult[]).sort((a, b) => +b.points - +a.points);
+          debugger
+          supportModel.setProperty('/results', a)
+        })
+
+      })
+
+
+
 
   }
+
 
   onShowStatistics() {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
