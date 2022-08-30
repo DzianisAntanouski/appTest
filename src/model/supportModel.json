@@ -5,6 +5,9 @@
     "password": "",
     "resultsByQuestions": [],
     "currentTotalResult": null,
-    "results": {}
+    "results": {},
+    "selected": false,
+    "edit": false,
+    "changed": false
 }
 

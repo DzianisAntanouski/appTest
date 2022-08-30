@@ -43,11 +43,11 @@ export default abstract class BaseController extends Controller {
         alert(response.error.message)
       }
     }
-    (this.getModel("supportModel") as JSONModel).setProperty("/auth", response)
+    this.getSupportModel().setProperty("/auth", response)
     localStorage.setItem("auth", JSON.stringify(response))
   }
 
-  public loadAuthorizationDialog(oControl: Control) {
+  public loadAuthorizationDialog(oControl?: Control) {
     const oView = this.getView();
     this.oFragment = Fragment.load({
       id: oView?.getId(),
@@ -182,5 +182,9 @@ export default abstract class BaseController extends Controller {
     } else {
       this.getRouter().navTo("start", {}, undefined, true);
     }
+  }
+
+  public getSupportModel(): JSONModel {
+    return this.getModel("supportModel") as JSONModel
   }
 }
