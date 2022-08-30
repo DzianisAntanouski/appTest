@@ -1,10 +1,7 @@
 <mvc:View controllerName="webapp.typescript.controller.Test" displayBlock="true"
 	xmlns="sap.m"
-	xmlns:table="sap.ui.table"
-	xmlns:mvc="sap.ui.core.mvc"
-	xmlns:u="sap.ui.unified"
-	xmlns:core="sap.ui.core">
-	<Page id="test" title="Questions" titleLevel="H2" navButtonPress=".onNavBack" titleAlignment="Center" backgroundDesign= "List" showNavButton="true" showFooter="true" content="{questions}">
+	xmlns:mvc="sap.ui.core.mvc"	>
+	<Page id="test" title="Questions" titleLevel="H2" navButtonPress=".onNavBack" titleAlignment="Center" backgroundDesign= "List" showNavButton="true" content="{questions}">
 		<content>
 			<Table fieldGroupIds="table" items="{answers}" mode="{= ${rightAnswer}.length>1 ? 'MultiSelect' : 'SingleSelectLeft'}">
 				<columns>
