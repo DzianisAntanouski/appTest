@@ -1,4 +1,5 @@
 import BaseController from "./BaseController";
+import JSONModel from 'sap/ui/model/json/JSONModel';
 
 /**
  * @namespace webapp.typescript.controller
@@ -12,9 +13,9 @@ export default class App extends BaseController {
     const that = this
     void this.fireBaseRead().then(() => that.setAllQuestions());
 
-    let authorization = localStorage.getItem("auth")
+    const authorization = localStorage.getItem("auth")
     if (authorization) {
-      this.getModel("supportModel").setProperty("/auth", JSON.parse(authorization))
+      (this.getModel("supportModel") as JSONModel).setProperty("/auth", JSON.parse(authorization))
     }
   } 
 }

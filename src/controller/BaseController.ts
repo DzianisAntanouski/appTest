@@ -70,8 +70,10 @@ export default abstract class BaseController extends Controller {
     if (this.onPressAddCategory) {
       this.onPressAddCategory()
     } else {
-      const sPath: string = (this.getView()?.getBindingContext() as Context).getPath()
-      this.bus.publish("navigation", "navToMain", { sPath, event: false })
+      try {
+        const sPath: string = (this.getView()?.getBindingContext() as Context)?.getPath()
+        this.bus.publish("navigation", "navToMain", { sPath, event: false })
+    } finally {}
     }
 
   }

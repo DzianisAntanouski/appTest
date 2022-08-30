@@ -6,8 +6,11 @@ import FlexibleColumnLayout from "sap/f/FlexibleColumnLayout";
 import Event from "sap/ui/base/Event";
 import Control from "sap/ui/core/Control";
 import Context from "sap/ui/model/Context";
-import { IOption } from "../interface/Interface";
+import { IOption, IParent } from "../interface/Interface";
 import Fragment from "sap/ui/core/Fragment";
+import JSONModel from 'sap/ui/model/json/JSONModel';
+import Popover from "sap/m/Popover";
+import UI5Element from "sap/ui/core/Element";
 
 /**
  * @namespace webapp.typescript.controller
@@ -16,7 +19,7 @@ export default class Start extends BaseController {
   oFlexibleColumnLayout: FlexibleColumnLayout;
   bus: EventBus;
   mViews: Promise<XMLView> | undefined;
-  oDiscardFragment: Control | Control[];
+  // oDiscardFragment: Control | Control[];
 
   public onInit(): void {
     this.bus = this.getOwnerComponent().getEventBus();
@@ -87,7 +90,7 @@ export default class Start extends BaseController {
       event: boolean
       sPath: string
     }
-    const sPath: string = (oEvent as IEvent)?.sPath ? (oEvent as IEvent).sPath : (((oEvent as Event).getSource() as Control).getBindingContext() as Context).getPath();
+    const sPath: string = (oEvent as IEvent)?.sPath ? (oEvent as IEvent).sPath : (((oEvent as Event).getSource() as Control).getBindingContext() as Context)?.getPath();
     this.navTo("main", { sPath: sPath.replace(/\//g, "-") }, true);
   }
 
@@ -97,8 +100,8 @@ export default class Start extends BaseController {
   }
 
 
-  public onPressAvatar(oEvent){ 
-    if (!this.getModel("supportModel").getProperty("/auth")) this.loadAuthorizationDialog()
+  public onPressAvatar(oEvent: Event){ 
+    if (!(this.getModel("supportModel") as JSONModel).getProperty("/auth")) this.loadAuthorizationDialog()
     else { 
       const oButton = oEvent.getSource();
       const oView = this.getView();
@@ -107,21 +110,28 @@ export default class Start extends BaseController {
         name: "webapp.typescript.view.fragments.LogOutPopover",
         controller: this,
       }).then((oPopover) => {
-        this.oDiscardFragment = oPopover; 
-        oView?.addDependent.oPopover;
-        this.oDiscardFragment.openBy(oButton);
+        // this.oDiscardFragment = oPopover; 
+        oView?.addDependent(oPopover as Popover);
+        (oPopover as Popover).openBy(oButton, false);
       });
     }
   }  
 
-  public handleDiscardPopover() {
-    localStorage.setItem("auth", null);
-    this.getModel("supportModel").setProperty("/auth", null)
-    this.oDiscardFragment.close();
+  public handleDiscardPopover(oEvent: Event) {
+    localStorage.setItem("auth", JSON.stringify(null));
+    (this.getModel("supportModel") as JSONModel).setProperty("/auth", null); 
+    this.findPopover(oEvent.getSource() as IParent);
   }
 
-  public onAfterPopoverClose() {
-    this.oDiscardFragment.destroy();
+  public onAfterPopoverClose(oEvent: Event) {
+    // (oEvent.getSource() as Popover).destroy();
+    this.findPopover(oEvent.getSource() as IParent);
+  }
+
+  public findPopover(oControl: IParent): void {
+    oControl.getMetadata().getElementName() !== "sap.m.Popover"
+      ? this.findPopover(oControl.oParent as IParent)
+      : (oControl as unknown as Popover).destroy()
   }
 }
 
