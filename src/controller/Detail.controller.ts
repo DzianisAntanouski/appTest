@@ -74,6 +74,7 @@ export default class Detail extends BaseController {
 			this.oSubmitDialog.open();
 		}
 	}
+	
 	onRunTest(oEvent: Event) {
 		this.bus.publish("navigation", "navToTesting", oEvent);
 	
