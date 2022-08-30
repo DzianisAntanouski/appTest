@@ -1,6 +1,6 @@
 <core:FragmentDefinition xmlns="sap.m"       
     xmlns:core="sap.ui.core" >
-    <Dialog title="Add new question and check rigth answer" fieldGroupIds="dialogGroup" escapeHandler=".onPressFragmentClose">
+    <Dialog title="{i18n>createQuestionDialogTitle}" fieldGroupIds="dialogGroup" escapeHandler=".onPressFragmentClose">
         
         <Table selectionChange="selectionChange" updateFinished="onUpdateTable" id="newQuestionTable">                
             <columns>                    
@@ -12,34 +12,34 @@
             <items>
                 <ColumnListItem id="questionCLI" type="Inactive">
                     <cells>
-                        <Text fieldGroupIds="CategoriesId" text="Question" /> 
+                        <Text fieldGroupIds="CategoriesId" text="{i18n>question}" /> 
                         <Input value="{/newQuestion/question}" id="newQ"/>                                            
                     </cells>                        
                 </ColumnListItem>
                 <ColumnListItem type="Inactive" press="onPressCategoriesDetails">
                     <cells>
-                        <Text fieldGroupIds="CategoriesId" text="Answer1" />
+                        <Text fieldGroupIds="CategoriesId" text="{i18n>answer}1" />
                         <Input value="{/newQuestion/answer/0}" id="answer1" />  
                         <CheckBox id="cbanswer1" fieldGroupIds="checkBox" />
                     </cells>
                 </ColumnListItem>
                 <ColumnListItem type="Inactive" press="onPressCategoriesDetails">
                     <cells>
-                        <Text fieldGroupIds="CategoriesId" text="Answer2" />
+                        <Text fieldGroupIds="CategoriesId" text="{i18n>answer}2" />
                         <Input value="{/newQuestion/answer/1}" id="answer2" />                            
                         <CheckBox id="cbanswer2" fieldGroupIds="checkBox"/>                  
                     </cells>
                 </ColumnListItem>
                 <ColumnListItem type="Inactive" press="onPressCategoriesDetails">
                     <cells>
-                        <Text fieldGroupIds="CategoriesId" text="Answer3" />
+                        <Text fieldGroupIds="CategoriesId" text="{i18n>answer}3" />
                         <Input value="{/newQuestion/answer/2}" id="answer3" />
                         <CheckBox id="cbanswer3" fieldGroupIds="checkBox"/>                  
                     </cells>
                 </ColumnListItem>
                 <ColumnListItem type="Inactive" press="onPressCategoriesDetails">
                     <cells>
-                        <Text fieldGroupIds="CategoriesId" text="Answer4" />
+                        <Text fieldGroupIds="CategoriesId" text="{i18n>answer}4" />
                         <Input value="{/newQuestion/answer/3}" id="answer4" />                            
                         <CheckBox id="cbanswer4" fieldGroupIds="checkBox"/>                  
                     </cells>
@@ -48,8 +48,8 @@
         </Table>
         
         <HBox justifyContent="End" class="sapUiSmallMargin">                
-            <Button text="Add" class="sapUiSmallMarginEnd" press=".onPressFragmentAdd"/>
-            <Button text="Cancel" press=".onPressFragmentClose" />
+            <Button text="{i18n>add}" class="sapUiSmallMarginEnd" press=".onPressFragmentAdd"/>
+            <Button text="{i18n>btnCancel}" press=".onPressFragmentClose" />
         </HBox>
         
     </Dialog>    
