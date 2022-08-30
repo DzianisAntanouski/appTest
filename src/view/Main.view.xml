@@ -12,16 +12,16 @@
 		showFooter="{= ${supportModel>/edit}}">
 		<subHeader>
 			<OverflowToolbar>
-				<Button text="Delete category" type="Reject" enabled="{= ${supportModel>/edit}}" press=".onPressDeleteSubCategory"/>
+				<Button text="{i18n>deleteCategory}" type="Reject" enabled="{= ${supportModel>/edit}}" press=".onPressDeleteSubCategory"/>
 				<ToolbarSpacer/>				
-				<Button text="Edit Mode" press=".onPressEdit" enabled="{= !${supportModel>/edit}}"/>	
-				<Button text="Delete" type="Reject" enabled="{= ${supportModel>/selected}}" press=".onPressDeleteQuestion"/>				
+				<Button text="{i18n>editMode}" press=".onPressEdit" enabled="{= !${supportModel>/edit}}"/>	
+				<Button text="{i18n>btnDelete}" type="Reject" enabled="{= ${supportModel>/selected}}" press=".onPressDeleteQuestion"/>				
 			</OverflowToolbar>
 		</subHeader>
 	<l:Splitter height="100%">
 		<Page	
 			id="master2"
-			title="Questions"
+			title="{i18n>question}"
 			backgroundDesign= "List"
 			showNavButton="false"
 			showFooter="{= ${supportModel>/edit}}">
@@ -44,7 +44,7 @@
 		</Page>
 		<Page
 			id="detailDetail"
-			title="Answers"
+			title="{i18n>answers}"
 			backgroundDesign= "Solid"
 			showNavButton="false"
 			showFooter="false">
@@ -57,7 +57,7 @@
 						<OverflowToolbar>
 							<Label text="{question}"/>
 							<ToolbarSpacer />
-							<Label text="right answer"/>
+							<Label text="{i18n>rightAnswers}"/>
 						</OverflowToolbar>
 					</infoToolbar>
 					<columns>
@@ -76,16 +76,16 @@
 						</ColumnListItem>
 					</items>
 				</Table>
-				<Button text="Next" press=".onPressNext"/>
+				<Button text="{i18n>next}" press=".onPressNext"/>
 			</VBox>					
 		</Page>		
 	</l:Splitter>
 	<footer>
 		<OverflowToolbar>
 			<ToolbarSpacer/>	
-				<Button text="Add question" press=".onPressAddQuestion"/>							
-				<Button text="Save" press=".onPressSave"/>
-				<Button text="Cancel" type="Reject" press=".onPressCancel"/>
+				<Button text="{i18n>addQuestion}" press=".onPressAddQuestion"/>							
+				<Button text="{i18n>btnSave}" press=".onPressSave"/>
+				<Button text="{i18n>btnCancel}" type="Reject" press=".onPressCancel"/>
 		</OverflowToolbar>
 	</footer>
 </Page>

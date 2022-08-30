@@ -1,25 +1,25 @@
 <core:FragmentDefinition xmlns="sap.m"
     xmlns:core="sap.ui.core"
     xmlns:f="sap.ui.layout.form">
-    <Dialog title="Athorization"
+    <Dialog title="{i18n>authorization}"
     afterClose="onAfterCloseAuthDialog"
     >
 
         <f:SimpleForm id="mainWorkCompletedSimpleForm">
             <VBox>
-                <Label text="email" labelFor="emailInputId" required="true" id="emailLabelId"/>
+                <Label text="{i18n>email}" labelFor="emailInputId" required="true" id="emailLabelId"/>
                 <Input value="{supportModel>/email}" id="emailInputId" />
-                <Label text="password" labelFor="passwordInputId" required="true" id="passwordLabelId"/>
+                <Label text="{i18n>password}" labelFor="passwordInputId" required="true" id="passwordLabelId"/>
                 <Input value="{supportModel>/password}" id="passwordInputId" type="Password"/>
             </VBox>
         </f:SimpleForm>
         <buttons>
             <Button id="LogInButton" 
-                text="Log In" 
+                text="{i18n>logIn}" 
                 type="Emphasized" 
                 press="onLogInButtonPress"/>
             <Button id="CancelButton" 
-                text="Cancel" 
+                text="{i18n>btnCancel}" 
                 type="Transparent" 
                 press="onCancelButtonPress"/>
         </buttons>
