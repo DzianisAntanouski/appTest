@@ -4,6 +4,12 @@ import NavContainer from "sap/m/NavContainer";
 import SplitContainer from "sap/m/SplitContainer";
 import Control from "sap/ui/core/Control";
 
+// -------------AppController--------------------------
+
+export interface IAuthObject {
+  email: string
+  idToken: string
+}
 // -------------MainController--------------------------
 export interface IData {
   [key: string]: string | [] | object;
@@ -66,7 +72,10 @@ export interface IOption {
   id: string;
   viewName: string;
 }
-
+export interface IEvent {
+  event: boolean
+  sPath: string
+}
 
 // -------------StartController------------------------
 export interface IToken {

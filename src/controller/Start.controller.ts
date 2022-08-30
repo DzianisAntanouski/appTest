@@ -6,11 +6,9 @@ import FlexibleColumnLayout from "sap/f/FlexibleColumnLayout";
 import Event from "sap/ui/base/Event";
 import Control from "sap/ui/core/Control";
 import Context from "sap/ui/model/Context";
-import { IOption, IParent } from "../interface/Interface";
+import { IEvent, IOption, IParent } from "../interface/Interface";
 import Fragment from "sap/ui/core/Fragment";
-import JSONModel from 'sap/ui/model/json/JSONModel';
 import Popover from "sap/m/Popover";
-import UI5Element from "sap/ui/core/Element";
 
 /**
  * @namespace webapp.typescript.controller
@@ -19,8 +17,7 @@ export default class Start extends BaseController {
   oFlexibleColumnLayout: FlexibleColumnLayout;
   bus: EventBus;
   mViews: Promise<XMLView> | undefined;
-  oDiscardFragment: Control | Control[];
-  // oDiscardFragment: Control | Control[];
+  oDiscardFragment: Popover;
 
   public onInit(): void {
     this.bus = this.getOwnerComponent().getEventBus();
@@ -30,7 +27,6 @@ export default class Start extends BaseController {
     this.bus.subscribe("navigation", "navToTesting", this.navToTesting.bind(this), this);
 
     this.oFlexibleColumnLayout = this.byId("fcl") as FlexibleColumnLayout;
-    // void this.fireBaseRead("/FrontEnd", "/SAPUI5").then((data) => console.log(data))
   }
 
   public onExit(): void {
@@ -87,10 +83,7 @@ export default class Start extends BaseController {
   }
 
   public navToMain(a: string, b: string, oEvent: Event | object): void {
-    interface IEvent {
-      event: boolean
-      sPath: string
-    }
+    
     const sPath: string = (oEvent as IEvent)?.sPath ? (oEvent as IEvent).sPath : (((oEvent as Event).getSource() as Control).getBindingContext() as Context)?.getPath();
     this.navTo("main", { sPath: sPath.replace(/\//g, "-") }, true);
   }
@@ -113,7 +106,7 @@ export default class Start extends BaseController {
         name: "webapp.typescript.view.fragments.LogOutPopover",
         controller: this,
       }).then((oPopover) => {
-        this.oDiscardFragment = oPopover; 
+        this.oDiscardFragment = oPopover as Popover; 
         oView?.addDependent(oPopover as Popover);
         (oPopover as Popover).openBy(oButton, false);
       });
@@ -122,13 +115,12 @@ export default class Start extends BaseController {
 
 
   public handleDiscardPopover() {
-    localStorage.setItem("auth", null);
+    localStorage.clear();
     this.getSupportModel().setProperty("/auth", null)
     this.oDiscardFragment.close();
   }
 
   public onAfterPopoverClose(oEvent: Event) {
-    // (oEvent.getSource() as Popover).destroy();
     this.findPopover(oEvent.getSource() as IParent);
   }
 
