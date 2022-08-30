@@ -30,6 +30,13 @@ export interface IHBox extends HBox {
 export interface IParent extends Control {
   oParent: Control
 }
+
+export interface IQuestionStructure {
+  name: string
+  questions: {
+    [key: string]: IQuestion
+  }
+}
 // -------------BaseController-------------------------
 export interface FetchData {
   [key: string]: {
