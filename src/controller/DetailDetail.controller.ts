@@ -26,8 +26,8 @@ export default class DetailDetail extends BaseController {
     }
     const sPath: string = (this.getView().getBindingContext() as Context).getPath()
     const sCreatedBy: object = ((this.getModel() as JSONModel).getProperty(sPath) as IOwner).createdBy
-    if (!(this.getModel("supportModel") as JSONModel).getProperty("/auth")) this.loadAuthorizationDialog()
-    else if (!sCreatedBy || Object.values(sCreatedBy)[0] === (this.getModel("supportModel") as JSONModel).getProperty("/auth/email")) {      
+    if (!this.getSupportModel().getProperty("/auth")) this.loadAuthorizationDialog()
+    else if (!sCreatedBy || Object.values(sCreatedBy)[0] === this.getSupportModel().getProperty("/auth/email")) {      
       this.bus.publish("navigation", "navToMain", oEvent)
     }
     else MessageBox.error("You don’t have access to edit this test.");

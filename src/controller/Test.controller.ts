@@ -9,7 +9,7 @@ import UI5Element from "sap/ui/core/Element";
 import formatter from "../model/formatter";
 import Table from "sap/m/Table";
 import JSONModel from "sap/ui/model/json/JSONModel";
-import { ICategory, IQuestion, IResult, IResultQuestion } from '../interface/Interface';
+import { IQuestion, IResult, IResultQuestion } from '../interface/Interface';
 import Event from "sap/ui/base/Event";
 import FetchDataBase from "../db/FetchDB";
 
@@ -147,17 +147,17 @@ export default class Start extends BaseController {
   }
 
   setTotalResults() {
-    const supportModel = this.getModel('supportModel') as JSONModel;
-    const data = supportModel.getProperty('/resultsByQuestions') as IResultQuestion[];
+    // const supportModel = this.getModel('supportModel') as JSONModel;
+    const data = this.getSupportModel().getProperty('/resultsByQuestions') as IResultQuestion[];
     const number = data.reduce((prev, current) => prev + current.points, 0).toFixed(1)
-    supportModel.setProperty('/currentTotalResult', number)
+    this.getSupportModel().setProperty('/currentTotalResult', number)
 
   }
 
   setAnswers() {
     const path = this.getView()?.getBindingContext()?.getPath();
     const model = this.getModel() as JSONModel;
-    const supportModel = this.getModel('supportModel') as JSONModel;
+    // const supportModel = this.getModel('supportModel') as JSONModel;
     const question: IQuestion[] | [] = Object.values((model.getProperty(path ? path : '') as { name: string, questions: object }).questions);
     const rightAnswersWord = this.getWordRightAnswers(question)
     const clientAnswersWord = this.getWordClientAnswers()
@@ -167,7 +167,7 @@ export default class Start extends BaseController {
     clientAnswersWord.forEach((elem, index: number) => {
       const questionWord = question[index].question;
       const point = this.calculateResults(index, rightAnswersWord, isTrue)
-      supportModel.setProperty(`/resultsByQuestions/${index}`, {
+      this.getSupportModel().setProperty(`/resultsByQuestions/${index}`, {
         rightAnswersWord: rightAnswersWord[index],
         clientAnswersWord: objectclientAnswersWord[index],
         questionWord,
@@ -199,12 +199,12 @@ export default class Start extends BaseController {
   }
 
   setResult() {
-    const supportModel = this.getModel('supportModel') as JSONModel;
+    // const supportModel = this.getModel('supportModel') as JSONModel;
     const arrayBinding = this.getView()?.getBindingContext()?.getPath().split('/')
     const category = arrayBinding ? arrayBinding[2] : '';
     const subcategory = arrayBinding ? arrayBinding[4] ? arrayBinding[4] : '' : '';
-    const points = supportModel.getProperty('/currentTotalResult') as string;
-    const emailText = supportModel.getProperty('/auth/email') as string;
+    const points = this.getSupportModel().getProperty('/currentTotalResult') as string;
+    const emailText = this.getSupportModel().getProperty('/auth/email') as string;
 
     const emailOrAnonimus = emailText ? emailText : "Anonimus";
     const results = { email: emailOrAnonimus, category, subcategory, points }
@@ -214,16 +214,9 @@ export default class Start extends BaseController {
       .then(() => {
         void FetchDataBase.getAllResults().then((resp) => {
           const a = (Object.values(resp) as IResult[]).sort((a, b) => +b.points - +a.points);
-          debugger
-          supportModel.setProperty('/results', a)
+          this.getSupportModel().setProperty('/results', a)
         })
-
       })
-
-
-
-
-
   }
 
 

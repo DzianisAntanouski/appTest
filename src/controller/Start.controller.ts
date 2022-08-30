@@ -98,7 +98,7 @@ export default class Start extends BaseController {
 
 
   public onPressAvatar(oEvent: Event){ 
-    if (!this.getModel("supportModel").getProperty("/auth")) this.loadAuthorizationDialog(oEvent.getSource() as Control)
+    if (!this.getSupportModel().getProperty("/auth")) this.loadAuthorizationDialog(oEvent.getSource() as Control)
     else { 
       const oButton = oEvent.getSource();
       const oView = this.getView();
@@ -116,7 +116,7 @@ export default class Start extends BaseController {
 
   public handleDiscardPopover() {
     localStorage.setItem("auth", null);
-    this.getModel("supportModel").setProperty("/auth", null)
+    this.getSupportModel().setProperty("/auth", null)
     this.oDiscardFragment.close();
   }
 
