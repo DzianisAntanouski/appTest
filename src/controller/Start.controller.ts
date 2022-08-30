@@ -97,8 +97,8 @@ export default class Start extends BaseController {
   }
 
 
-  public onPressAvatar(oEvent){ 
-    if (!this.getModel("supportModel").getProperty("/auth")) this.loadAuthorizationDialog()
+  public onPressAvatar(oEvent: Event){ 
+    if (!this.getModel("supportModel").getProperty("/auth")) this.loadAuthorizationDialog(oEvent.getSource() as Control)
     else { 
       const oButton = oEvent.getSource();
       const oView = this.getView();
