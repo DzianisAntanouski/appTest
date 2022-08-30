@@ -1,41 +1,41 @@
 <core:FragmentDefinition xmlns="sap.m"
 	xmlns:core="sap.ui.core"
 	xmlns:table="sap.ui.table">
-	<Dialog title="Statistic"  class="sapUiView">
+	<Dialog title="Statistic" class="sapUiView">
 
 		<table:Table rows="{supportModel>/results}" enableSelectAll="false" selectionMode="None">
 			<table:columns>
 				<table:Column>
-					<Text text="Email" />
+					<Text text="{i18n>email}" />
 					<table:template>
 						<Text text="{supportModel>email}" />
 					</table:template>
 				</table:Column>
 				<table:Column>
-					<Text text="Category" />
+					<Text text="{i18n>category}" />
 					<table:template>
 						<Text text="{supportModel>category}" />
 					</table:template>
 				</table:Column>
 				<table:Column>
-					<Text text="Subcategory" />
+					<Text text="{i18n>subcategory}" />
 					<table:template>
 						<Text text="{supportModel>subcategory}" />
 					</table:template>
 				</table:Column>
 				<table:Column>
-					<Text text="Points" />
+					<Text text="{i18n>points}" />
 					<table:template>
 						<Text text="{supportModel>points}" />
 					</table:template>
 				</table:Column>
 			</table:columns>
-			
+
 		</table:Table>
-		
+
 		<buttons>
-	
-			<Button text="Cancel" press="onCancelFragmentResult" />
+
+			<Button text="{i18n>btnCancel}" press="onCancelFragmentResult" />
 		</buttons>
 	</Dialog>
 </core:FragmentDefinition>
