@@ -66,7 +66,6 @@ export default abstract class BaseController extends Controller {
     const password = this.getModel("supportModel")?.getProperty("/password") as string;
     await this.tryAuthorization(email, password);
     (this.oAuthorizationDialog as Dialog).close();
-
     if (this.onPressAddCategory) {
       this.onPressAddCategory()
     } else {
