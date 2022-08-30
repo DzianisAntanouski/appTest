@@ -46,7 +46,7 @@ export default abstract class BaseController extends Controller {
     this.getSupportModel().setProperty("/auth", response)
     localStorage.setItem("auth", JSON.stringify(response))
   }
-
+  
   public loadAuthorizationDialog(oControl?: Control) {
     const oView = this.getView();
     this.oFragment = Fragment.load({

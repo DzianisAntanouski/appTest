@@ -56,6 +56,8 @@
 					<infoToolbar>
 						<OverflowToolbar>
 							<Label text="{question}"/>
+							<ToolbarSpacer />
+							<Label text="right answer"/>
 						</OverflowToolbar>
 					</infoToolbar>
 					<columns>
@@ -69,7 +71,7 @@
 									<Text text="{}" visible="{= !${supportModel>/edit}}" />
 									<Input value="{}" visible="{= ${supportModel>/edit}}" width="100%" liveChange=".onLiveChange"/>												
 								</HBox>	
-								<CheckBox width="50px" editable="{= ${supportModel>/edit}}" fieldGroupIds="checkBoxRightAnswers"/>		
+								<CheckBox select="onCheck" width="50px" editable="{= ${supportModel>/edit}}" fieldGroupIds="checkBoxRightAnswers"/>		
 							</cells>
 						</ColumnListItem>
 					</items>
@@ -82,7 +84,8 @@
 		<OverflowToolbar>
 			<ToolbarSpacer/>	
 				<Button text="Add question" press=".onPressAddQuestion"/>							
-				<Button text="Finish" press=".onPressFinish"/>
+				<Button text="Save" press=".onPressSave"/>
+				<Button text="Cancel" type="Reject" press=".onPressCancel"/>
 		</OverflowToolbar>
 	</footer>
 </Page>

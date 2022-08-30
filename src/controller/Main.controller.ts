@@ -13,9 +13,10 @@ import Input from "sap/m/Input";
 import CheckBox from "sap/m/CheckBox";
 import FetchDataBase from "../db/FetchDB";
 import RadioButton from "sap/m/RadioButton";
-import { IData, IListItem, IQuestion, IResult, IArguments, IParent } from "../interface/Interface";
+import { IData, IListItem, IQuestion, IResult, IArguments, IParent, IQuestionStructure } from "../interface/Interface";
 import List from "sap/m/List";
 import MessageToast from "sap/m/MessageToast";
+import MessageBox, { Action } from "sap/m/MessageBox";
 
 /**
  * @namespace webapp.typescript.controller
@@ -32,13 +33,22 @@ export default class Main extends BaseController {
     },
     rightAnswer: "",
   };
+  oState: IQuestionStructure
   private formatter = formatter;
 
   public onInit(): void {
     void this.getView().attachAfterRendering(this.changeUIAfterRendering.bind(this));
     void this.getOwnerComponent().getRouter().getRoute("main").attachPatternMatched(this.onPatternMatched.bind(this), this);
+    void this.getOwnerComponent().getModel().attachPropertyChange(this.changeProperty.bind(this), this)
   }
 
+  public changeProperty (): void {
+    
+    if (this.getSupportModel().getProperty("/edit")) {
+      this.getSupportModel().setProperty("/change", true)
+    }
+  }
+  
   public onPatternMatched(oEvent: Event) {
     if (!this.getSupportModel().getProperty("/auth")) {
       this.navTo("start");
@@ -123,6 +133,7 @@ export default class Main extends BaseController {
   public onPressEdit(): void {
     // const qListModel: JSONModel = this.getModel() as JSONModel;
     this.getSupportModel().setProperty("/edit", !this.getSupportModel().getProperty("/edit"));
+    this.saveState()
     void this.setChecked();
   }
 
@@ -222,16 +233,20 @@ export default class Main extends BaseController {
 
 
   //????????
-  public onLiveChange(): void {
+  /* public onLiveChange(): void {
     // const qListModel: JSONModel = this.getModel() as JSONModel;
-    this.getSupportModel().setProperty("/changed", true);
+    this.getSupportModel().setProperty("/change", true);
+  } */
+
+  public onCheck(): void {
+    this.getSupportModel().setProperty("/change", true);
   }
 
   public onSelect(): void {
     // const qListModel: JSONModel = this.getModel() as JSONModel;
     this.getSupportModel().setProperty("/selected", true);
   }
-  public onPressFinish(): void {
+  public onPressSave(): void {
     this.getSupportModel().setProperty("/selected", false);
     // const qListModel: JSONModel = this.getModel() as JSONModel;
     this.getSupportModel().setProperty("/edit", !this.getSupportModel().getProperty("/edit"));
@@ -240,7 +255,7 @@ export default class Main extends BaseController {
       .filter((elem) => elem.getMetadata().getElementName() === "sap.m.RadioButton");
     oControls.forEach((oControl) => (oControl as RadioButton).setSelected(false));
 
-    if (this.getSupportModel().getProperty("/changed")) {
+    if (this.getSupportModel().getProperty("/change")) {
       // const qListModel = this.getModel() as JSONModel;
       const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().slice(1).split("/");
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -253,9 +268,57 @@ export default class Main extends BaseController {
       }) as unknown as IResult[];
       void result.forEach((elem) => void FetchDataBase.patch(elem.id, elem.body, "/" + aPath[1], "/" + aPath[3]));
     }
+    this.getSupportModel().setProperty("/change", false);
   }
+
   public onPressNavBack () {
-    this.getSupportModel().setProperty("/edit", false)
-    this.onNavBack()
+    if (this.getSupportModel().getProperty("/edit") && this.getSupportModel().getProperty("/change")) {
+      const onPressBackAction = () => {
+        const sPath = (this.getView().getBindingContext() as Context).getPath();
+        (this.getModel() as JSONModel).setProperty(sPath, this.oState)
+        this.getSupportModel().setProperty("/edit", false);
+        this.getSupportModel().setProperty("/change", false);
+        this.onNavBack()
+      }
+      this.getConfirm(onPressBackAction) 
+    } else {
+      this.getSupportModel().setProperty("/edit", false);
+      this.getSupportModel().setProperty("/change", false);
+      this.onNavBack()
+    }
+    
+  }
+
+  public saveState() {
+    const sPath = (this.getView().getBindingContext() as Context).getPath();
+    const oState = (this.getModel() as JSONModel).getProperty(sPath) as IQuestionStructure
+    this.oState = JSON.parse(JSON.stringify(oState)) as IQuestionStructure
+  }
+
+  public onPressCancel () {
+    if (this.getSupportModel().getProperty("/change")) {
+      const onPressYesAction = () => {
+        const sPath = (this.getView().getBindingContext() as Context).getPath();
+        (this.getModel() as JSONModel).setProperty(sPath, this.oState)
+        void this.setChecked();
+        void this.highlightSwitcher();
+        this.getSupportModel().setProperty("/change", false); 
+      }    
+      this.getConfirm(onPressYesAction)
+    } 
+    this.getSupportModel().setProperty("/edit", false);
+    this.getSupportModel().setProperty("/change", false);  
+  }
+
+  public getConfirm (fn: () => void): void {  
+    MessageBox.confirm("Are you shure?", {
+        title: "Back",
+        actions: [Action.YES, Action.NO],
+        onClose: (oAction: string) => {
+            if (oAction === Action.YES) {
+                fn()
+            }
+        },
+    });
   }
 }
