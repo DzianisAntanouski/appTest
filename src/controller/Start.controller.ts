@@ -19,6 +19,7 @@ export default class Start extends BaseController {
   oFlexibleColumnLayout: FlexibleColumnLayout;
   bus: EventBus;
   mViews: Promise<XMLView> | undefined;
+  oDiscardFragment: Control | Control[];
   // oDiscardFragment: Control | Control[];
 
   public onInit(): void {
@@ -101,7 +102,9 @@ export default class Start extends BaseController {
 
 
   public onPressAvatar(oEvent: Event){ 
-    if (!(this.getModel("supportModel") as JSONModel).getProperty("/auth")) this.loadAuthorizationDialog()
+
+    if (!this.getSupportModel().getProperty("/auth")) this.loadAuthorizationDialog(oEvent.getSource() as Control)
+
     else { 
       const oButton = oEvent.getSource();
       const oView = this.getView();
@@ -110,17 +113,18 @@ export default class Start extends BaseController {
         name: "webapp.typescript.view.fragments.LogOutPopover",
         controller: this,
       }).then((oPopover) => {
-        // this.oDiscardFragment = oPopover; 
+        this.oDiscardFragment = oPopover; 
         oView?.addDependent(oPopover as Popover);
         (oPopover as Popover).openBy(oButton, false);
       });
     }
   }  
 
-  public handleDiscardPopover(oEvent: Event) {
-    localStorage.setItem("auth", JSON.stringify(null));
-    (this.getModel("supportModel") as JSONModel).setProperty("/auth", null); 
-    this.findPopover(oEvent.getSource() as IParent);
+
+  public handleDiscardPopover() {
+    localStorage.setItem("auth", null);
+    this.getSupportModel().setProperty("/auth", null)
+    this.oDiscardFragment.close();
   }
 
   public onAfterPopoverClose(oEvent: Event) {

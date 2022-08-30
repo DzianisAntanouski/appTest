@@ -6,13 +6,13 @@
 		<table:Table rows="{supportModel>/resultsByQuestions}" enableSelectAll="false" selectionMode="None">
 			<table:columns>
 				<table:Column>
-					<Text text="Questions" />
+					<Text text="{i18n>question}" />
 					<table:template>
 						<Text text="{supportModel>questionWord}" />
 					</table:template>
 				</table:Column>
 				<table:Column>
-					<Text text="Right Answers" />
+					<Text text="{i18n>rightAnswers}" />
 					<table:template>
 						<List items="{supportModel>rightAnswersWord}">
 							<items>
@@ -26,7 +26,7 @@
 					</table:template>
 				</table:Column>
 				<table:Column>
-					<Text text="Your answers" />
+					<Text text="{i18n>yourAnswers}" />
 					<table:template>
 						<List items="{supportModel>clientAnswersWord}">
 							<items>
@@ -40,20 +40,24 @@
 					</table:template>
 				</table:Column>
 				<table:Column>
-					<Text text="Points" />
+					<Text text="{i18n>points}" />
 					<table:template>
 						<Text text="{supportModel>points}"></Text>
 					</table:template>
 				</table:Column>
 			</table:columns>
 			<table:footer>
-				<Text id="idFooterText" text="Your result: {supportModel>/currentTotalResult}"/>
+				<Text id="idFooterText" core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" text="{parts: [
+					'i18n>yourResult',
+					'supportModel>/currentTotalResult'
+					],
+					formatter: 'formatMessage'}"/>
 			</table:footer>
 		</table:Table>
-		
+
 		<buttons>
-			<Button text="Save results" press="onSaveResults" />
-			<Button text="Cancel" press="onCancelFragment" />
+			<Button text="{i18n>saveResults}" press="onSaveResults" />
+			<Button text="{i18n>btnCancel}" press="onCancelFragment" />
 		</buttons>
 	</Dialog>
 </core:FragmentDefinition>

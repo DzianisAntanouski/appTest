@@ -15,6 +15,7 @@ import Dialog from 'sap/m/Dialog';
 import Control from "sap/ui/core/Control";
 import EventBus from "sap/ui/core/EventBus";
 import Context from 'sap/ui/model/Context';
+import Detail from "./Detail.controller";
 
 /**
  * @namespace webapp.typescript.controller
@@ -23,8 +24,7 @@ export default abstract class BaseController extends Controller {
   oFragment: Promise<void | Dialog | Control | Control[]>
   oAuthorizationDialog: Control | Control[];
   bus: EventBus;
-  onPressAddCategory: () => void;
-  onPressAvatar: () => void;
+ 
 
   public async tryAuthorization(
     email: string,
@@ -35,6 +35,7 @@ export default abstract class BaseController extends Controller {
       error: {
         message: string
       }
+      idToken: string
     }
     let response: IResponse = await Auth.fnRegisterNewUser(email, password) as IResponse;
     if (!response?.email) {
@@ -43,11 +44,12 @@ export default abstract class BaseController extends Controller {
         alert(response.error.message)
       }
     }
-    (this.getModel("supportModel") as JSONModel).setProperty("/auth", response)
+    this.getSupportModel().setProperty("/auth", response)
+    void FetchDataBase.saveUser(response.email, response.idToken);
     localStorage.setItem("auth", JSON.stringify(response))
   }
-
-  public loadAuthorizationDialog() {
+  
+  public loadAuthorizationDialog(oControl?: Control) {
     const oView = this.getView();
     this.oFragment = Fragment.load({
       id: oView?.getId(),
@@ -57,7 +59,8 @@ export default abstract class BaseController extends Controller {
       this.oAuthorizationDialog = oFragment;
       oView?.addDependent(oFragment as Dialog);
       (oFragment as Dialog).open();
-    });
+      if (oControl) return oControl
+    });    
   }
 
   public async onLogInButtonPress(): Promise<void>{
@@ -67,16 +70,15 @@ export default abstract class BaseController extends Controller {
     await this.tryAuthorization(email, password);
     (this.oAuthorizationDialog as Dialog).close();
 
-    if (this.onPressAddCategory) {
-      this.onPressAddCategory()
-    } else {
-      try {
-        const sPath: string = (this.getView()?.getBindingContext() as Context)?.getPath()
-        this.bus.publish("navigation", "navToMain", { sPath, event: false })
-    } finally {}
-    }
+    const oInitControl = await this.oFragment.then(resolve => resolve).then(data => data)
+    if ((this as unknown as Detail).onPressAddCategory) {      
+      (this as unknown as Detail).onPressAddCategory()
+    } else if (!oInitControl) {
+      const sPath: string = (this.getView()?.getBindingContext() as Context).getPath()
+      this.bus.publish("navigation", "navToMain", { sPath, event: false })
 
-  }
+    }
+  }  
 
   public onCancelButtonPress(): void{
     (this.oAuthorizationDialog as Dialog).close()
@@ -184,5 +186,15 @@ export default abstract class BaseController extends Controller {
     } else {
       this.getRouter().navTo("start", {}, undefined, true);
     }
+  }
+
+  public getSupportModel(): JSONModel {
+    return this.getModel("supportModel") as JSONModel
+  }
+
+  public i18n(sKey: string, param?: []) {
+    const resourceModel = this.getOwnerComponent().getModel("i18n") as ResourceModel
+    const oBundle = resourceModel.getResourceBundle() as  ResourceBundle;
+    return oBundle.getText(sKey, param);
   }
 }

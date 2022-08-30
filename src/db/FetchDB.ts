@@ -64,16 +64,25 @@ export default class FetchDataBase {
 
   static async saveUser(email: string, idToken: string) {
     return await fetch(
-      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/userAuth/${email}.json`,
+      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/userAuth/${email.replace(".", "+")}.json`,
       {
         method: "PATCH",
         body: JSON.stringify({
-          idToken
+          idToken, email
         }),
       })
     }
 
-    static async postResults(results: IResults, date: string, categoryName = "", subCategory = "") {
+  static async checkUserToken(email: string) {
+    return await fetch(
+      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/userAuth/${email.replace(".", "+")}.json`,
+      { method: "GET" }
+    )
+      .then((res) => res.json())
+      .then((res) => res as object);
+  }
+
+  static async postResults(results: IResults, date: string, categoryName = "", subCategory = "") {
     return (await fetch(
       `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/results/${categoryName}/${subCategory}/${date}.json`,
       {
@@ -87,7 +96,7 @@ export default class FetchDataBase {
       .then((response) => response.json())
       .then((response) => response as Promise<object>)) as Response;
   }
-  
+
   static async postAllResults(results: IResults, data: string) {
     return (await fetch(
       `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/allResults/${data}.json`,

@@ -8,14 +8,14 @@
 		title="Questions and Answers"
 		backgroundDesign= "Solid"
 		showNavButton="true"
-		navButtonPress=".onNavBack"
-		showFooter="{= ${/edit}}">
+		navButtonPress=".onPressNavBack"
+		showFooter="{= ${supportModel>/edit}}">
 		<subHeader>
 			<OverflowToolbar>
-				<Button text="Delete category" type="Reject" enabled="{= ${/edit}}" press=".onPressDeleteSubCategory"/>
+				<Button text="Delete category" type="Reject" enabled="{= ${supportModel>/edit}}" press=".onPressDeleteSubCategory"/>
 				<ToolbarSpacer/>				
-				<Button text="Edit Mode" press=".onPressEdit" enabled="{= !${/edit}}"/>	
-				<Button text="Delete" type="Reject" enabled="{= ${/selected}}" press=".onPressDeleteQuestion"/>				
+				<Button text="Edit Mode" press=".onPressEdit" enabled="{= !${supportModel>/edit}}"/>	
+				<Button text="Delete" type="Reject" enabled="{= ${supportModel>/selected}}" press=".onPressDeleteQuestion"/>				
 			</OverflowToolbar>
 		</subHeader>
 	<l:Splitter height="100%">
@@ -24,7 +24,7 @@
 			title="Questions"
 			backgroundDesign= "List"
 			showNavButton="false"
-			showFooter="{= ${/edit}}">
+			showFooter="{= ${supportModel>/edit}}">
 			<layoutData>
 				<l:SplitterLayoutData size="600px" />
 			</layoutData>
@@ -33,9 +33,9 @@
 					<InputListItem type="Active" fieldGroupIds="questions" highlight="None">
 						<HBox width="auto">
 							<FlexBox width="100%" renderType="Bare">
-								<RadioButton visible="{= ${/edit}}" select=".onSelect" />
-								<Input value="{question}" visible="{= ${/edit}}" width="100%" liveChange=".onLiveChange" />							
-								<Text text="{question}" visible="{= !${/edit}}" />
+								<RadioButton visible="{= ${supportModel>/edit}}" select=".onSelect" />
+								<Input value="{question}" visible="{= ${supportModel>/edit}}" width="100%" liveChange=".onLiveChange" />							
+								<Text text="{question}" visible="{= !${supportModel>/edit}}" />
 							</FlexBox>
 						</HBox>
 					</InputListItem>						
@@ -56,6 +56,8 @@
 					<infoToolbar>
 						<OverflowToolbar>
 							<Label text="{question}"/>
+							<ToolbarSpacer />
+							<Label text="right answer"/>
 						</OverflowToolbar>
 					</infoToolbar>
 					<columns>
@@ -66,10 +68,10 @@
 						<ColumnListItem vAlign="Middle">
 							<cells>	
 								<HBox renderType="Bare">								
-									<Text text="{}" visible="{= !${/edit}}" />
-									<Input value="{}" visible="{= ${/edit}}" width="100%" liveChange=".onLiveChange"/>												
+									<Text text="{}" visible="{= !${supportModel>/edit}}" />
+									<Input value="{}" visible="{= ${supportModel>/edit}}" width="100%" liveChange=".onLiveChange"/>												
 								</HBox>	
-								<CheckBox width="50px" editable="{= ${/edit}}" fieldGroupIds="checkBoxRightAnswers"/>		
+								<CheckBox select="onCheck" width="50px" editable="{= ${supportModel>/edit}}" fieldGroupIds="checkBoxRightAnswers"/>		
 							</cells>
 						</ColumnListItem>
 					</items>
@@ -82,7 +84,8 @@
 		<OverflowToolbar>
 			<ToolbarSpacer/>	
 				<Button text="Add question" press=".onPressAddQuestion"/>							
-				<Button text="Finish" press=".onPressFinish"/>
+				<Button text="Save" press=".onPressSave"/>
+				<Button text="Cancel" type="Reject" press=".onPressCancel"/>
 		</OverflowToolbar>
 	</footer>
 </Page>
