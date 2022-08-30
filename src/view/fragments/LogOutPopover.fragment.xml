@@ -7,10 +7,10 @@
             horizontalScrolling="false"
             afterClose="onAfterPopoverClose">
         <VBox>
-            <Text text="Do you want to leave your account?"
+            <Text text="{i18n>popoverText}"
                 class="sapUiSmallMarginTopBottom sapUiSmallMarginBeginEnd"/>
                 <Button id="discardPopoverButtonId" 
-                        text="Log Out" 
+                        text="{i18n>logOut}" 
                         press="handleDiscardPopover" 
                         class="sapUiTinyMarginBottom sapUiTinyMarginBeginEnd"
                         width="94%"

@@ -4,7 +4,7 @@
 	xmlns:mvc="sap.ui.core.mvc" displayBlock="true" controllerName="webapp.typescript.controller.Start" height="100%">
 	<Page class="sapUiTinyMargin" showHeader="false">
 		<tnt:ToolHeader>
-			<Text text="Test Application" wrapping="false" />
+			<Text text="{i18n>testApplication}" wrapping="false" />
 			<ToolbarSpacer />
 			<Button text="{= ${supportModel>/auth} ? ${supportModel>/auth/email} : 'Not auth' }{}" type="Transparent" />
 			<Avatar src="sap-icon://user" press='onPressAvatar' displaySize="XS" />
