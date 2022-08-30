@@ -1,0 +1,160 @@
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>typescript</title><meta name="description" content="Documentation for typescript"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script async src="assets/search.js" id="search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container">
+<div class="table-cell" id="tsd-search" data-base=".">
+<div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
+<ul class="results">
+<li class="state loading">Preparing search index...</li>
+<li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">typescript</a></div>
+<div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="7" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="11" width="14" height="2" fill="var(--color-text)"></rect></svg></a></div></div></header>
+<div class="container container-main">
+<div class="col-8 col-content">
+<div class="tsd-page-title">
+<h2>typescript</h2></div>
+<div class="tsd-panel tsd-typography">
+<a href="#typescript" id="typescript" style="color: inherit; text-decoration: none;">
+  <h1>typescript</h1>
+</a>
+
+<a href="#description" id="description" style="color: inherit; text-decoration: none;">
+  <h2>Description</h2>
+</a>
+<p>This app demonstrates a TypeScript setup for developing UI5 applications.</p>
+<p><strong>The template is inspired by the <a href="https://github.com/SAP-samples/ui5-typescript-helloworld"><code>SAP-samples/ui5-typescript-helloworld</code></a> project which also contains <a href="https://github.com/SAP-samples/ui5-typescript-helloworld/blob/main/step-by-step.md">a detailed step-by-step guide</a>. It explains how this setup is created and how all the bits and pieces fit together.</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">:point_up: Overview of TypeScript-related Entities</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">The UI5 type definitions (<code>*.d.ts</code> files) are loaded as dev dependency from <a href="https://www.npmjs.com/package/@openui5/ts-types-esm">npm</a>. They are a work in progress, so while they should be working well already, we are still improving them, which might also lead to breaking changes.</td>
+</tr>
+<tr>
+<td align="left">The file <a href="tsconfig.json">tsconfig.json</a> contains the configuration for the TypeScript compilation, including a reference to the UI5 <code>*.d.ts</code> files.</td>
+</tr>
+<tr>
+<td align="left">Normally, the UI5 JavaScript files (controllers, Component.js etc.) would reside in the <code>webapp</code> folder. Now they are in the <a href="src">src</a> folder. The TypeScript compilation will create the <code>webapp</code> folder and put all output there.</td>
+</tr>
+<tr>
+<td align="left">In addition to the TypeScript compilation, there is also a conversion from the ES6 module and class syntax used in the source files to the classic UI5 module loading and class definition syntax (<code>sap.ui.define(...)</code> and <code>superClass.extend(...)</code>). This conversion is using the <a href="https://github.com/r-murphy/babel-plugin-transform-modules-ui5">babel-plugin-transform-modules-ui5</a> project from Ryan Murphy.</td>
+</tr>
+<tr>
+<td align="left">Both, the TypeScript compilation and the ES6 syntax transformation, are executed by Babel, as configured in the file <a href=".babelrc.json">.babelrc.json</a></td>
+</tr>
+<tr>
+<td align="left">This combined transformation is triggered by both the <code>build:ts</code> and <code>watch:ts</code> scripts in <a href="package.json">package.json</a>.</td>
+</tr>
+</tbody></table>
+
+<a href="#requirements" id="requirements" style="color: inherit; text-decoration: none;">
+  <h2>Requirements</h2>
+</a>
+<p>Either <a href="https://www.npmjs.com/">npm</a> or <a href="https://yarnpkg.com/">yarn</a> for dependency management.</p>
+
+<a href="#preparation" id="preparation" style="color: inherit; text-decoration: none;">
+  <h2>Preparation</h2>
+</a>
+<p>Use <code>npm</code> (or <code>yarn</code>) to install the dependencies:</p>
+<pre><code class="language-sh"><span class="hl-0">npm i</span>
+</code></pre>
+<p>(To use yarn, just do <code>yarn</code> instead.)</p>
+
+<a href="#run-the-app" id="run-the-app" style="color: inherit; text-decoration: none;">
+  <h2>Run the App</h2>
+</a>
+<p>Execute the following command to run the app locally for development in watch mode (the browser reloads the app automatically when there are changes in the source code):</p>
+<pre><code class="language-sh"><span class="hl-0">npm start</span>
+</code></pre>
+<p>As shown in the terminal after executing this command, the app is then running on <a href="http://localhost:8080/index.html">http://localhost:8080/index.html</a>. A browser window with this URL should automatically open.</p>
+<p>(When using yarn, do <code>yarn start</code> instead.)</p>
+
+<a href="#debug-the-app" id="debug-the-app" style="color: inherit; text-decoration: none;">
+  <h2>Debug the App</h2>
+</a>
+<p>In the browser, you can directly debug the original TypeScript code, which is supplied via sourcemaps (need to be enabled in the browser&#39;s developer console if it does not work straight away). If the browser doesn&#39;t automatically jump to the TypeScript code when setting breakpoints, use e.g. <code>Ctrl</code>/<code>Cmd</code> + <code>P</code> in Chrome to open the <code>*.ts</code> file you want to debug.</p>
+
+<a href="#build-the-app" id="build-the-app" style="color: inherit; text-decoration: none;">
+  <h2>Build the App</h2>
+</a>
+
+<a href="#unoptimized-but-quick" id="unoptimized-but-quick" style="color: inherit; text-decoration: none;">
+  <h3>Unoptimized (but quick)</h3>
+</a>
+<p>Execute the following command to build the project and get an app that can be deployed:</p>
+<pre><code class="language-sh"><span class="hl-0">npm run build</span>
+</code></pre>
+<p>The result is placed into the <code>dist</code> folder. To start the generated package, just run</p>
+<pre><code class="language-sh"><span class="hl-0">npm run start:dist</span>
+</code></pre>
+<p>Note that <code>index.html</code> still loads the UI5 framework from the relative URL <code>resources/...</code>, which does not physically exist, but is only provided dynamically by the UI5 tooling. So for an actual deployment you should change this URL to either <a href="https://openui5.hana.ondemand.com/#/topic/2d3eb2f322ea4a82983c1c62a33ec4ae">the CDN</a> or your local deployment of UI5.</p>
+<p>(When using yarn, do <code>yarn build</code> and <code>yarn start:dist</code> instead.)</p>
+
+<a href="#optimized" id="optimized" style="color: inherit; text-decoration: none;">
+  <h3>Optimized</h3>
+</a>
+<p>For an optimized self-contained build (takes longer because the UI5 resources are built, too), do:</p>
+<pre><code class="language-sh"><span class="hl-0">npm run build:opt</span>
+</code></pre>
+<p>To start the generated package, again just run:</p>
+<pre><code class="language-sh"><span class="hl-0">npm run start:dist</span>
+</code></pre>
+<p>In this case, all UI5 framework resources are also available within the <code>dist</code> folder, so the folder can be deployed as-is to any static web server, without changing the bootstrap URL.</p>
+<p>With the self-contained build, the bootstrap URL in <code>index.html</code> has already been modified to load the newly created <code>sap-ui-custom.js</code> for bootstrapping, which contains all app resources as well as all needed UI5 JavaScript resources. Most UI5 resources inside the <code>dist</code> folder are for this reason actually <strong>not</strong> needed to run the app. Only the non-JS-files, like translation texts and CSS files, are used and must also be deployed. (Only when for some reason JS files are missing from the optimized self-contained bundle, they are also loaded separately.)</p>
+<p>(When using yarn, do <code>yarn build:opt</code> and <code>yarn start:dist</code> instead.)</p>
+
+<a href="#check-the-code" id="check-the-code" style="color: inherit; text-decoration: none;">
+  <h2>Check the Code</h2>
+</a>
+<p>Do the following to run a TypeScript check:</p>
+<pre><code class="language-sh"><span class="hl-0">npm run ts-typecheck</span>
+</code></pre>
+<p>This checks the application code for any type errors (but will also complain in case of fundamental syntax issues which break the parsing).</p>
+<p>To lint the TypeScript code, do:</p>
+<pre><code class="language-sh"><span class="hl-0">npm run lint</span>
+</code></pre>
+<p>(Again, when using yarn, do <code>yarn ts-typecheck</code> and <code>yarn lint</code> instead.)</p>
+
+<a href="#references" id="references" style="color: inherit; text-decoration: none;">
+  <h2>References</h2>
+</a>
+<p>Once you have understood the setup and want to inspect the code of a slightly more comprehensive UI5 app written in TypeScript, you can check out the <a href="https://github.com/SAP-samples/ui5-cap-event-app/tree/typescript">TypeScript version of the UI5 CAP Event App Sample</a>.</p>
+
+<a href="#license" id="license" style="color: inherit; text-decoration: none;">
+  <h2>License</h2>
+</a>
+<p>This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the <a href="LICENSE">LICENSE</a> file.</p>
+</div></div>
+<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+<div class="tsd-navigation settings">
+<details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
+<h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility">
+<h4 class="uppercase">Member Visibility</h4><form>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-private" name="private"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Private</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></form></div>
+<div class="tsd-theme-toggle">
+<h4 class="uppercase">Theme</h4><select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<nav class="tsd-navigation primary">
+<details class="tsd-index-accordion" open><summary class="tsd-accordion-summary">
+<h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Modules</h3></summary>
+<div class="tsd-accordion-details">
+<ul>
+<li class="current selected"><a href="modules.html">typescript</a>
+<ul>
+<li class="tsd-kind-module"><a href="modules/Component.html">Component</a></li>
+<li class="tsd-kind-module"><a href="modules/controller_App_controller.html">controller/<wbr/>App.controller</a></li>
+<li class="tsd-kind-module"><a href="modules/controller_BaseController.html">controller/<wbr/>Base<wbr/>Controller</a></li>
+<li class="tsd-kind-module"><a href="modules/controller_Detail_controller.html">controller/<wbr/>Detail.controller</a></li>
+<li class="tsd-kind-module"><a href="modules/controller_DetailDetail_controller.html">controller/<wbr/>Detail<wbr/>Detail.controller</a></li>
+<li class="tsd-kind-module"><a href="modules/controller_Test_controller.html">controller/<wbr/>Test.controller</a></li>
+<li class="tsd-kind-module"><a href="modules/db_Auth.html">db/<wbr/>Auth</a></li>
+<li class="tsd-kind-module"><a href="modules/db_FetchDB.html">db/<wbr/>FetchDB</a></li>
+<li class="tsd-kind-module"><a href="modules/model_formatter.html">model/formatter</a></li>
+<li class="tsd-kind-module"><a href="modules/model_models.html">model/models</a></li></ul></li></ul></div></details></nav></div></div>
+<div class="container tsd-generator">
+<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div>
+<div class="overlay"></div><script src="assets/main.js"></script></body></html>
