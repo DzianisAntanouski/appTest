@@ -64,18 +64,18 @@ export default class FetchDataBase {
 
   static async saveUser(email: string, idToken: string) {
     return await fetch(
-      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/userAuth/${email}.json`,
+      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/userAuth/${email.replace(".", "+")}.json`,
       {
         method: "PATCH",
         body: JSON.stringify({
-          idToken
+          idToken, email
         }),
       })
     }
 
   static async checkUserToken(email: string) {
     return await fetch(
-      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/userAuth/${email}.json`,
+      `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/userAuth/${email.replace(".", "+")}.json`,
       { method: "GET" }
     )
       .then((res) => res.json())
