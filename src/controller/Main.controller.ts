@@ -35,14 +35,12 @@ export default class Main extends BaseController {
   private formatter = formatter;
 
   public onInit(): void {
-    // void (this.byId("SplitContDemo") as ITest)._oMasterNav.setWidth("40%");
     void this.getView().attachAfterRendering(this.changeUIAfterRendering.bind(this));
-
     void this.getOwnerComponent().getRouter().getRoute("main").attachPatternMatched(this.onPatternMatched.bind(this), this);
   }
 
   public onPatternMatched(oEvent: Event) {
-    if (!(this.getModel("supportModel") as JSONModel).getProperty("/auth")) {
+    if (!this.getSupportModel().getProperty("/auth")) {
       this.navTo("start");
       MessageToast.show("You don't have access for this page");
       return
@@ -51,7 +49,8 @@ export default class Main extends BaseController {
     this.getView().bindObject({
       path: `${sPath.replace(/-/g, "/")}`,
     });
-    (this.getModel() as JSONModel).setProperty("/selected", false);    
+    this.getSupportModel().setProperty("/selected", false);    
+    this.getSupportModel().setProperty("/edit", false);    
        
   }
 
@@ -122,8 +121,8 @@ export default class Main extends BaseController {
   }
 
   public onPressEdit(): void {
-    const qListModel: JSONModel = this.getModel() as JSONModel;
-    qListModel.setProperty("/edit", !qListModel.getProperty("/edit"));
+    // const qListModel: JSONModel = this.getModel() as JSONModel;
+    this.getSupportModel().setProperty("/edit", !this.getSupportModel().getProperty("/edit"));
     void this.setChecked();
   }
 
@@ -168,10 +167,10 @@ export default class Main extends BaseController {
     void FetchDataBase
       .create(newQuestion, "/" + aPath[1], "/" + aPath[3])
       .then(() => void this.fireBaseRead())
-      .then(() => (this.getModel() as JSONModel).setProperty("/edit", true));
+      .then(() => this.getSupportModel().setProperty("/edit", true));
     this.clearFragmentInputs();
     void this.oFragment.then((oMessagePopover) => (oMessagePopover as Dialog).close());
-    void (this.getModel() as JSONModel).setProperty("/edit", true);
+    void this.getSupportModel().setProperty("/edit", true);
   }
 
   public onPressAddQuestion(): void {
@@ -190,7 +189,7 @@ export default class Main extends BaseController {
     const oModel: JSONModel = this.getModel() as JSONModel;
     oModel.setProperty("/newQuestion", JSON.parse(JSON.stringify(this.newQuestion)));
     void this.oFragment.then((oMessagePopover) => (oMessagePopover as Dialog).open());
-    (this.getModel() as JSONModel).setProperty("/edit", true);
+    this.getSupportModel().setProperty("/edit", true);
   }
 
   public onPressDeleteSubCategory() {
@@ -215,35 +214,37 @@ export default class Main extends BaseController {
       void FetchDataBase.delete(sId as string, "/" + aPath[1], "/" + aPath[3]).then(
         () =>
           void this.fireBaseRead()
-            .then(() => (this.getModel() as JSONModel).setProperty("/edit", true))
+            .then(() => this.getSupportModel().setProperty("/edit", true))
             .then(() => (oControls as RadioButton[]).forEach((elem) => elem.setSelected(false)))
       );
     }
   }
 
+
+  //????????
   public onLiveChange(): void {
-    const qListModel: JSONModel = this.getModel() as JSONModel;
-    qListModel.setProperty("/changed", true);
+    // const qListModel: JSONModel = this.getModel() as JSONModel;
+    this.getSupportModel().setProperty("/changed", true);
   }
 
   public onSelect(): void {
-    const qListModel: JSONModel = this.getModel() as JSONModel;
-    qListModel.setProperty("/selected", true);
+    // const qListModel: JSONModel = this.getModel() as JSONModel;
+    this.getSupportModel().setProperty("/selected", true);
   }
   public onPressFinish(): void {
-    (this.getModel() as JSONModel).setProperty("/selected", false);
-    const qListModel: JSONModel = this.getModel() as JSONModel;
-    qListModel.setProperty("/edit", !qListModel.getProperty("/edit"));
+    this.getSupportModel().setProperty("/selected", false);
+    // const qListModel: JSONModel = this.getModel() as JSONModel;
+    this.getSupportModel().setProperty("/edit", !this.getSupportModel().getProperty("/edit"));
     const oControls: Array<Control> = this.getView()
       .getControlsByFieldGroupId("questions")
       .filter((elem) => elem.getMetadata().getElementName() === "sap.m.RadioButton");
     oControls.forEach((oControl) => (oControl as RadioButton).setSelected(false));
 
-    if ((this.getModel() as JSONModel).getProperty("/changed")) {
-      const qListModel = this.getModel() as JSONModel;
+    if (this.getSupportModel().getProperty("/changed")) {
+      // const qListModel = this.getModel() as JSONModel;
       const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().slice(1).split("/");
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      const oData: IData[] = (qListModel.getData()[aPath[0]][aPath[1]][aPath[2]][aPath[3]] as IData).questions as IData[];
+      const oData: IData[] = ((this.getModel() as JSONModel).getData()[aPath[0]][aPath[1]][aPath[2]][aPath[3]] as IData).questions as IData[];
       const result: IResult[] = Object.values(oData).map((elem) => {
         return {
           id: elem.id,
@@ -252,5 +253,9 @@ export default class Main extends BaseController {
       }) as unknown as IResult[];
       void result.forEach((elem) => void FetchDataBase.patch(elem.id, elem.body, "/" + aPath[1], "/" + aPath[3]));
     }
+  }
+  public onPressNavBack () {
+    this.getSupportModel().setProperty("/edit", false)
+    this.onNavBack()
   }
 }
