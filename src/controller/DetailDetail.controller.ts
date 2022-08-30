@@ -24,7 +24,7 @@ export default class DetailDetail extends BaseController {
         [key: string]: string
       }
     }
-    const sPath: string = (this.getView().getBindingContext() as Context).getPath()
+    const sPath: string = (this.getView()?.getBindingContext() as Context).getPath()
     const sCreatedBy: object = ((this.getModel() as JSONModel).getProperty(sPath) as IOwner).createdBy
     if (!this.getSupportModel().getProperty("/auth")) this.loadAuthorizationDialog()
     else if (!sCreatedBy || Object.values(sCreatedBy)[0] === this.getSupportModel().getProperty("/auth/email")) {      
