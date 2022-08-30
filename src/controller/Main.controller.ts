@@ -37,8 +37,8 @@ export default class Main extends BaseController {
   private formatter = formatter;
 
   public onInit(): void {
-    void this.getView().attachAfterRendering(this.changeUIAfterRendering.bind(this));
-    void this.getOwnerComponent().getRouter().getRoute("main").attachPatternMatched(this.onPatternMatched.bind(this), this);
+    void this.getView()?.attachAfterRendering(this.changeUIAfterRendering.bind(this));
+    void this.getOwnerComponent().getRouter().getRoute("main")?.attachPatternMatched(this.onPatternMatched.bind(this), this);
     void this.getOwnerComponent().getModel().attachPropertyChange(this.changeProperty.bind(this), this)
   }
 
@@ -56,7 +56,7 @@ export default class Main extends BaseController {
       return
     }     
     const sPath: string = (oEvent.getParameter("arguments") as IArguments).sPath;
-    this.getView().bindObject({
+    this.getView()?.bindObject({
       path: `${sPath.replace(/-/g, "/")}`,
     });
     this.getSupportModel().setProperty("/selected", false);    
@@ -71,7 +71,7 @@ export default class Main extends BaseController {
   }
 
   public changeUIAfterRendering(): void {
-    if (this.getView().byId("detailDetail").getBindingContext()?.getObject()) {
+    if (this.getView()?.byId("detailDetail")?.getBindingContext()?.getObject()) {
       void this.setChecked();
       void this.highlightSwitcher();
     }
@@ -90,10 +90,10 @@ export default class Main extends BaseController {
   }
 
   private getInputListItem(): Array<Control> {
-    const oControls: Array<Control> = this.getView()
-      .getControlsByFieldGroupId("questions")
+    const oControls: Control[] | undefined = this.getView()
+      ?.getControlsByFieldGroupId("questions")
       .filter((elem) => elem.getMetadata().getElementName() === "sap.m.InputListItem");
-    return oControls;
+    return oControls ? oControls : []
   }
 
   public findListItem(oControl: IParent): IListItem {
@@ -106,7 +106,7 @@ export default class Main extends BaseController {
     const oListItem: Control = oEvent.getParameter("srcControl") as Control;
     if (oListItem.getBindingContext()) {
       const oContext: Context = oListItem.getBindingContext() as Context;
-      this.getView().byId("detailDetail").setBindingContext(oContext);
+      this.getView()?.byId("detailDetail")?.setBindingContext(oContext);
     }
 
     this.getInputListItem().forEach((control) => control.setProperty("highlight", MessageType.None));
@@ -117,9 +117,9 @@ export default class Main extends BaseController {
   }
 
   public setChecked(): void {
-    const rightAnswer: number[] = ((this.getView().byId("detailDetail").getBindingContext() as Context).getObject() as IQuestion).rightAnswer;
+    const rightAnswer: number[] = ((this.getView()?.byId("detailDetail")?.getBindingContext() as Context).getObject() as IQuestion).rightAnswer;
     this.getView()
-      .getControlsByFieldGroupId("checkBoxRightAnswers")
+      ?.getControlsByFieldGroupId("checkBoxRightAnswers")
       .filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.CheckBox")
       .forEach((checkBox, index) => {
         if (rightAnswer.includes(index + 1)) {
@@ -142,15 +142,15 @@ export default class Main extends BaseController {
     const oControls: Array<Control> = this.getInputListItem();
     const oControl: Control = oControls.find((elem) => elem.getProperty("highlight") === "Information") as Control;
     const oContext: Context = oControl.getBindingContext() as Context;
-    this.getView().byId("detailDetail").setBindingContext(oContext);
+    this.getView()?.byId("detailDetail")?.setBindingContext(oContext);
     void this.setChecked();
   }
 
   private clearFragmentInputs(): void {
-    const aInputs: UI5Element[] = [this.byId("newQ"), this.byId("answer1"), this.byId("answer1"), this.byId("answer1"), this.byId("answer1")];
+    const aInputs = [this.byId("newQ"), this.byId("answer1"), this.byId("answer1"), this.byId("answer1"), this.byId("answer1")];
     aInputs.forEach((oInput) => (oInput as Input).setValue(""));
     this.getView()
-      .getControlsByFieldGroupId("checkBox")
+      ?.getControlsByFieldGroupId("checkBox")
       .forEach((checkBox) => (checkBox as CheckBox).setSelected(false));
   }
 
@@ -163,8 +163,8 @@ export default class Main extends BaseController {
     const getTemplate = (sProp: string): string => {
       return (this.getModel() as JSONModel).getProperty(`/newQuestion/${sProp}`) as string;
     };
-    const aChecked: number[] = this.getView()
-      .getControlsByFieldGroupId("checkBox")
+    const aChecked: number[] | undefined = this.getView()
+      ?.getControlsByFieldGroupId("checkBox")
       .filter((elem) => (elem as CheckBox).getSelected())
       .map((elem) => +elem.getId().slice(-1));
     const newQuestion = models.createQuestion(
@@ -188,14 +188,16 @@ export default class Main extends BaseController {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     if (!this.oFragment) {
       const oView = this.getView();
-      this.oFragment = Fragment.load({
-        id: oView.getId(),
-        name: "webapp.typescript.view.fragments.CreateQuestion",
-        controller: this,
-      }).then((oMessagePopover) => {
-        oView.addDependent(oMessagePopover as UI5Element);
-        return oMessagePopover;
-      });
+      if (oView) {
+        this.oFragment = Fragment.load({
+          id: oView.getId(),
+          name: "webapp.typescript.view.fragments.CreateQuestion",
+          controller: this,
+        }).then((oMessagePopover) => {
+          oView.addDependent(oMessagePopover as UI5Element);
+          return oMessagePopover;
+        });
+      }      
     }
     const oModel: JSONModel = this.getModel() as JSONModel;
     oModel.setProperty("/newQuestion", JSON.parse(JSON.stringify(this.newQuestion)));
@@ -204,14 +206,14 @@ export default class Main extends BaseController {
   }
 
   public onPressDeleteSubCategory() {
-    const sPath: string[] = (this.getView().getBindingContext() as Context).getPath().split('/')
+    const sPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().split('/')
     
     void FetchDataBase.deleteCategory(sPath[2], sPath[4]).then(() => {this.navTo("start")})   
   }
 
   public onPressDeleteQuestion() {
-    const oControls: Array<Control> = this.getView()
-      .getControlsByFieldGroupId("questions")
+    const oControls: Control[] | undefined = this.getView()
+      ?.getControlsByFieldGroupId("questions")
       .filter((elem) => elem.getMetadata().getElementName() === "sap.m.RadioButton");
     if ((oControls as RadioButton[]).filter((elem) => elem.getSelected()).length) {
       const sSelectedControl = (oControls as RadioButton[])
@@ -220,7 +222,7 @@ export default class Main extends BaseController {
         ?.getPath();
 
       const sId: string | undefined = (sSelectedControl as string).split("/").pop();
-      const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().slice(1).split("/");
+      const aPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().slice(1).split("/");
 
       void FetchDataBase.delete(sId as string, "/" + aPath[1], "/" + aPath[3]).then(
         () =>
@@ -231,33 +233,23 @@ export default class Main extends BaseController {
     }
   }
 
-
-  //????????
-  /* public onLiveChange(): void {
-    // const qListModel: JSONModel = this.getModel() as JSONModel;
-    this.getSupportModel().setProperty("/change", true);
-  } */
-
   public onCheck(): void {
     this.getSupportModel().setProperty("/change", true);
   }
 
   public onSelect(): void {
-    // const qListModel: JSONModel = this.getModel() as JSONModel;
     this.getSupportModel().setProperty("/selected", true);
   }
   public onPressSave(): void {
     this.getSupportModel().setProperty("/selected", false);
-    // const qListModel: JSONModel = this.getModel() as JSONModel;
     this.getSupportModel().setProperty("/edit", !this.getSupportModel().getProperty("/edit"));
-    const oControls: Array<Control> = this.getView()
-      .getControlsByFieldGroupId("questions")
+    const oControls: Control[] | undefined = this.getView()
+      ?.getControlsByFieldGroupId("questions")
       .filter((elem) => elem.getMetadata().getElementName() === "sap.m.RadioButton");
-    oControls.forEach((oControl) => (oControl as RadioButton).setSelected(false));
+    oControls?.forEach((oControl) => (oControl as RadioButton).setSelected(false));
 
     if (this.getSupportModel().getProperty("/change")) {
-      // const qListModel = this.getModel() as JSONModel;
-      const aPath: string[] = (this.getView().getBindingContext() as Context).getPath().slice(1).split("/");
+      const aPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().slice(1).split("/");
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const oData: IData[] = ((this.getModel() as JSONModel).getData()[aPath[0]][aPath[1]][aPath[2]][aPath[3]] as IData).questions as IData[];
       const result: IResult[] = Object.values(oData).map((elem) => {
@@ -274,7 +266,7 @@ export default class Main extends BaseController {
   public onPressNavBack () {
     if (this.getSupportModel().getProperty("/edit") && this.getSupportModel().getProperty("/change")) {
       const onPressBackAction = () => {
-        const sPath = (this.getView().getBindingContext() as Context).getPath();
+        const sPath = (this.getView()?.getBindingContext() as Context).getPath();
         (this.getModel() as JSONModel).setProperty(sPath, this.oState)
         this.getSupportModel().setProperty("/edit", false);
         this.getSupportModel().setProperty("/change", false);
@@ -290,7 +282,7 @@ export default class Main extends BaseController {
   }
 
   public saveState() {
-    const sPath = (this.getView().getBindingContext() as Context).getPath();
+    const sPath = (this.getView()?.getBindingContext() as Context).getPath();
     const oState = (this.getModel() as JSONModel).getProperty(sPath) as IQuestionStructure
     this.oState = JSON.parse(JSON.stringify(oState)) as IQuestionStructure
   }
@@ -298,7 +290,7 @@ export default class Main extends BaseController {
   public onPressCancel () {
     if (this.getSupportModel().getProperty("/change")) {
       const onPressYesAction = () => {
-        const sPath = (this.getView().getBindingContext() as Context).getPath();
+        const sPath = (this.getView()?.getBindingContext() as Context).getPath();
         (this.getModel() as JSONModel).setProperty(sPath, this.oState)
         void this.setChecked();
         void this.highlightSwitcher();
@@ -311,7 +303,7 @@ export default class Main extends BaseController {
   }
 
   public getConfirm (fn: () => void): void {  
-    MessageBox.confirm("Are you shure?", {
+    MessageBox.confirm("Are you sure?", {
         title: "Back",
         actions: [Action.YES, Action.NO],
         onClose: (oAction: string) => {

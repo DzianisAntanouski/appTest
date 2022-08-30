@@ -11,8 +11,6 @@ import BaseController from "./BaseController";
 import FetchDataBase from '../db/FetchDB';
 import Context from 'sap/ui/model/Context';
 import formatter from '../model/formatter'
-import JSONModel from 'sap/ui/model/json/JSONModel';
-import Control from 'sap/ui/core/Control';
 
 /**
  * @namespace webapp.typescript.controller
@@ -75,7 +73,6 @@ export default class Detail extends BaseController {
 			}
 			this.oSubmitDialog.open();
 		}
-		
 	}
 	onRunTest(oEvent: Event) {
 		this.bus.publish("navigation", "navToTesting", oEvent);
