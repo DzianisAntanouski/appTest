@@ -9,6 +9,10 @@
       "expect-webdriverio",
       "wdio-ui5-service/dist"
     ],
-    "target": "es2019"
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@sapui5/ts-types-esm"
+    ],
+    "target": "ES2020"
   }
 }
