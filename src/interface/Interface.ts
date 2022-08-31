@@ -90,8 +90,6 @@ export interface IToken {
 
 }
 
-
-
 // -------------TestController------------------------
 export interface IResultQuestion {
   rightAnswersWord: string[][],
@@ -105,7 +103,7 @@ export interface IResults {
   email: string, 
   category: string, 
   subcategory: string, 
-  points: string
+  points: number
 }
 
 // -------------AuthController------------------------

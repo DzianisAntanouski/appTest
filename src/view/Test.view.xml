@@ -1,16 +1,16 @@
 <mvc:View controllerName="webapp.typescript.controller.Test" displayBlock="true"
 	xmlns="sap.m"
-	xmlns:mvc="sap.ui.core.mvc"	>
-	<Page id="test" title="{i18n>question}" titleLevel="H2" navButtonPress=".onNavBack" titleAlignment="Center" backgroundDesign= "List" showNavButton="true" content="{questions}">
+	xmlns:mvc="sap.ui.core.mvc">
+	<Page title="{i18n>question}" titleLevel="H2" navButtonPress=".onNavBack" titleAlignment="Center" backgroundDesign= "Transparent" showNavButton="true" content="{questions}">
 		<content>
-			<Table fieldGroupIds="table" items="{answers}" mode="{= ${rightAnswer}.length>1 ? 'MultiSelect' : 'SingleSelectLeft'}">
+			<Table fieldGroupIds="table" items="{path:'answers', templateShareable: false}" mode="{= ${rightAnswer}.length>1 ? 'MultiSelect' : 'SingleSelectLeft'}" class='sapUiSmallMargin'>
 				<columns>
 					<Column>
 						<Text text="{question}" />
 					</Column>
 				</columns>
 				<items>
-					<ColumnListItem type="Active" highlight="None" id="">
+					<ColumnListItem type="Active">
 						<Text text="{}" />
 					</ColumnListItem>
 				</items>

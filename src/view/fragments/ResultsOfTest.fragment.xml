@@ -3,9 +3,10 @@
 	xmlns:table="sap.ui.table">
 	<Dialog title="Results of the test" class="sapUiView">
 
-		<table:Table rows="{supportModel>/resultsByQuestions}" enableSelectAll="false" selectionMode="None">
+		<table:Table rows="{path:'supportModel>/resultsByQuestions', templateShareable: false}" enableSelectAll="false" selectionMode="None" class='sapUiSmallMargin'>
+		
 			<table:columns>
-				<table:Column>
+				<table:Column >
 					<Text text="{i18n>question}" />
 					<table:template>
 						<Text text="{supportModel>questionWord}" />
@@ -14,7 +15,7 @@
 				<table:Column>
 					<Text text="{i18n>rightAnswers}" />
 					<table:template>
-						<List items="{supportModel>rightAnswersWord}">
+						<List items="{supportModel>rightAnswersWord}" >
 							<items>
 								<CustomListItem>
 									<content>
