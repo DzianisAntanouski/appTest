@@ -195,7 +195,7 @@ export default abstract class BaseController extends Controller {
     return this.getModel("supportModel") as JSONModel
   }
 
-  public i18n(sKey: string, param?: []) {
+  public i18n(sKey: string, param?: string[]) {
     const resourceModel = this.getOwnerComponent().getModel("i18n") as ResourceModel
     const oBundle = resourceModel.getResourceBundle() as  ResourceBundle;
     return oBundle.getText(sKey, param);
