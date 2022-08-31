@@ -42,14 +42,15 @@ export default abstract class BaseController extends Controller {
     if (!response?.email) {
       response = await Auth.fnAuthoriseUser(email, password) as IResponse;
       if (!response?.email) {
-        MessageBox.error("wdwdwd")
+        MessageBox.error(response?.error.message)
         response = null
       }
     }
     this.getSupportModel().setProperty("/auth", response)
-    void FetchDataBase.saveUser(response.email, response.idToken);
+    if (response) void FetchDataBase.saveUser(response.email, response.idToken);
     localStorage.setItem("auth", JSON.stringify(response))
   }
+  
   
   public loadAuthorizationDialog(oControl?: Control) {
     const oView = this.getView();
@@ -70,7 +71,7 @@ export default abstract class BaseController extends Controller {
     const email: string = this.getModel("supportModel")?.getProperty("/email") as string;
     const password = this.getModel("supportModel")?.getProperty("/password") as string;
     await this.tryAuthorization(email, password);
-    (this.oAuthorizationDialog as Dialog).close();
+    if (this.getSupportModel().getProperty("/auth")) (this.oAuthorizationDialog as Dialog).close();
 
     const oInitControl = await this.oFragment.then(resolve => resolve).then(data => data)
     if ((this as unknown as Detail).onPressAddCategory) {      
@@ -126,7 +127,6 @@ export default abstract class BaseController extends Controller {
     qListModel.setProperty("/Data", modelStructureToBinding);
     qListModel.setProperty("/edit", false);
   }
-  
   setAllQuestions(): void {
     const model = this.getModel() as JSONModel;
     const data = (model.getData() as { Data: ICategory }).Data

@@ -52,7 +52,7 @@ export default class Main extends BaseController {
   public onPatternMatched(oEvent: Event) {
     if (!this.getSupportModel().getProperty("/auth")) {
       this.navTo("start");
-      MessageToast.show("You don't have access for this page");
+      MessageToast.show(this.i18n("authorizationMainPageErrorMessage"));
       return
     }     
     const sPath: string = (oEvent.getParameter("arguments") as IArguments).sPath;
@@ -303,8 +303,8 @@ export default class Main extends BaseController {
   }
 
   public getConfirm (fn: () => void): void {  
-    MessageBox.confirm("Are you sure?", {
-        title: "Back",
+    MessageBox.confirm(this.i18n("mainPageConfirmationDialogText"), {
+        title: this.i18n("mainPageConfirmationDialogTitle"),
         actions: [Action.YES, Action.NO],
         onClose: (oAction: string) => {
             if (oAction === Action.YES) {

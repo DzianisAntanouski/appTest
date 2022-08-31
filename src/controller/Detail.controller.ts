@@ -25,7 +25,7 @@ export default class Detail extends BaseController {
 	}	
 
 	public handleDetailPress(oEvent: Event): void {
-		MessageToast.show("Loading end column...");
+		MessageToast.show(this.i18n("loadingNewPageMessage"));
 		this.bus.publish("flexible", "setDetailDetailPage", oEvent);
 	}
 
@@ -35,15 +35,17 @@ export default class Detail extends BaseController {
 			if (!this.oSubmitDialog) {
 				this.oSubmitDialog = new Dialog({
 					type: DialogType.Message,
-					title: "Confirm",
+					title: this.i18n("confirm"),
 					content: [
 						new Label({
-							text: "Do you want to submit this category?",
+							text: this.i18n("addSubcategoryDialogLabelText"),
 							labelFor: "categoryName"
 						}),
-						new TextArea("categoryName", {							
-							width: "100%",							
-							placeholder: "Add category name (required)",
+
+						new TextArea("categoryName", {
+							width: "100%",
+							placeholder: this.i18n("addSubcategoryDialogTextAreaPlaceholder"),
+
 							liveChange: (oEvent: Event): void => {
 								const sText: string = (oEvent as unknown as Event).getParameter("value") as string;
 								this.oSubmitDialog.getBeginButton().setEnabled(sText.length > 0);
@@ -52,11 +54,11 @@ export default class Detail extends BaseController {
 					],
 					beginButton: new Button({
 						type: ButtonType.Emphasized,
-						text: "Submit",
+						text: this.i18n("addSubcategoryDialogSubmitBtnText"),
 						enabled: false,
-						press: () => {
+						press: () => { 
 							const sText = (Core.byId("categoryName") as TextArea).getValue();
-							MessageToast.show("Note is: " + sText);
+							MessageToast.show(this.i18n("submitMessage", [sText]));
 							const aPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().split("/")
 							const sEmail: string = this.getSupportModel().getProperty("/auth/email") as string
 							void FetchDataBase.createCategory(sEmail, `/${aPath[2]}`, `/${sText}`).then(() => void this.fireBaseRead())
@@ -65,7 +67,7 @@ export default class Detail extends BaseController {
 						}
 					}),
 					endButton: new Button({
-						text: "Cancel",
+						text: this.i18n("addSubcategoryDialogSubmitBtnCancel"),
 						press: () => {
 							void (Core.byId("categoryName") as TextArea).setValue("")
 							this.oSubmitDialog.close();
