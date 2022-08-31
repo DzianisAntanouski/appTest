@@ -3,14 +3,14 @@
     height="100%">
 	<Page id="detailDetailPage" title="{i18n>runAndManageTests}" backgroundDesign="Transparent">
 		<headerContent>
-			<Button type="Transparent" icon="sap-icon://decline" press="handleClose"  tooltip="Close end column" />
+			<Button id="closeButton" type="Transparent" icon="sap-icon://decline" press="handleClose"  tooltip="Close end column" />
 		</headerContent>
 		<content>
-			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleNavToManage" header="{i18n>manageTest}"
+			<GenericTile id="manageTest" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleNavToManage" header="{i18n>manageTest}"
 				subheader="{i18n>manage} {name} {i18n>test}"  frameType= "TwoByHalf">
 				<TileContent />
 			</GenericTile>
-			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleNavToTest" header="{i18n>runTest}"
+			<GenericTile id="runTest" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleNavToTest" header="{i18n>runTest}"
 				subheader="{i18n>complete} {name} {i18n>test}"  frameType= "TwoByHalf">
 				<TileContent />
 			</GenericTile>
