@@ -124,6 +124,7 @@ export default abstract class BaseController extends Controller {
     qListModel.setProperty("/Data", modelStructureToBinding);
     qListModel.setProperty("/edit", false);
   }
+  
   setAllQuestions(): void {
     const model = this.getModel() as JSONModel;
     const data = (model.getData() as { Data: ICategory }).Data
