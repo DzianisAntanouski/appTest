@@ -1,6 +1,6 @@
 import Page from "./Page"
 
-class ListReport extends Page {
+class Start extends Page {
     async open() {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         await super.open("#/")
@@ -9,4 +9,4 @@ class ListReport extends Page {
     _viewName = "webapp.typescript.view.Start"
 }
 
-export default new ListReport()
+export default new Start()
