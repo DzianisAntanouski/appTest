@@ -35,6 +35,7 @@ export default abstract class BaseController extends Controller {
       error: {
         message: string
       }
+      idToken: string
     }
     let response: IResponse = await Auth.fnRegisterNewUser(email, password) as IResponse;
     if (!response?.email) {
@@ -44,6 +45,7 @@ export default abstract class BaseController extends Controller {
       }
     }
     this.getSupportModel().setProperty("/auth", response)
+    void FetchDataBase.saveUser(response.email, response.idToken);
     localStorage.setItem("auth", JSON.stringify(response))
   }
   
@@ -67,12 +69,14 @@ export default abstract class BaseController extends Controller {
     const password = this.getModel("supportModel")?.getProperty("/password") as string;
     await this.tryAuthorization(email, password);
     (this.oAuthorizationDialog as Dialog).close();
+
     const oInitControl = await this.oFragment.then(resolve => resolve).then(data => data)
     if ((this as unknown as Detail).onPressAddCategory) {      
       (this as unknown as Detail).onPressAddCategory()
     } else if (!oInitControl) {
       const sPath: string = (this.getView()?.getBindingContext() as Context).getPath()
       this.bus.publish("navigation", "navToMain", { sPath, event: false })
+
     }
   }  
 

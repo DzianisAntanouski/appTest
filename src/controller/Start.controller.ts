@@ -6,8 +6,9 @@ import FlexibleColumnLayout from "sap/f/FlexibleColumnLayout";
 import Event from "sap/ui/base/Event";
 import Control from "sap/ui/core/Control";
 import Context from "sap/ui/model/Context";
-import { IOption } from "../interface/Interface";
+import { IEvent, IOption, IParent } from "../interface/Interface";
 import Fragment from "sap/ui/core/Fragment";
+import Popover from "sap/m/Popover";
 
 /**
  * @namespace webapp.typescript.controller
@@ -16,7 +17,7 @@ export default class Start extends BaseController {
   oFlexibleColumnLayout: FlexibleColumnLayout;
   bus: EventBus;
   mViews: Promise<XMLView> | undefined;
-  oDiscardFragment: Control | Control[];
+  oDiscardFragment: Popover;
 
   public onInit(): void {
     this.bus = this.getOwnerComponent().getEventBus();
@@ -26,7 +27,6 @@ export default class Start extends BaseController {
     this.bus.subscribe("navigation", "navToTesting", this.navToTesting.bind(this), this);
 
     this.oFlexibleColumnLayout = this.byId("fcl") as FlexibleColumnLayout;
-    // void this.fireBaseRead("/FrontEnd", "/SAPUI5").then((data) => console.log(data))
   }
 
   public onExit(): void {
@@ -83,11 +83,8 @@ export default class Start extends BaseController {
   }
 
   public navToMain(a: string, b: string, oEvent: Event | object): void {
-    interface IEvent {
-      event: boolean
-      sPath: string
-    }
-    const sPath: string = (oEvent as IEvent)?.sPath ? (oEvent as IEvent).sPath : (((oEvent as Event).getSource() as Control).getBindingContext() as Context).getPath();
+    
+    const sPath: string = (oEvent as IEvent)?.sPath ? (oEvent as IEvent).sPath : (((oEvent as Event).getSource() as Control).getBindingContext() as Context)?.getPath();
     this.navTo("main", { sPath: sPath.replace(/\//g, "-") }, true);
   }
 
@@ -98,7 +95,9 @@ export default class Start extends BaseController {
 
 
   public onPressAvatar(oEvent: Event){ 
+
     if (!this.getSupportModel().getProperty("/auth")) this.loadAuthorizationDialog(oEvent.getSource() as Control)
+
     else { 
       const oButton = oEvent.getSource();
       const oView = this.getView();
@@ -107,21 +106,28 @@ export default class Start extends BaseController {
         name: "webapp.typescript.view.fragments.LogOutPopover",
         controller: this,
       }).then((oPopover) => {
-        this.oDiscardFragment = oPopover; 
-        oView?.addDependent.oPopover;
-        this.oDiscardFragment.openBy(oButton);
+        this.oDiscardFragment = oPopover as Popover; 
+        oView?.addDependent(oPopover as Popover);
+        (oPopover as Popover).openBy(oButton, false);
       });
     }
   }  
 
+
   public handleDiscardPopover() {
-    localStorage.setItem("auth", null);
+    localStorage.clear();
     this.getSupportModel().setProperty("/auth", null)
     this.oDiscardFragment.close();
   }
 
-  public onAfterPopoverClose() {
-    this.oDiscardFragment.destroy();
+  public onAfterPopoverClose(oEvent: Event) {
+    this.findPopover(oEvent.getSource() as IParent);
+  }
+
+  public findPopover(oControl: IParent): void {
+    oControl.getMetadata().getElementName() !== "sap.m.Popover"
+      ? this.findPopover(oControl.oParent as IParent)
+      : (oControl as unknown as Popover).destroy()
   }
 }
 
