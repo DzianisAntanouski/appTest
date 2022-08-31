@@ -4,6 +4,13 @@ import NavContainer from "sap/m/NavContainer";
 import SplitContainer from "sap/m/SplitContainer";
 import Control from "sap/ui/core/Control";
 
+
+export interface ITemplate {
+  selector: {
+      id: string
+      viewName: string
+  }
+}
 // -------------AppController--------------------------
 
 export interface IAuthObject {

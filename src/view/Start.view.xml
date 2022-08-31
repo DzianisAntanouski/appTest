@@ -6,8 +6,8 @@
 		<tnt:ToolHeader>
 			<Text text="{i18n>testApplication}" wrapping="false" />
 			<ToolbarSpacer />
-			<Button text="{= ${supportModel>/auth} ? ${supportModel>/auth/email} : 'Not auth' }{}" type="Transparent" />
-			<Avatar src="sap-icon://user" press='onPressAvatar' displaySize="XS" />
+			<Button id="emailText" text="{= ${supportModel>/auth} ? ${supportModel>/auth/email} : 'Not auth' }{}" type="Transparent" />
+			<Avatar id="avatarBtn" src="sap-icon://user" press='onPressAvatar' displaySize="XS" />
 		</tnt:ToolHeader>
 		<f:FlexibleColumnLayout id="fcl">
 			<f:beginColumnPages>
