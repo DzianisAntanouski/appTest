@@ -7,7 +7,7 @@ import { IAuthObject } from "../interface/Interface";
  * @namespace webapp.typescript.controller
  */
 export default class App extends BaseController {
-  public onInit(): void {
+  public onInit(): void { 
     // apply content density mode to root view
     this.getView()?.addStyleClass(this.getOwnerComponent().getContentDensityClass());
     // ?????????????????????????

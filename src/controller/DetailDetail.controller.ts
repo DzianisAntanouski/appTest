@@ -15,7 +15,7 @@ export default class DetailDetail extends BaseController {
     this.bus = this.getOwnerComponent().getEventBus();
   }
   public handleClose() {
-    MessageToast.show("Loading end column...");
+    MessageToast.show(this.i18n("loadingNewPageMessage"));
     this.bus.publish("flexible", "setDetailPage");
   }
   public handleNavToManage(oEvent: Event) {
@@ -30,7 +30,7 @@ export default class DetailDetail extends BaseController {
     else if (!sCreatedBy || Object.values(sCreatedBy)[0] === this.getSupportModel().getProperty("/auth/email")) {      
       this.bus.publish("navigation", "navToMain", oEvent)
     }
-    else MessageBox.error("You don’t have access to edit this test.");
+    else MessageBox.error(this.i18n("authorizationMTPageErrorMessage"));
   }
 
   public handleNavToTest(oEvent: Event) {
