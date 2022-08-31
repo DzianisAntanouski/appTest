@@ -1,5 +1,4 @@
 import { wdi5Selector } from "wdio-ui5-service/dist/types/wdi5.types";
-import { ITemplate } from "webapp/typescript/interface/Interface";
 
 export default function Template(oViewName: string) {
     

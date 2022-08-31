@@ -41,8 +41,8 @@ export default class Detail extends BaseController {
 							text: "Do you want to submit this category?",
 							labelFor: "categoryName"
 						}),
-						new TextArea("categoryName", {
-							width: "100%",
+						new TextArea("categoryName", {							
+							width: "100%",							
 							placeholder: "Add category name (required)",
 							liveChange: (oEvent: Event): void => {
 								const sText: string = (oEvent as unknown as Event).getParameter("value") as string;
@@ -60,12 +60,14 @@ export default class Detail extends BaseController {
 							const aPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().split("/")
 							const sEmail: string = this.getSupportModel().getProperty("/auth/email") as string
 							void FetchDataBase.createCategory(sEmail, `/${aPath[2]}`, `/${sText}`).then(() => void this.fireBaseRead())
+							void (Core.byId("categoryName") as TextArea).setValue("")
 							this.oSubmitDialog.close();
 						}
 					}),
 					endButton: new Button({
 						text: "Cancel",
 						press: () => {
+							void (Core.byId("categoryName") as TextArea).setValue("")
 							this.oSubmitDialog.close();
 						}
 					})

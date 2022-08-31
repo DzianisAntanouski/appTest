@@ -16,6 +16,7 @@ import Control from "sap/ui/core/Control";
 import EventBus from "sap/ui/core/EventBus";
 import Context from 'sap/ui/model/Context';
 import Detail from "./Detail.controller";
+import MessageBox from "sap/m/MessageBox";
 
 /**
  * @namespace webapp.typescript.controller
@@ -37,11 +38,12 @@ export default abstract class BaseController extends Controller {
       }
       idToken: string
     }
-    let response: IResponse = await Auth.fnRegisterNewUser(email, password) as IResponse;
+    let response: IResponse | null = await Auth.fnRegisterNewUser(email, password) as IResponse;
     if (!response?.email) {
       response = await Auth.fnAuthoriseUser(email, password) as IResponse;
       if (!response?.email) {
-        alert(response.error.message)
+        MessageBox.error("wdwdwd")
+        response = null
       }
     }
     this.getSupportModel().setProperty("/auth", response)
