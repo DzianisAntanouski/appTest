@@ -3,38 +3,35 @@
 	xmlns:table="sap.ui.table">
 	<Dialog title="{i18n>statistic}" class="sapUiView">
 
-		<table:Table rows="{supportModel>/results}" enableSelectAll="false" selectionMode="None">
+		<table:Table rows="{supportModel>/results}" enableSelectAll="false" selectionMode="None"  class='sapUiSmallMargin'>
 			<table:columns>
-				<table:Column>
+				<table:Column sortProperty="email">
 					<Text text="{i18n>email}" />
 					<table:template>
 						<Text text="{supportModel>email}" />
 					</table:template>
 				</table:Column>
-				<table:Column>
+				<table:Column sortProperty="category">
 					<Text text="{i18n>category}" />
 					<table:template>
 						<Text text="{supportModel>category}" />
 					</table:template>
 				</table:Column>
-				<table:Column>
+				<table:Column sortProperty="subcategory">
 					<Text text="{i18n>subcategory}" />
 					<table:template>
 						<Text text="{supportModel>subcategory}" />
 					</table:template>
 				</table:Column>
-				<table:Column>
+				<table:Column sortProperty="points">
 					<Text text="{i18n>points}" />
 					<table:template>
 						<Text text="{supportModel>points}" />
 					</table:template>
 				</table:Column>
 			</table:columns>
-
 		</table:Table>
-
 		<buttons>
-
 			<Button text="{i18n>btnCancel}" press="onCancelFragmentResult" />
 		</buttons>
 	</Dialog>
