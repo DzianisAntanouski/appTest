@@ -20,7 +20,7 @@ import FetchDataBase from "../db/FetchDB";
 export default class Start extends BaseController {
   formatter = formatter;
   oFragment: Promise<Dialog | Control | Control[]>;
-  fragment: Promise<Dialog | Control | Control[]>;
+  fragmentStatistics: Promise<Dialog | Control | Control[]>;
 
   public onInit(): void {
     this.getOwnerComponent().getRouter().getRoute("test")?.attachPatternMatched(this.onPatternMatched.bind(this), this);
@@ -114,7 +114,7 @@ export default class Start extends BaseController {
 
   onCancelFragmentResult() {
     this.resetAllSelectedAnswers();
-    void this.fragment.then((oMessagePopover) => (oMessagePopover as Dialog).close());
+    void this.fragmentStatistics.then((oMessagePopover) => (oMessagePopover as Dialog).close());
   }
 
   calculateResults(index: number, rightAnswersWord: string[][], isTrue: boolean[][]): number {
@@ -137,8 +137,8 @@ export default class Start extends BaseController {
     const model = this.getModel() as JSONModel;
     return clientAnswers.map((el: string[]) =>
       el.map((elem) => {
-        const a = model.getProperty(elem) as string;
-        return a;
+        const property = model.getProperty(elem) as string;
+        return property;
       })
     );
   }
@@ -207,7 +207,7 @@ export default class Start extends BaseController {
   }
 
   setResult() {
-    const [category, subcategory] = this.getCategorySubcategory()
+    const [category, subcategory] = this.getCategorySubcategory();
     const data = new Date().toString();
     const text = this.i18n('anonimus');
     const points = this.getSupportModel().getProperty('/currentTotalResult') as string;
@@ -227,9 +227,9 @@ export default class Start extends BaseController {
 
   onShowStatistics() {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    if (!this.fragment) {
+    if (!this.fragmentStatistics) {
       const oView = this.getView();
-      this.fragment = Fragment.load({
+      this.fragmentStatistics = Fragment.load({
         id: oView?.getId(),
         name: "webapp.typescript.view.fragments.Statistics",
         controller: this,
@@ -238,6 +238,6 @@ export default class Start extends BaseController {
         return oMessagePopover;
       });
     }
-    void this.fragment.then((oMessagePopover) => (oMessagePopover as Dialog).open());
+    void this.fragmentStatistics.then((oMessagePopover) => (oMessagePopover as Dialog).open());
   }
 }

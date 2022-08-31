@@ -10,7 +10,7 @@
 					</Column>
 				</columns>
 				<items>
-					<ColumnListItem type="Active" highlight="None" id="">
+					<ColumnListItem type="Active" >
 						<Text text="{}" />
 					</ColumnListItem>
 				</items>
