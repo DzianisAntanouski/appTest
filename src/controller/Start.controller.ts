@@ -15,25 +15,25 @@ import Popover from "sap/m/Popover";
  */
 export default class Start extends BaseController {
   oFlexibleColumnLayout: FlexibleColumnLayout;
-  bus: EventBus;
+  oEventBus: EventBus;
   mViews: Promise<XMLView> | undefined;
   oDiscardFragment: Popover;
 
   public onInit(): void {
-    this.bus = this.getOwnerComponent().getEventBus();
-    this.bus.subscribe("flexible", "setDetailPage", this.setDetailPage.bind(this), this);
-    this.bus.subscribe("flexible", "setDetailDetailPage", this.setDetailDetailPage.bind(this), this);
-    this.bus.subscribe("navigation", "navToMain", this.navToMain.bind(this), this);
-    this.bus.subscribe("navigation", "navToTesting", this.navToTesting.bind(this), this);
+    this.oEventBus = this.getOwnerComponent().getEventBus();
+    this.oEventBus.subscribe("flexible", "setDetailPage", this.setDetailPage.bind(this), this);
+    this.oEventBus.subscribe("flexible", "setDetailDetailPage", this.setDetailDetailPage.bind(this), this);
+    this.oEventBus.subscribe("navigation", "navToMain", this.navToMain.bind(this), this);
+    this.oEventBus.subscribe("navigation", "navToTesting", this.navToTesting.bind(this), this);
 
     this.oFlexibleColumnLayout = this.byId("fcl") as FlexibleColumnLayout;
   }
 
   public onExit(): void {
-    this.bus.unsubscribe("flexible", "setDetailPage", this.setDetailPage.bind(this), this);
-    this.bus.unsubscribe("flexible", "setDetailDetailPage", this.setDetailDetailPage.bind(this), this);
-    this.bus.unsubscribe("navigation", "navToMain", this.navToMain.bind(this), this);
-    this.bus.unsubscribe("navigation", "navToTesting", this.navToTesting.bind(this), this);
+    this.oEventBus.unsubscribe("flexible", "setDetailPage", this.setDetailPage.bind(this), this);
+    this.oEventBus.unsubscribe("flexible", "setDetailDetailPage", this.setDetailDetailPage.bind(this), this);
+    this.oEventBus.unsubscribe("navigation", "navToMain", this.navToMain.bind(this), this);
+    this.oEventBus.unsubscribe("navigation", "navToTesting", this.navToTesting.bind(this), this);
   }
 
   public setDetailPage(a: string, b: string, oEvent: Event): void {
@@ -42,13 +42,13 @@ export default class Start extends BaseController {
       id: "midView",
       viewName: "webapp.typescript.view.Detail",
     })
-      .then((detailView) => {
-        this.oFlexibleColumnLayout.addMidColumnPage(detailView);
+      .then((oDetailView) => {
+        this.oFlexibleColumnLayout.addMidColumnPage(oDetailView);
         this.oFlexibleColumnLayout.setLayout(LayoutType.TwoColumnsBeginExpanded);
-        return detailView;
+        return oDetailView;
       })
-      .then((detailView) => {
-        if (oContext) detailView.setBindingContext(oContext);
+      .then((oDetailView) => {
+        if (oContext) oDetailView.setBindingContext(oContext);
       });
   }
 
@@ -58,13 +58,13 @@ export default class Start extends BaseController {
       id: "endView",
       viewName: "webapp.typescript.view.DetailDetail",
     })
-      .then((detailDetailView) => {
-        this.oFlexibleColumnLayout.addEndColumnPage(detailDetailView);
+      .then((oDetailDetailView) => {
+        this.oFlexibleColumnLayout.addEndColumnPage(oDetailDetailView);
         this.oFlexibleColumnLayout.setLayout(LayoutType.ThreeColumnsMidExpanded);
-        return detailDetailView;
+        return oDetailDetailView;
       })
-      .then((detailDetailView) => {
-        detailDetailView.setBindingContext(oContext);
+      .then((oDetailDetailView) => {
+        oDetailDetailView.setBindingContext(oContext);
       });
   }
 
@@ -83,8 +83,9 @@ export default class Start extends BaseController {
   }
 
   public navToMain(a: string, b: string, oEvent: Event | object): void {
-    
-    const sPath: string = (oEvent as IEvent)?.sPath ? (oEvent as IEvent).sPath : (((oEvent as Event).getSource() as Control).getBindingContext() as Context)?.getPath();
+    const sPath: string = (oEvent as IEvent)?.sPath
+      ? (oEvent as IEvent).sPath
+      : (((oEvent as Event).getSource() as Control).getBindingContext() as Context)?.getPath();
     this.navTo("main", { sPath: sPath.replace(/\//g, "-") }, true);
   }
 
@@ -93,12 +94,9 @@ export default class Start extends BaseController {
     this.navTo("test", { sPath: sPath.replace(/\//g, "-") }, true);
   }
 
-
-  public onPressAvatar(oEvent: Event){ 
-
-    if (!this.getSupportModel().getProperty("/auth")) this.loadAuthorizationDialog(oEvent.getSource() as Control)
-
-    else { 
+  public onPressAvatar(oEvent: Event) {
+    if (!this.getSupportModel().getProperty("/auth")) this.loadAuthorizationDialog(oEvent.getSource() as Control);
+    else {
       const oButton = oEvent.getSource();
       const oView = this.getView();
       this.oFragment = Fragment.load({
@@ -106,17 +104,16 @@ export default class Start extends BaseController {
         name: "webapp.typescript.view.fragments.LogOutPopover",
         controller: this,
       }).then((oPopover) => {
-        this.oDiscardFragment = oPopover as Popover; 
+        this.oDiscardFragment = oPopover as Popover;
         oView?.addDependent(oPopover as Popover);
         (oPopover as Popover).openBy(oButton, false);
       });
     }
-  }  
-
+  }
 
   public handleDiscardPopover() {
     localStorage.clear();
-    this.getSupportModel().setProperty("/auth", null)
+    this.getSupportModel().setProperty("/auth", null);
     this.oDiscardFragment.close();
   }
 
@@ -127,9 +124,6 @@ export default class Start extends BaseController {
   public findPopover(oControl: IParent): void {
     oControl.getMetadata().getElementName() !== "sap.m.Popover"
       ? this.findPopover(oControl.oParent as IParent)
-      : (oControl as unknown as Popover).destroy()
+      : (oControl as unknown as Popover).destroy();
   }
 }
-
-
-
