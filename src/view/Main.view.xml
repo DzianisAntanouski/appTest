@@ -52,7 +52,7 @@
 				<l:SplitterLayoutData size="auto" />
 			</layoutData>
 			<VBox class="sapUiSmallMargin">
-				<Table id="answerstable" items="{answers}">
+				<Table id="answerstable" items="{answers}" updateFinished="onUpdateFinishedAnswer">
 					<infoToolbar>
 						<OverflowToolbar>
 							<Label text="{question}"/>

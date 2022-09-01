@@ -42,15 +42,14 @@ export default class Main extends BaseController {
     void this.getOwnerComponent().getModel().attachPropertyChange(this.changeProperty.bind(this), this)
   }
 
-  public changeProperty (): void {
-    
+  public changeProperty (): void {    
     if (this.getSupportModel().getProperty("/edit")) {
       this.getSupportModel().setProperty("/change", true)
     }
   }
   
-  public onPatternMatched(oEvent: Event) {
-    if (!this.getSupportModel().getProperty("/auth")) {
+  public onPatternMatched(oEvent: Event) {    
+    if (!localStorage.auth) {
       this.navTo("start");
       MessageToast.show(this.i18n("authorizationMainPageErrorMessage"));
       return
@@ -60,8 +59,7 @@ export default class Main extends BaseController {
       path: `${sPath.replace(/-/g, "/")}`,
     });
     this.getSupportModel().setProperty("/selected", false);    
-    this.getSupportModel().setProperty("/edit", false);    
-       
+    this.getSupportModel().setProperty("/edit", false);       
   }
 
   public setActive(oEvent: Event): void {
@@ -207,8 +205,10 @@ export default class Main extends BaseController {
 
   public onPressDeleteSubCategory() {
     const sPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().split('/')
-    
-    void FetchDataBase.deleteCategory(sPath[2], sPath[4]).then(() => {this.navTo("start")})   
+    const fetchToRemoveSubCategory = () => {
+      void FetchDataBase.deleteCategory(sPath[2], sPath[4]).then(() => {this.navTo("start")})  
+    }
+    this.getConfirm(fetchToRemoveSubCategory, "mainPageConfirmationDialogText", "mainPageConfirmationDialogTextRemove")    
   }
 
   public onPressDeleteQuestion() {
@@ -223,13 +223,15 @@ export default class Main extends BaseController {
 
       const sId: string | undefined = (sSelectedControl as string).split("/").pop();
       const aPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().slice(1).split("/");
-
-      void FetchDataBase.delete(sId as string, "/" + aPath[1], "/" + aPath[3]).then(
-        () =>
-          void this.fireBaseRead()
-            .then(() => this.getSupportModel().setProperty("/edit", true))
-            .then(() => (oControls as RadioButton[]).forEach((elem) => elem.setSelected(false)))
-      );
+      const fetchToRemoveQ = () => {
+        void FetchDataBase.delete(sId as string, "/" + aPath[1], "/" + aPath[3]).then(
+          () =>
+            void this.fireBaseRead()
+              .then(() => this.getSupportModel().setProperty("/edit", true))
+              .then(() => (oControls as RadioButton[]).forEach((elem) => elem.setSelected(false)))
+        )
+      }
+      this.getConfirm(fetchToRemoveQ, "mainPageConfirmationDialogText", "mainPageConfirmationDialogTextRemove")      
     }
   }
 
@@ -252,12 +254,13 @@ export default class Main extends BaseController {
       const aPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().slice(1).split("/");
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const oData: IData[] = ((this.getModel() as JSONModel).getData()[aPath[0]][aPath[1]][aPath[2]][aPath[3]] as IData).questions as IData[];
-      const result: IResult[] = Object.values(oData).map((elem) => {
+      const oDataKeys: string[] = Object.keys(oData)
+      const result: IResult[] = Object.values(oData).map((elem, index) => {
         return {
-          id: elem.id,
+          id: oDataKeys[index],
           body: { answers: elem.answers, question: elem.question, rightAnswer: elem.rightAnswer },
         };
-      }) as unknown as IResult[];
+      }) as unknown as IResult[];      
       void result.forEach((elem) => void FetchDataBase.patch(elem.id, elem.body, "/" + aPath[1], "/" + aPath[3]));
     }
     this.getSupportModel().setProperty("/change", false);
@@ -272,7 +275,7 @@ export default class Main extends BaseController {
         this.getSupportModel().setProperty("/change", false);
         this.onNavBack()
       }
-      this.getConfirm(onPressBackAction) 
+      this.getConfirm(onPressBackAction, "mainPageConfirmationDialogText", "mainPageConfirmationDialogTitle") 
     } else {
       this.getSupportModel().setProperty("/edit", false);
       this.getSupportModel().setProperty("/change", false);
@@ -296,15 +299,15 @@ export default class Main extends BaseController {
         void this.highlightSwitcher();
         this.getSupportModel().setProperty("/change", false); 
       }    
-      this.getConfirm(onPressYesAction)
+      this.getConfirm(onPressYesAction, "mainPageConfirmationDialogText", "mainPageConfirmationDialogTitle")
     } 
     this.getSupportModel().setProperty("/edit", false);
     this.getSupportModel().setProperty("/change", false);  
   }
 
-  public getConfirm (fn: () => void): void {  
-    MessageBox.confirm(this.i18n("mainPageConfirmationDialogText"), {
-        title: this.i18n("mainPageConfirmationDialogTitle"),
+  public getConfirm (fn: () => void, sDialogText: string, sDialogTitle: string): void {  
+    MessageBox.confirm(this.i18n(sDialogText), {
+        title: this.i18n(sDialogTitle),
         actions: [Action.YES, Action.NO],
         onClose: (oAction: string) => {
             if (oAction === Action.YES) {
