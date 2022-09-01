@@ -59,7 +59,7 @@ export default class FetchDataBase {
       }
     )
       .then((response) => response.json())
-      .then((response) => {debugger; return response as Promise<object>})) as Response;
+      .then((response) => response as Promise<object>)) as Response;
   }
 
   static async saveUser(email: string, idToken: string) {
