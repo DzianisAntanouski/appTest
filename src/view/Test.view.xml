@@ -1,7 +1,7 @@
 <mvc:View controllerName="webapp.typescript.controller.Test" displayBlock="true"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc">
-	<Page title="{i18n>question}" titleLevel="H2" navButtonPress=".onNavBack" titleAlignment="Center" backgroundDesign= "Transparent" showNavButton="true" content="{questions}">
+	<Page id="testPage" title="{i18n>question}" titleLevel="H2" navButtonPress=".onNavBack" titleAlignment="Center" backgroundDesign= "Transparent" showNavButton="true" content="{questions}">
 		<content>
 			<Table fieldGroupIds="table" items="{path:'answers', templateShareable: false}" mode="{= ${rightAnswer}.length>1 ? 'MultiSelect' : 'SingleSelectLeft'}" class='sapUiSmallMargin'>
 				<columns>
@@ -19,7 +19,7 @@
 		<footer>
 			<OverflowToolbar>
 				<ToolbarSpacer/>
-				<Button text="{i18n>btnSubmit}" press='.onSubmitPress'/>
+				<Button id="submitBtn" text="{i18n>btnSubmit}" press='.onSubmitPress'/>
 				<Button text="{i18n>btnCancel}" press='.onCancelPress' />
 			</OverflowToolbar>
 		</footer>
