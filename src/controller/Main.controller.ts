@@ -1,5 +1,4 @@
 import BaseController from "./BaseController";
-import formatter from "../model/formatter";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import Event from "sap/ui/base/Event";
 import Control from "sap/ui/core/Control";
@@ -33,35 +32,32 @@ export default class Main extends BaseController {
     },
     rightAnswer: "",
   };
-  oState: IQuestionStructure
-  private formatter = formatter;
+  oState: IQuestionStructure;
 
   public onInit(): void {
     void this.getView()?.attachAfterRendering(this.changeUIAfterRendering.bind(this));
     void this.getOwnerComponent().getRouter().getRoute("main")?.attachPatternMatched(this.onPatternMatched.bind(this), this);
-    void this.getOwnerComponent().getModel().attachPropertyChange(this.changeProperty.bind(this), this)
+    void this.getOwnerComponent().getModel().attachPropertyChange(this.changeProperty.bind(this), this);
   }
 
-  public changeProperty (): void {
-    
+  public changeProperty(): void {
     if (this.getSupportModel().getProperty("/edit")) {
-      this.getSupportModel().setProperty("/change", true)
+      this.getSupportModel().setProperty("/change", true);
     }
   }
-  
+
   public onPatternMatched(oEvent: Event) {
-    if (!this.getSupportModel().getProperty("/auth")) {
+    if (!localStorage.auth) {
       this.navTo("start");
       MessageToast.show(this.i18n("authorizationMainPageErrorMessage"));
-      return
-    }     
+      return;
+    }
     const sPath: string = (oEvent.getParameter("arguments") as IArguments).sPath;
     this.getView()?.bindObject({
       path: `${sPath.replace(/-/g, "/")}`,
     });
-    this.getSupportModel().setProperty("/selected", false);    
-    this.getSupportModel().setProperty("/edit", false);    
-       
+    this.getSupportModel().setProperty("/selected", false);
+    this.getSupportModel().setProperty("/edit", false);
   }
 
   public setActive(oEvent: Event): void {
@@ -79,9 +75,9 @@ export default class Main extends BaseController {
 
   private highlightSwitcher(): void {
     const oControls: Array<Control> = this.getInputListItem();
-    if (!oControls.length) return
-    const nIndex: number = oControls.findIndex((elem) => elem.getProperty("highlight") === "Information");
-    oControls.forEach((control) => control.setProperty("highlight", MessageType.None));    
+    if (!oControls.length) return;
+    const nIndex: number = oControls.findIndex((oControl) => oControl.getProperty("highlight") === "Information");
+    oControls.forEach((oControl) => oControl.setProperty("highlight", MessageType.None));
     if (nIndex < 0 || nIndex === oControls.length - 1) {
       oControls[0].setProperty("highlight", MessageType.Information);
     } else {
@@ -92,8 +88,8 @@ export default class Main extends BaseController {
   private getInputListItem(): Array<Control> {
     const oControls: Control[] | undefined = this.getView()
       ?.getControlsByFieldGroupId("questions")
-      .filter((elem) => elem.getMetadata().getElementName() === "sap.m.InputListItem");
-    return oControls ? oControls : []
+      .filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.InputListItem");
+    return oControls ? oControls : [];
   }
 
   public findListItem(oControl: IParent): IListItem {
@@ -109,49 +105,46 @@ export default class Main extends BaseController {
       this.getView()?.byId("detailDetail")?.setBindingContext(oContext);
     }
 
-    this.getInputListItem().forEach((control) => control.setProperty("highlight", MessageType.None));
-
+    this.getInputListItem().forEach((oControl) => oControl.setProperty("highlight", MessageType.None));
     this.findListItem(oListItem as IParent);
-    
     void this.setChecked();
   }
 
   public setChecked(): void {
-    const rightAnswer: number[] = ((this.getView()?.byId("detailDetail")?.getBindingContext() as Context).getObject() as IQuestion).rightAnswer;
+    const aRightAnswer: number[] = ((this.getView()?.byId("detailDetail")?.getBindingContext() as Context).getObject() as IQuestion).rightAnswer;
     this.getView()
       ?.getControlsByFieldGroupId("checkBoxRightAnswers")
       .filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.CheckBox")
-      .forEach((checkBox, index) => {
-        if (rightAnswer.includes(index + 1)) {
-          (checkBox as CheckBox).setSelected(true);
+      .forEach((oCheckBox, nIndex) => {
+        if (aRightAnswer.includes(nIndex + 1)) {
+          (oCheckBox as CheckBox).setSelected(true);
         } else {
-          (checkBox as CheckBox).setSelected(false);
+          (oCheckBox as CheckBox).setSelected(false);
         }
       });
   }
 
   public onPressEdit(): void {
-    // const qListModel: JSONModel = this.getModel() as JSONModel;
     this.getSupportModel().setProperty("/edit", !this.getSupportModel().getProperty("/edit"));
-    this.saveState()
-    void this.setChecked();
+    this.saveState();
+    this.setChecked();
   }
 
   public onPressNext(): void {
-    void this.highlightSwitcher();
+    this.highlightSwitcher();
     const oControls: Array<Control> = this.getInputListItem();
-    const oControl: Control = oControls.find((elem) => elem.getProperty("highlight") === "Information") as Control;
+    const oControl: Control = oControls.find((oControl) => oControl.getProperty("highlight") === "Information") as Control;
     const oContext: Context = oControl.getBindingContext() as Context;
     this.getView()?.byId("detailDetail")?.setBindingContext(oContext);
-    void this.setChecked();
+    this.setChecked();
   }
 
   private clearFragmentInputs(): void {
-    const aInputs = [this.byId("newQ"), this.byId("answer1"), this.byId("answer1"), this.byId("answer1"), this.byId("answer1")];
+    const aInputs = [this.byId("newQ"), this.byId("answer1"), this.byId("answer2"), this.byId("answer3"), this.byId("answer4")];
     aInputs.forEach((oInput) => (oInput as Input).setValue(""));
     this.getView()
       ?.getControlsByFieldGroupId("checkBox")
-      .forEach((checkBox) => (checkBox as CheckBox).setSelected(false));
+      .forEach((oCheckBox) => (oCheckBox as CheckBox).setSelected(false));
   }
 
   public onPressFragmentClose(): void {
@@ -163,20 +156,19 @@ export default class Main extends BaseController {
     const getTemplate = (sProp: string): string => {
       return (this.getModel() as JSONModel).getProperty(`/newQuestion/${sProp}`) as string;
     };
-    const aChecked: number[] | undefined = this.getView()
+    const aCheckedCheckBoxes: number[] | undefined = this.getView()
       ?.getControlsByFieldGroupId("checkBox")
       .filter((elem) => (elem as CheckBox).getSelected())
       .map((elem) => +elem.getId().slice(-1));
     const newQuestion = models.createQuestion(
       getTemplate("question"),
       [getTemplate("answer/0"), getTemplate("answer/1"), getTemplate("answer/2"), getTemplate("answer/3")],
-      aChecked
+      aCheckedCheckBoxes
     );
-    // add getContextPath to BaseController
+
     const aPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().slice(1).split("/");
 
-    void FetchDataBase
-      .create(newQuestion, "/" + aPath[1], "/" + aPath[3])
+    void FetchDataBase.create(newQuestion, "/" + aPath[1], "/" + aPath[3])
       .then(() => void this.fireBaseRead())
       .then(() => this.getSupportModel().setProperty("/edit", true));
     this.clearFragmentInputs();
@@ -197,7 +189,7 @@ export default class Main extends BaseController {
           oView.addDependent(oMessagePopover as UI5Element);
           return oMessagePopover;
         });
-      }      
+      }
     }
     const oModel: JSONModel = this.getModel() as JSONModel;
     oModel.setProperty("/newQuestion", JSON.parse(JSON.stringify(this.newQuestion)));
@@ -206,30 +198,36 @@ export default class Main extends BaseController {
   }
 
   public onPressDeleteSubCategory() {
-    const sPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().split('/')
-    
-    void FetchDataBase.deleteCategory(sPath[2], sPath[4]).then(() => {this.navTo("start")})   
+    const sPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().split("/");
+    const fetchToRemoveSubCategory = () => {
+      void FetchDataBase.deleteCategory(sPath[2], sPath[4]).then(() => {
+        this.navTo("start");
+      });
+    };
+    this.getConfirm(fetchToRemoveSubCategory, "mainPageConfirmationDialogText", "mainPageConfirmationDialogTextRemove");
   }
 
   public onPressDeleteQuestion() {
     const oControls: Control[] | undefined = this.getView()
       ?.getControlsByFieldGroupId("questions")
-      .filter((elem) => elem.getMetadata().getElementName() === "sap.m.RadioButton");
+      .filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.RadioButton");
     if ((oControls as RadioButton[]).filter((elem) => elem.getSelected()).length) {
       const sSelectedControl = (oControls as RadioButton[])
-        .filter((elem) => elem.getSelected())[0]
+        .filter((oRadioButton) => oRadioButton.getSelected())[0]
         .getBindingContext()
         ?.getPath();
 
       const sId: string | undefined = (sSelectedControl as string).split("/").pop();
       const aPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().slice(1).split("/");
-
-      void FetchDataBase.delete(sId as string, "/" + aPath[1], "/" + aPath[3]).then(
-        () =>
-          void this.fireBaseRead()
-            .then(() => this.getSupportModel().setProperty("/edit", true))
-            .then(() => (oControls as RadioButton[]).forEach((elem) => elem.setSelected(false)))
-      );
+      const fetchToRemoveQuestion = () => {
+        void FetchDataBase.delete(sId as string, "/" + aPath[1], "/" + aPath[3]).then(
+          () =>
+            void this.fireBaseRead()
+              .then(() => this.getSupportModel().setProperty("/edit", true))
+              .then(() => (oControls as RadioButton[]).forEach((oRadioButton) => oRadioButton.setSelected(false)))
+        );
+      };
+      this.getConfirm(fetchToRemoveQuestion, "mainPageConfirmationDialogText", "mainPageConfirmationDialogTextRemove");
     }
   }
 
@@ -240,77 +238,78 @@ export default class Main extends BaseController {
   public onSelect(): void {
     this.getSupportModel().setProperty("/selected", true);
   }
+
   public onPressSave(): void {
     this.getSupportModel().setProperty("/selected", false);
     this.getSupportModel().setProperty("/edit", !this.getSupportModel().getProperty("/edit"));
     const oControls: Control[] | undefined = this.getView()
       ?.getControlsByFieldGroupId("questions")
-      .filter((elem) => elem.getMetadata().getElementName() === "sap.m.RadioButton");
-    oControls?.forEach((oControl) => (oControl as RadioButton).setSelected(false));
+      .filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.RadioButton");
+    oControls?.forEach((oRadioButton) => (oRadioButton as RadioButton).setSelected(false));
 
     if (this.getSupportModel().getProperty("/change")) {
       const aPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().slice(1).split("/");
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const oData: IData[] = ((this.getModel() as JSONModel).getData()[aPath[0]][aPath[1]][aPath[2]][aPath[3]] as IData).questions as IData[];
-      const result: IResult[] = Object.values(oData).map((elem) => {
+      const oDataKeys: string[] = Object.keys(oData);
+      const aResult: IResult[] = Object.values(oData).map((elem, index) => {
         return {
-          id: elem.id,
+          id: oDataKeys[index],
           body: { answers: elem.answers, question: elem.question, rightAnswer: elem.rightAnswer },
         };
       }) as unknown as IResult[];
-      void result.forEach((elem) => void FetchDataBase.patch(elem.id, elem.body, "/" + aPath[1], "/" + aPath[3]));
+      void aResult.forEach((elem) => void FetchDataBase.patch(elem.id, elem.body, "/" + aPath[1], "/" + aPath[3]));
     }
     this.getSupportModel().setProperty("/change", false);
   }
 
-  public onPressNavBack () {
+  public onPressNavBack() {
     if (this.getSupportModel().getProperty("/edit") && this.getSupportModel().getProperty("/change")) {
       const onPressBackAction = () => {
         const sPath = (this.getView()?.getBindingContext() as Context).getPath();
-        (this.getModel() as JSONModel).setProperty(sPath, this.oState)
+        (this.getModel() as JSONModel).setProperty(sPath, this.oState);
         this.getSupportModel().setProperty("/edit", false);
         this.getSupportModel().setProperty("/change", false);
-        this.onNavBack()
-      }
-      this.getConfirm(onPressBackAction) 
+        this.onNavBack();
+      };
+      this.getConfirm(onPressBackAction, "mainPageConfirmationDialogText", "mainPageConfirmationDialogTitle");
     } else {
       this.getSupportModel().setProperty("/edit", false);
       this.getSupportModel().setProperty("/change", false);
-      this.onNavBack()
+      this.onNavBack();
     }
-    
   }
 
   public saveState() {
     const sPath = (this.getView()?.getBindingContext() as Context).getPath();
-    const oState = (this.getModel() as JSONModel).getProperty(sPath) as IQuestionStructure
-    this.oState = JSON.parse(JSON.stringify(oState)) as IQuestionStructure
+    const oState = (this.getModel() as JSONModel).getProperty(sPath) as IQuestionStructure;
+    this.oState = JSON.parse(JSON.stringify(oState)) as IQuestionStructure;
   }
 
-  public onPressCancel () {
+  public onPressCancel() {
     if (this.getSupportModel().getProperty("/change")) {
       const onPressYesAction = () => {
         const sPath = (this.getView()?.getBindingContext() as Context).getPath();
-        (this.getModel() as JSONModel).setProperty(sPath, this.oState)
-        void this.setChecked();
-        void this.highlightSwitcher();
-        this.getSupportModel().setProperty("/change", false); 
-      }    
-      this.getConfirm(onPressYesAction)
-    } 
+        (this.getModel() as JSONModel).setProperty(sPath, this.oState);
+        this.setChecked();
+        this.highlightSwitcher();
+        this.getSupportModel().setProperty("/change", false);
+      };
+      this.getConfirm(onPressYesAction, "mainPageConfirmationDialogText", "mainPageConfirmationDialogTitle");
+    }
     this.getSupportModel().setProperty("/edit", false);
-    this.getSupportModel().setProperty("/change", false);  
+    this.getSupportModel().setProperty("/change", false);
   }
 
-  public getConfirm (fn: () => void): void {  
-    MessageBox.confirm(this.i18n("mainPageConfirmationDialogText"), {
-        title: this.i18n("mainPageConfirmationDialogTitle"),
-        actions: [Action.YES, Action.NO],
-        onClose: (oAction: string) => {
-            if (oAction === Action.YES) {
-                fn()
-            }
-        },
+  public getConfirm(fn: () => void, sDialogText: string, sDialogTitle: string): void {
+    MessageBox.confirm(this.i18n(sDialogText), {
+      title: this.i18n(sDialogTitle),
+      actions: [Action.YES, Action.NO],
+      onClose: (oAction: string) => {
+        if (oAction === Action.YES) {
+          fn();
+        }
+      },
     });
   }
 }

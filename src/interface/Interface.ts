@@ -4,18 +4,17 @@ import NavContainer from "sap/m/NavContainer";
 import SplitContainer from "sap/m/SplitContainer";
 import Control from "sap/ui/core/Control";
 
-
 export interface ITemplate {
   selector: {
-      id: string
-      viewName: string
-  }
+    id: string;
+    viewName: string;
+  };
 }
 // -------------AppController--------------------------
 
 export interface IAuthObject {
-  email: string
-  idToken: string
+  email: string;
+  idToken: string;
 }
 // -------------MainController--------------------------
 export interface IData {
@@ -24,7 +23,7 @@ export interface IData {
 }
 
 export interface IArguments {
-  sPath: string
+  sPath: string;
 }
 export interface ITest extends SplitContainer {
   _oMasterNav: NavContainer;
@@ -41,14 +40,14 @@ export interface IHBox extends HBox {
 }
 
 export interface IParent extends Control {
-  oParent: Control
+  oParent: Control;
 }
 
 export interface IQuestionStructure {
-  name: string
+  name: string;
   questions: {
-    [key: string]: IQuestion
-  }
+    [key: string]: IQuestion;
+  };
 }
 // -------------BaseController-------------------------
 export interface FetchData {
@@ -57,6 +56,14 @@ export interface FetchData {
     name: string;
     id: string;
   };
+}
+
+export interface IResponse {
+  email: string;
+  error: {
+    message: string;
+  };
+  idToken: string;
 }
 
 export interface ICategory {
@@ -80,40 +87,44 @@ export interface IOption {
   viewName: string;
 }
 export interface IEvent {
-  event: boolean
-  sPath: string
+  event: boolean;
+  sPath: string;
 }
 
 // -------------StartController------------------------
 export interface IToken {
-  idToken: string
+  idToken: string;
+}
 
+// -------------DetailDetailController------------------------
+export interface IOwner {
+  createdBy: {
+    [key: string]: string;
+  };
 }
 
 // -------------TestController------------------------
 export interface IResultQuestion {
-  rightAnswersWord: string[][],
-  clientAnswersWord: { word: string, isTrueAnswers: boolean }[],
-  questionWord: string,
-  points: number,
-
+  rightAnswersWord: string[][];
+  clientAnswersWord: { word: string; isTrueAnswers: boolean }[];
+  questionWord: string;
+  points: number;
 }
 
 export interface IResults {
-  email: string, 
-  category: string, 
-  subcategory: string, 
-  points: number
+  email: string;
+  category: string;
+  subcategory: string;
+  points: number;
 }
 
 // -------------AuthController------------------------
 export interface IError {
   error: {
-    message: string
-  }
+    message: string;
+  };
 }
 
 export interface IFulfilled {
-  email: string
-
+  email: string;
 }

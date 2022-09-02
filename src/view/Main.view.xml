@@ -14,7 +14,7 @@
 			<OverflowToolbar>
 				<Button text="{i18n>deleteCategory}" type="Reject" enabled="{= ${supportModel>/edit}}" press=".onPressDeleteSubCategory"/>
 				<ToolbarSpacer/>				
-				<Button text="{i18n>editMode}" press=".onPressEdit" enabled="{= !${supportModel>/edit}}"/>	
+				<Button id="editButtonMain" text="{i18n>editMode}" press=".onPressEdit" enabled="{= !${supportModel>/edit}}"/>	
 				<Button text="{i18n>btnDelete}" type="Reject" enabled="{= ${supportModel>/selected}}" press=".onPressDeleteQuestion"/>				
 			</OverflowToolbar>
 		</subHeader>
@@ -52,7 +52,7 @@
 				<l:SplitterLayoutData size="auto" />
 			</layoutData>
 			<VBox class="sapUiSmallMargin">
-				<Table id="answerstable" items="{answers}">
+				<Table id="answerstable" items="{answers}" updateFinished="onUpdateFinishedAnswer">
 					<infoToolbar>
 						<OverflowToolbar>
 							<Label text="{question}"/>
@@ -85,7 +85,7 @@
 			<ToolbarSpacer/>	
 				<Button text="{i18n>addQuestion}" press=".onPressAddQuestion"/>							
 				<Button text="{i18n>btnSave}" press=".onPressSave"/>
-				<Button text="{i18n>btnCancel}" type="Reject" press=".onPressCancel"/>
+				<Button id="cancelButton" text="{i18n>btnCancel}" type="Reject" press=".onPressCancel"/>
 		</OverflowToolbar>
 	</footer>
 </Page>
