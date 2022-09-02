@@ -13,6 +13,7 @@ import { IQuestion, IResultQuestion, IResults } from '../interface/Interface';
 import Event from "sap/ui/base/Event";
 import FetchDataBase from "../db/FetchDB";
 import Column from "sap/ui/table/Column";
+import Page from "sap/m/Page";
 
 
 /**
@@ -72,6 +73,16 @@ export default class Start extends BaseController {
   }
 
   onCancelPress(): void {
+  //   const page = this.byId('pageTest') as Page;
+  //   const pageContent: Control[] = page.getContent()
+  //   const path = pageContent.map((elem) => {
+  //     const table = elem as Table
+  //     return table.getBindingContext()?.getPath()
+    
+  // })
+
+  // debugger
+
     const checkedAnswers = this.getCheckedAnswers();
     const text = this.i18n('messageBeforeResetAnswers')
     if (this.checkBeforeReset(checkedAnswers)) {
@@ -240,5 +251,7 @@ export default class Start extends BaseController {
     }
     void this.fragmentStatistics.then((oMessagePopover) => (oMessagePopover as Dialog).open());
   }
-  
+  onItemPress(){
+    debugger
+  }
 }

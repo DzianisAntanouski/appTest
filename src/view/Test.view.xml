@@ -6,11 +6,11 @@
 			<Table fieldGroupIds="table" items="{path:'answers', templateShareable: false}" mode="{= ${rightAnswer}.length>1 ? 'MultiSelect' : 'SingleSelectLeft'}" class='sapUiSmallMargin'>
 				<columns>
 					<Column>
-						<Text text="{question}" />
+						<Text text="{question}"  />
 					</Column>
 				</columns>
-				<items>
-					<ColumnListItem type="Active">
+				<items >
+					<ColumnListItem type="Active" press="{onItemPress}">
 						<Text text="{}" />
 					</ColumnListItem>
 				</items>
