@@ -41,7 +41,7 @@ export default class Start extends BaseController {
     }
   }
 
-  onSubmitPress(): void {
+  public onSubmitPress(): void {
     const checkedAnswers = this.getCheckedAnswers();
     const text = this.i18n("messageBeforeSubmitAnswers");
     if (this.checkBeforeSubmit(checkedAnswers)) {
@@ -53,7 +53,7 @@ export default class Start extends BaseController {
     }
   }
 
-  getCheckedAnswers(): Array<Array<string>> {
+  public getCheckedAnswers(): Array<Array<string>> {
     const array: Array<Context[]> | undefined = this.getView()
       ?.getControlsByFieldGroupId("table")
       .filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.Table")
@@ -61,14 +61,15 @@ export default class Start extends BaseController {
     return array ? array.map((context) => context.map((el) => el.getPath())) : [];
   }
 
-  checkBeforeSubmit(checkedAnswers: Array<Array<string>>) {
+  public checkBeforeSubmit(checkedAnswers: Array<Array<string>>) {
     return checkedAnswers.every((array) => array.length > 0);
   }
-  checkBeforeReset(checkedAnswers: Array<Array<string>>) {
+
+  public checkBeforeReset(checkedAnswers: Array<Array<string>>) {
     return checkedAnswers.some((array) => array.length > 0);
   }
 
-  onCancelPress(): void {
+  public onPressClear(): void {
     const checkedAnswers = this.getCheckedAnswers();
     const text = this.i18n("messageBeforeResetAnswers");
     if (this.checkBeforeReset(checkedAnswers)) {
@@ -83,14 +84,14 @@ export default class Start extends BaseController {
     }
   }
 
-  resetAllSelectedAnswers(): void {
+  public resetAllSelectedAnswers(): void {
     const arrayTable = this.getView()
       ?.getControlsByFieldGroupId("table")
       .filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.Table") as Table[];
     arrayTable.map((value) => value.removeSelections(true));
   }
 
-  openResultsOfTest(): void {
+  public openResultsOfTest(): void {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     if (!this.oFragment) {
       const oView = this.getView();
@@ -106,24 +107,24 @@ export default class Start extends BaseController {
     void this.oFragment.then((oMessagePopover) => (oMessagePopover as Dialog).open());
   }
 
-  onCancelFragment() {
+  public onCancelFragment() {
     this.resetAllSelectedAnswers();
     void this.oFragment.then((oMessagePopover) => (oMessagePopover as Dialog).close());
   }
 
-  onCancelFragmentResult() {
+  public onCancelFragmentResult() {
     this.resetAllSelectedAnswers();
     void this.fragmentStatistics.then((oMessagePopover) => (oMessagePopover as Dialog).close());
   }
 
-  calculateResults(index: number, rightAnswersWord: string[][], isTrue: boolean[][]): number {
+  public calculateResults(index: number, rightAnswersWord: string[][], isTrue: boolean[][]): number {
     const allRight = rightAnswersWord[index].length;
     const clientRight = isTrue[index].filter((el) => el === true).length;
     const clientFalse = isTrue[index].filter((el) => el === false).length;
     return +(clientRight / allRight - clientFalse / allRight).toFixed(1);
   }
 
-  getWordRightAnswers(question: IQuestion[] | []): string[][] {
+  public getWordRightAnswers(question: IQuestion[] | []): string[][] {
     return question.map((elem: IQuestion) =>
       elem.rightAnswer.map((el) => {
         return elem.answers[el - 1];
@@ -131,7 +132,7 @@ export default class Start extends BaseController {
     );
   }
 
-  getWordClientAnswers(): string[][] {
+  public getWordClientAnswers(): string[][] {
     const clientAnswers = this.getCheckedAnswers();
     const model = this.getModel() as JSONModel;
     return clientAnswers.map((el: string[]) =>
@@ -142,11 +143,11 @@ export default class Start extends BaseController {
     );
   }
 
-  checkAnswers(clientAnswersWord: string[][], rightAnswersWord: string[][]): boolean[][] {
+  public checkAnswers(clientAnswersWord: string[][], rightAnswersWord: string[][]): boolean[][] {
     return clientAnswersWord.map((elem, index) => elem.map((el) => rightAnswersWord[index].includes(el)));
   }
 
-  getObjectWordClientAnswers(clientAnswersWord: string[][], isTrue: boolean[][]): { word: string; isTrueAnswers: boolean }[][] {
+  public getObjectWordClientAnswers(clientAnswersWord: string[][], isTrue: boolean[][]): { word: string; isTrueAnswers: boolean }[][] {
     return clientAnswersWord.map((el, index: number) =>
       el.map((elem, i: number) => {
         return { word: elem, isTrueAnswers: isTrue[index][i] };
@@ -154,13 +155,13 @@ export default class Start extends BaseController {
     );
   }
 
-  setTotalResults() {
+  public setTotalResults() {
     const data = this.getSupportModel().getProperty("/resultsByQuestions") as IResultQuestion[];
     const number = ((data.reduce((prev, current) => prev + current.points, 0) / data.length) * 100).toFixed(1);
     this.getSupportModel().setProperty("/currentTotalResult", number);
   }
 
-  setAnswers() {
+  public setAnswers() {
     const path = this.getView()?.getBindingContext()?.getPath();
     const model = this.getModel() as JSONModel;
     const question: IQuestion[] | [] = Object.values((model.getProperty(path ? path : "") as { name: string; questions: object }).questions);
@@ -181,7 +182,7 @@ export default class Start extends BaseController {
     });
   }
 
-  onSaveResults() {
+  public onSaveResults() {
     void this.oFragment.then((oMessagePopover) => (oMessagePopover as Dialog).close());
     const text = this.i18n("messageAfterSave");
     const buttonStatistic = this.i18n("buttonStatistic");
@@ -198,14 +199,14 @@ export default class Start extends BaseController {
     this.setResult();
   }
 
-  getCategorySubcategory() {
+  public getCategorySubcategory() {
     const arrayBinding = this.getView()?.getBindingContext()?.getPath().split("/");
     const category = arrayBinding ? arrayBinding[2] : "";
     const subcategory = arrayBinding ? (arrayBinding[4] ? arrayBinding[4] : "") : "";
     return [category, subcategory];
   }
 
-  setResult() {
+  public setResult() {
     const [category, subcategory] = this.getCategorySubcategory();
     const data = new Date().toString();
     const text = this.i18n("anonimus");
@@ -221,7 +222,7 @@ export default class Start extends BaseController {
     });
   }
 
-  onShowStatistics() {
+  public onShowStatistics() {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     if (!this.fragmentStatistics) {
       const oView = this.getView();

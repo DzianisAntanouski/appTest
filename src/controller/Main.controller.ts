@@ -59,7 +59,7 @@ export default class Main extends BaseController {
     });
     this.getSupportModel().setProperty("/selected", false);
     this.getSupportModel().setProperty("/edit", false);
-    this.onPressNext()
+    this.onPressNext();
   }
 
   public setActive(oEvent: Event): void {
