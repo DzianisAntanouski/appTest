@@ -9,11 +9,10 @@ import UI5Element from "sap/ui/core/Element";
 import formatter from "../model/formatter";
 import Table from "sap/m/Table";
 import JSONModel from "sap/ui/model/json/JSONModel";
-import { IQuestion, IResultQuestion, IResults } from '../interface/Interface';
+import { IQuestion, IResultQuestion } from "../interface/Interface";
 import Event from "sap/ui/base/Event";
 import FetchDataBase from "../db/FetchDB";
 import Column from "sap/ui/table/Column";
-import Page from "sap/m/Page";
 
 
 /**
@@ -31,23 +30,22 @@ export default class Start extends BaseController {
   public onPatternMatched(oEvent: Event) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const sPath: string = oEvent.getParameter("arguments").sPath as string;
-    const arrayPathLength = sPath.split('-').length
-    const replacedPath = sPath.replace(/-/g, "/")
+    const arrayPathLength = sPath.split("-").length;
+    const replacedPath = sPath.replace(/-/g, "/");
     if (arrayPathLength > 3) {
       this.getView()?.bindObject({
         path: replacedPath,
       });
     } else {
       this.getView()?.bindObject({
-        path: `${replacedPath}/questionsAll`
+        path: `${replacedPath}/questionsAll`,
       });
     }
-
   }
 
   onSubmitPress(): void {
     const checkedAnswers = this.getCheckedAnswers();
-    const text = this.i18n('messageBeforeSubmitAnswers')
+    const text = this.i18n("messageBeforeSubmitAnswers");
     if (this.checkBeforeSubmit(checkedAnswers)) {
       this.setAnswers();
       this.openResultsOfTest();
@@ -55,11 +53,11 @@ export default class Start extends BaseController {
     } else {
       MessageBox.information(text);
     }
-
   }
 
   getCheckedAnswers(): Array<Array<string>> {
-    const array: Array<Context[]> | undefined = this.getView()?.getControlsByFieldGroupId("table")
+    const array: Array<Context[]> | undefined = this.getView()
+      ?.getControlsByFieldGroupId("table")
       .filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.Table")
       .map((control) => (control as ListBase).getSelectedContexts());
     return array ? array.map((context) => context.map((el) => el.getPath())) : [];
@@ -84,13 +82,12 @@ export default class Start extends BaseController {
   // debugger
 
     const checkedAnswers = this.getCheckedAnswers();
-    const text = this.i18n('messageBeforeResetAnswers')
+    const text = this.i18n("messageBeforeResetAnswers");
     if (this.checkBeforeReset(checkedAnswers)) {
       MessageBox.confirm(text, {
         onClose: (oAction: string) => {
           console.log(oAction);
           if (oAction === "OK") {
-
             this.resetAllSelectedAnswers();
           }
         },
@@ -99,7 +96,9 @@ export default class Start extends BaseController {
   }
 
   resetAllSelectedAnswers(): void {
-    const arrayTable = this.getView()?.getControlsByFieldGroupId("table").filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.Table") as Table[];
+    const arrayTable = this.getView()
+      ?.getControlsByFieldGroupId("table")
+      .filter((oControl) => oControl.getMetadata().getElementName() === "sap.m.Table") as Table[];
     arrayTable.map((value) => value.removeSelections(true));
   }
 
@@ -131,9 +130,9 @@ export default class Start extends BaseController {
 
   calculateResults(index: number, rightAnswersWord: string[][], isTrue: boolean[][]): number {
     const allRight = rightAnswersWord[index].length;
-    const clientRight = isTrue[index].filter(el => el === true).length
-    const clientFalse = isTrue[index].filter(el => el === false).length
-    return +(clientRight / allRight - clientFalse / allRight).toFixed(1)
+    const clientRight = isTrue[index].filter((el) => el === true).length;
+    const clientFalse = isTrue[index].filter((el) => el === false).length;
+    return +(clientRight / allRight - clientFalse / allRight).toFixed(1);
   }
 
   getWordRightAnswers(question: IQuestion[] | []): string[][] {
@@ -156,10 +155,10 @@ export default class Start extends BaseController {
   }
 
   checkAnswers(clientAnswersWord: string[][], rightAnswersWord: string[][]): boolean[][] {
-    return clientAnswersWord.map((elem, index) => elem.map((el) => rightAnswersWord[index].includes(el)))
+    return clientAnswersWord.map((elem, index) => elem.map((el) => rightAnswersWord[index].includes(el)));
   }
 
-  getObjectWordClientAnswers(clientAnswersWord: string[][], isTrue: boolean[][]): { word: string, isTrueAnswers: boolean }[][] {
+  getObjectWordClientAnswers(clientAnswersWord: string[][], isTrue: boolean[][]): { word: string; isTrueAnswers: boolean }[][] {
     return clientAnswersWord.map((el, index: number) =>
       el.map((elem, i: number) => {
         return { word: elem, isTrueAnswers: isTrue[index][i] };
@@ -168,23 +167,23 @@ export default class Start extends BaseController {
   }
 
   setTotalResults() {
-    const data = this.getSupportModel().getProperty('/resultsByQuestions') as IResultQuestion[];
-    const number = (data.reduce((prev, current) => prev + current.points, 0) / data.length * 100).toFixed(1)
-    this.getSupportModel().setProperty('/currentTotalResult', number)
+    const data = this.getSupportModel().getProperty("/resultsByQuestions") as IResultQuestion[];
+    const number = ((data.reduce((prev, current) => prev + current.points, 0) / data.length) * 100).toFixed(1);
+    this.getSupportModel().setProperty("/currentTotalResult", number);
   }
 
   setAnswers() {
     const path = this.getView()?.getBindingContext()?.getPath();
     const model = this.getModel() as JSONModel;
-    const question: IQuestion[] | [] = Object.values((model.getProperty(path ? path : '') as { name: string, questions: object }).questions);
-    const rightAnswersWord = this.getWordRightAnswers(question)
-    const clientAnswersWord = this.getWordClientAnswers()
+    const question: IQuestion[] | [] = Object.values((model.getProperty(path ? path : "") as { name: string; questions: object }).questions);
+    const rightAnswersWord = this.getWordRightAnswers(question);
+    const clientAnswersWord = this.getWordClientAnswers();
     const isTrue = this.checkAnswers(clientAnswersWord, rightAnswersWord);
-    const objectclientAnswersWord = this.getObjectWordClientAnswers(clientAnswersWord, isTrue)
+    const objectclientAnswersWord = this.getObjectWordClientAnswers(clientAnswersWord, isTrue);
 
     clientAnswersWord.forEach((elem, index: number) => {
       const questionWord = question[index].question;
-      const point = this.calculateResults(index, rightAnswersWord, isTrue)
+      const point = this.calculateResults(index, rightAnswersWord, isTrue);
       this.getSupportModel().setProperty(`/resultsByQuestions/${index}`, {
         rightAnswersWord: rightAnswersWord[index],
         clientAnswersWord: objectclientAnswersWord[index],
@@ -196,9 +195,9 @@ export default class Start extends BaseController {
 
   onSaveResults() {
     void this.oFragment.then((oMessagePopover) => (oMessagePopover as Dialog).close());
-    const text = this.i18n('messageAfterSave');
-    const buttonStatistic = this.i18n('buttonStatistic');
-    const buttonSCancel = this.i18n('btnCancel');
+    const text = this.i18n("messageAfterSave");
+    const buttonStatistic = this.i18n("buttonStatistic");
+    const buttonSCancel = this.i18n("btnCancel");
     MessageBox.information(text, {
       actions: [buttonStatistic, buttonSCancel],
       onClose: (oAction: string) => {
@@ -208,33 +207,31 @@ export default class Start extends BaseController {
         }
       },
     });
-    this.setResult()
+    this.setResult();
   }
 
   getCategorySubcategory() {
-    const arrayBinding = this.getView()?.getBindingContext()?.getPath().split('/')
-    const category = arrayBinding ? arrayBinding[2] : '';
-    const subcategory = arrayBinding ? arrayBinding[4] ? arrayBinding[4] : '' : '';
-    return [category, subcategory]
+    const arrayBinding = this.getView()?.getBindingContext()?.getPath().split("/");
+    const category = arrayBinding ? arrayBinding[2] : "";
+    const subcategory = arrayBinding ? (arrayBinding[4] ? arrayBinding[4] : "") : "";
+    return [category, subcategory];
   }
 
   setResult() {
     const [category, subcategory] = this.getCategorySubcategory();
     const data = new Date().toString();
-    const text = this.i18n('anonimus');
-    const pointsCurrent = this.getSupportModel().getProperty('/currentTotalResult') as number;
-    const emailText = this.getSupportModel().getProperty('/auth/email') as string;
+    const text = this.i18n("anonimus");
+    const pointsCurrent = this.getSupportModel().getProperty("/currentTotalResult") as number;
+    const emailText = this.getSupportModel().getProperty("/auth/email") as string;
     const emailOrAnonimus = emailText ? emailText : text;
-    const results = { email: emailOrAnonimus, category, subcategory, points: +pointsCurrent }
-    void FetchDataBase.postResults(results, data, category, subcategory)
-    void FetchDataBase.postAllResults(results, data)
-      .then(() => {
-        void FetchDataBase.getAllResults().then((resp) => {
-          this.getSupportModel().setProperty('/results', resp)
-        })
-      })
+    const results = { email: emailOrAnonimus, category, subcategory, points: +pointsCurrent };
+    void FetchDataBase.postResults(results, data, category, subcategory);
+    void FetchDataBase.postAllResults(results, data).then(() => {
+      void FetchDataBase.getAllResults().then((resp) => {
+        this.getSupportModel().setProperty("/results", resp);
+      });
+    });
   }
-
 
   onShowStatistics() {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -251,7 +248,5 @@ export default class Start extends BaseController {
     }
     void this.fragmentStatistics.then((oMessagePopover) => (oMessagePopover as Dialog).open());
   }
-  onItemPress(){
-    debugger
-  }
+  
 }

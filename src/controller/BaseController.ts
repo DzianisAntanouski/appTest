@@ -8,47 +8,38 @@ import Router from "sap/ui/core/routing/Router";
 import History from "sap/ui/core/routing/History";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import FetchDataBase from "../db/FetchDB";
-import { FetchData, ICategory, IQuestion, ISubCategory } from "../interface/Interface";
+import { FetchData, ICategory, IQuestion, IResponse, ISubCategory } from "../interface/Interface";
 import Auth from "../db/Auth";
 import Fragment from "sap/ui/core/Fragment";
-import Dialog from 'sap/m/Dialog';
+import Dialog from "sap/m/Dialog";
 import Control from "sap/ui/core/Control";
 import EventBus from "sap/ui/core/EventBus";
-import Context from 'sap/ui/model/Context';
+import Context from "sap/ui/model/Context";
 import Detail from "./Detail.controller";
+import MessageBox from "sap/m/MessageBox";
 
 /**
  * @namespace webapp.typescript.controller
  */
 export default abstract class BaseController extends Controller {
-  oFragment: Promise<void | Dialog | Control | Control[]>
+  oFragment: Promise<void | Dialog | Control | Control[]>;
   oAuthorizationDialog: Control | Control[];
-  bus: EventBus;
- 
+  oEventBus: EventBus;
 
-  public async tryAuthorization(
-    email: string,
-    password: string
-  ): Promise<void> {
-    interface IResponse {
-      email: string
-      error: {
-        message: string
-      }
-      idToken: string
-    }
-    let response: IResponse = await Auth.fnRegisterNewUser(email, password) as IResponse;
-    if (!response?.email) {
-      response = await Auth.fnAuthoriseUser(email, password) as IResponse;
-      if (!response?.email) {
-        alert(response.error.message)
+  public async tryAuthorization(email: string, password: string): Promise<void> {
+    let oResponse: IResponse | null = (await Auth.fnRegisterNewUser(email, password)) as IResponse;
+    if (!oResponse?.email) {
+      oResponse = (await Auth.fnAuthoriseUser(email, password)) as IResponse;
+      if (!oResponse?.email) {
+        MessageBox.error(oResponse?.error.message);
+        oResponse = null;
       }
     }
-    this.getSupportModel().setProperty("/auth", response)
-    void FetchDataBase.saveUser(response.email, response.idToken);
-    localStorage.setItem("auth", JSON.stringify(response))
+    this.getSupportModel().setProperty("/auth", oResponse);
+    if (oResponse) void FetchDataBase.saveUser(oResponse.email, oResponse.idToken);
+    localStorage.setItem("auth", JSON.stringify(oResponse));
   }
-  
+
   public loadAuthorizationDialog(oControl?: Control) {
     const oView = this.getView();
     this.oFragment = Fragment.load({
@@ -59,33 +50,34 @@ export default abstract class BaseController extends Controller {
       this.oAuthorizationDialog = oFragment;
       oView?.addDependent(oFragment as Dialog);
       (oFragment as Dialog).open();
-      if (oControl) return oControl
-    });    
+      if (oControl) return oControl;
+    });
   }
 
-  public async onLogInButtonPress(): Promise<void>{
-    this.bus = this.getOwnerComponent().getEventBus();
-    const email: string = this.getModel("supportModel")?.getProperty("/email") as string;
-    const password = this.getModel("supportModel")?.getProperty("/password") as string;
-    await this.tryAuthorization(email, password);
-    (this.oAuthorizationDialog as Dialog).close();
+  public async onLogInButtonPress(): Promise<void> {
+    this.oEventBus = this.getOwnerComponent().getEventBus();
+    const sEmail = this.getModel("supportModel")?.getProperty("/email") as string;
+    const sPassword = this.getModel("supportModel")?.getProperty("/password") as string;
 
-    const oInitControl = await this.oFragment.then(resolve => resolve).then(data => data)
-    if ((this as unknown as Detail).onPressAddCategory) {      
-      (this as unknown as Detail).onPressAddCategory()
+    await this.tryAuthorization(sEmail, sPassword);
+
+    if (this.getSupportModel().getProperty("/auth")) (this.oAuthorizationDialog as Dialog).close();
+
+    const oInitControl = await this.oFragment.then((resolve) => resolve).then((data) => data);
+    if ((this as unknown as Detail).onPressAddCategory) {
+      (this as unknown as Detail).onPressAddCategory();
     } else if (!oInitControl) {
-      const sPath: string = (this.getView()?.getBindingContext() as Context).getPath()
-      this.bus.publish("navigation", "navToMain", { sPath, event: false })
-
+      const sPath: string = (this.getView()?.getBindingContext() as Context).getPath();
+      this.oEventBus.publish("navigation", "navToMain", { sPath, event: false });
     }
-  }  
-
-  public onCancelButtonPress(): void{
-    (this.oAuthorizationDialog as Dialog).close()
   }
 
-  public onAfterCloseAuthDialog(): void{
-    (this.oAuthorizationDialog as Dialog).destroy()
+  public onCancelButtonPress(): void {
+    (this.oAuthorizationDialog as Dialog).close();
+  }
+
+  public onAfterCloseAuthDialog(): void {
+    (this.oAuthorizationDialog as Dialog).destroy();
   }
 
   /**
@@ -117,24 +109,25 @@ export default abstract class BaseController extends Controller {
       Object.keys(fetchData[elem]).forEach((el) => {
         modelStructureToBinding[elem]["subCategory"][el].name = el;
       });
-
       return fetchData[elem];
     });
 
     qListModel.setProperty("/Data", modelStructureToBinding);
     qListModel.setProperty("/edit", false);
   }
-  
+
   setAllQuestions(): void {
-    const model = this.getModel() as JSONModel;
-    const data = (model.getData() as { Data: ICategory }).Data
-    const arrayData = Object.values(data);
-    arrayData.forEach(((elem: ICategory) => {
-      const questionsCategory = Object.values(elem.subCategory).map((el) => el.questions as IQuestion)
-      const questionsAll = Object.assign({}, ...questionsCategory) as IQuestion;
-      model.setProperty(`/Data/${elem.categoryName}/questionsAll`, { questions: questionsAll })
-    }))
+    const oModel = this.getModel() as JSONModel;
+    const oModelData = (oModel.getData() as { Data: ICategory }).Data;
+    const arrayData = Object.values(oModelData);
+
+    arrayData.forEach((elem: ICategory) => {
+      const aQuestionsCategory = Object.values(elem.subCategory).map((el) => el.questions as IQuestion);
+      const oQuestionsAll = Object.assign({}, ...aQuestionsCategory) as IQuestion;
+      oModel.setProperty(`/Data/${elem.categoryName}/questionsAll`, { questions: oQuestionsAll });
+    });
   }
+
   /**
    * Convenience method for getting the i18n resource bundle of the component.
    * @returns The i18n resource bundle of the component
@@ -190,12 +183,12 @@ export default abstract class BaseController extends Controller {
   }
 
   public getSupportModel(): JSONModel {
-    return this.getModel("supportModel") as JSONModel
+    return this.getModel("supportModel") as JSONModel;
   }
 
-  public i18n(sKey: string, param?: []) {
-    const resourceModel = this.getOwnerComponent().getModel("i18n") as ResourceModel
-    const oBundle = resourceModel.getResourceBundle() as  ResourceBundle;
-    return oBundle.getText(sKey, param);
+  public i18n(sKey: string, aParam?: string[]) {
+    const resourceModel = this.getOwnerComponent().getModel("i18n") as ResourceModel;
+    const oBundle = resourceModel.getResourceBundle() as ResourceBundle;
+    return oBundle.getText(sKey, aParam);
   }
 }
