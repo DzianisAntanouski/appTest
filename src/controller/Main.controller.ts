@@ -53,11 +53,13 @@ export default class Main extends BaseController {
       return;
     }
     const sPath: string = (oEvent.getParameter("arguments") as IArguments).sPath;
+    const sRightPath: string = sPath.replace(/-/g, "/")
     this.getView()?.bindObject({
-      path: `${sPath.replace(/-/g, "/")}`,
+      path: `${sRightPath}`,
     });
     this.getSupportModel().setProperty("/selected", false);
     this.getSupportModel().setProperty("/edit", false);
+    this.onPressNext()
   }
 
   public setActive(oEvent: Event): void {
@@ -133,8 +135,8 @@ export default class Main extends BaseController {
   public onPressNext(): void {
     this.highlightSwitcher();
     const oControls: Array<Control> = this.getInputListItem();
-    const oControl: Control = oControls.find((oControl) => oControl.getProperty("highlight") === "Information") as Control;
-    const oContext: Context = oControl.getBindingContext() as Context;
+    const oControl: Control | undefined = oControls.find((oControl) => oControl.getProperty("highlight") === "Information") as Control;
+    const oContext: Context = oControl?.getBindingContext() as Context;
     this.getView()?.byId("detailDetail")?.setBindingContext(oContext);
     this.setChecked();
   }

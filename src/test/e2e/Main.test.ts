@@ -8,6 +8,7 @@ import Button from "sap/m/Button";
 import GenericTile from "sap/m/GenericTile";
 import Input from "sap/m/Input";
 import Start from "./pageObjects/Start";
+import Text from "sap/m/Text";
 
 const createTemplate = Template(Main._viewName);
 const templateStart = Template(Start._viewName);
@@ -22,20 +23,20 @@ describe("test1: Start page", () => {
     expect(title).toEqual("UI5 Application typescript");
   });
 
-  it("should have control that opens Create page", async () => {
-    const url = await browser.getUrl();
-    expect(url).toMatch(/.*#\/main-Data-FrontEnd-subCategory-CSS$/);
-  });
+  // it("should have control that opens Create page", async () => {
+  //   const url = await browser.getUrl();
+  //   expect(url).toMatch(/https:\/\/apptest-firebase-b0b0c.web.app\/#\/main-Data-FrontEnd-subCategory-CSS/);
+  // });
 
   it("should heave authorization and return to manage page", async () => {
     const avatarButton: wdi5Selector = templateStart("avatarBtn");
     await (browser.asControl(avatarButton) as unknown as Button).firePress();
 
     const dialogEmailInput: wdi5Selector = templateStart("emailInputId");
-    await (browser.asControl(dialogEmailInput) as unknown as Input).setValue("test@mail.eu");
+    await (browser.asControl(dialogEmailInput) as unknown as Input).setValue("team@leverx.by");
 
     const dialogPassInput: wdi5Selector = templateStart("passwordInputId");
-    await (browser.asControl(dialogPassInput) as unknown as Input).setValue("123456");
+    await (browser.asControl(dialogPassInput) as unknown as Input).setValue("testapp");
 
     const logInButton: wdi5Selector = templateStart("LogInButton");
     await (browser.asControl(logInButton) as unknown as Button).firePress();
@@ -84,5 +85,44 @@ describe("test1: Start page", () => {
     const cancelButton = createTemplate("cancelButton");
     const cancelButtonText = await (browser.asControl(cancelButton) as unknown as Button).getText();
     expect(cancelButtonText).toEqual("Cancel");
+  });
+
+  it("should have change input text", async () => {
+    const input: wdi5Selector = await {
+      selector: {
+        controlType: "sap.m.Input",
+        viewName: "webapp.typescript.view.Main",
+        bindingPath: {
+          path: "/Data/FrontEnd/subCategory/CSS/questions/-N9uxyk7BmxtMV5XgyB0/answers/0",
+          propertyPath: "",
+        },
+      },
+    };
+    await (browser.asControl(input) as unknown as Input).setValue("wdi5-test");
+
+    const saveButton: wdi5Selector = await {
+      selector: {
+        controlType: "sap.m.Button",
+        viewName: "webapp.typescript.view.Main",
+        i18NText: {
+          propertyName: "text",
+          key: "btnSave",
+        },
+      },
+    };
+    await (browser.asControl(saveButton) as unknown as Button).firePress();
+
+    const textAnswer: wdi5Selector = await {
+      selector: {
+        controlType: "sap.m.Text",
+        viewName: "webapp.typescript.view.Main",
+        bindingPath: {
+          path: "/Data/FrontEnd/subCategory/CSS/questions/-N9uxyk7BmxtMV5XgyB0/answers/0",
+          propertyPath: "",
+        },
+      },
+    };
+    const inputText = await (browser.asControl(textAnswer) as unknown as Text).getText(false);
+    expect(inputText).toEqual("wdi5-test");
   });
 });
