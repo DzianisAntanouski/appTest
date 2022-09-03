@@ -19,7 +19,6 @@ import FetchDataBase from "../db/FetchDB";
 export default class Start extends BaseController {
   formatter = formatter;
   oFragment: Promise<Dialog | Control | Control[]>;
-  fragmentStatistics: Promise<Dialog | Control | Control[]>;
 
   public onInit(): void {
     this.getOwnerComponent().getRouter().getRoute("test")?.attachPatternMatched(this.onPatternMatched.bind(this), this);
@@ -217,24 +216,17 @@ export default class Start extends BaseController {
     void FetchDataBase.postResults(results, data, category, subcategory);
     void FetchDataBase.postAllResults(results, data).then(() => {
       void FetchDataBase.getAllResults().then((resp) => {
-        this.getSupportModel().setProperty("/results", resp);
+        const modifyResp = Object.keys(resp).map((elem) => {
+          return {
+            date: elem,
+            category: resp[elem]["category"],
+            email: resp[elem]["email"],
+            points: resp[elem]["points"],
+            subcategory: resp[elem]["subcategory"],
+          };
+        });
+        this.getSupportModel().setProperty("/results", modifyResp);
       });
     });
-  }
-
-  public onShowStatistics() {
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    if (!this.fragmentStatistics) {
-      const oView = this.getView();
-      this.fragmentStatistics = Fragment.load({
-        id: oView?.getId(),
-        name: "webapp.typescript.view.fragments.Statistics",
-        controller: this,
-      }).then((oMessagePopover) => {
-        oView?.addDependent(oMessagePopover as UI5Element);
-        return oMessagePopover;
-      });
-    }
-    void this.fragmentStatistics.then((oMessagePopover) => (oMessagePopover as Dialog).open());
   }
 }

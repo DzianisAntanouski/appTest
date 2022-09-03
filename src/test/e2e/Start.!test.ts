@@ -3,7 +3,7 @@ import { wdi5 } from "wdio-ui5-service";
 import { wdi5Selector } from "wdio-ui5-service/dist/types/wdi5.types";
 import { expect } from "expect";
 import Start from "./pageObjects/Start";
-import Template from "./pageObjects/Tempalte";
+import Template from "./pageObjects/Template";
 import Control from "sap/ui/core/Control";
 import Button from "sap/m/Button";
 import Page from "sap/m/Page";

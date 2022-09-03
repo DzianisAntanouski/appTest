@@ -3,8 +3,6 @@ import BindingMode from "sap/ui/model/BindingMode";
 import * as Device from "sap/ui/Device";
 import { IQuestion } from "../interface/Interface";
 
-
-
 class Question implements IQuestion {
   question: string;
   answers: string[];

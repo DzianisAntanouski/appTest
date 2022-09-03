@@ -3,7 +3,7 @@ import { wdi5 } from "wdio-ui5-service";
 import { wdi5Selector } from "wdio-ui5-service/dist/types/wdi5.types";
 import { expect } from "expect";
 import Main from "./pageObjects/Main";
-import Template from "./pageObjects/Tempalte";
+import Template from "./pageObjects/Template";
 import Button from "sap/m/Button";
 import GenericTile from "sap/m/GenericTile";
 import Input from "sap/m/Input";
@@ -84,7 +84,7 @@ describe("test1: Start page", () => {
 
     const cancelButton = createTemplate("cancelButton");
     const cancelButtonText = await (browser.asControl(cancelButton) as unknown as Button).getText();
-    expect(cancelButtonText).toEqual("Cancel");
+    expect(cancelButtonText).toEqual("btnCancel");
   });
 
   it("should have change input text", async () => {
