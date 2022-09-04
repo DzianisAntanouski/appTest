@@ -1,16 +1,10 @@
 /* eslint-disable @typescript-eslint/await-thenable */
 import { wdi5 } from "wdio-ui5-service";
-import { wdi5Selector } from "wdio-ui5-service/dist/types/wdi5.types";
 import { expect } from "expect";
-import Template from "./pageObjects/Template";
-import Button from "sap/m/Button";
 import Test from "./pageObjects/Test";
-import RadioButton from "sap/m/RadioButton";
-import Title from "sap/m/Title";
-import Control from "sap/ui/core/Control";
 import { WDI5Control } from "wdio-ui5-service/dist/lib/wdi5-control";
 import Text from "sap/m/Text";
-import Table from 'sap/m/Table';
+import Title from "sap/m/Title";
 
 const iPressTheFirstAnswer = async () => {
   await (
@@ -208,29 +202,19 @@ const iPressTheSeventhAnswer = async () => {
     }) as unknown as WDI5Control
   ).press();
 };
-const iAssertTheControlState = async () => {
-  const text = (await browser.asControl({
-    selector: {
-          id: "idFooterText",
-          viewName: "webapp.typescript.view.Test"
-  }}) as unknown as Text).getText(true);
-  expect(text).toEqual("Your results: 28.6");
-}
-const iTest = async () => {
-  await setTimeout(() => {
-    return void iAssertTheControlState();
-  }, 10000)
-}
 
 const iPressSubmitButton = async () => {
-  await (browser.asControl({
-    selector: {
-          id: "submitBtn",
-          viewName: "webapp.typescript.view.Test"          
-  }}) as unknown as WDI5Control).press();
-}
+  await (
+    browser.asControl({
+      selector: {
+        id: "submitBtn",
+        viewName: "webapp.typescript.view.Test",
+      },
+    }) as unknown as WDI5Control
+  ).press();
+};
 
-describe("test1: Start page", () => {
+describe("test3: Test page", () => {
   before(async () => {
     await Test.open();
   });
@@ -249,7 +233,87 @@ describe("test1: Start page", () => {
     await iPressTheSixthAnswer();
     await iPressTheSeventhAnswer();
     await iPressSubmitButton();
-    await iTest();
-    // await iAssertTheControlState();
+    const rightAnswer = await (
+      browser.asControl({
+        selector: {
+          controlType: "sap.m.Text",
+          viewName: "webapp.typescript.view.Test",
+          bindingPath: {
+            path: "/resultsByQuestions/5",
+            propertyPath: "points",
+            modelName: "supportModel",
+          },
+        },
+      }) as unknown as Text
+    ).getText(false);
+    expect(rightAnswer).toEqual("1");
+  });
+
+  it("should have right point result (28.6)", async () => {
+    const text = await (
+      browser.asControl({
+        selector: {
+          id: "idFooterText",
+          viewName: "webapp.typescript.view.Test",
+        },
+      }) as unknown as Text
+    ).getText(false);
+    expect(text).toEqual("Your results: 28.6");
+  });
+
+  it("should have save result and check statistics dialog title", async () => {
+    await (
+      browser.asControl({
+        selector: {
+          controlType: "sap.m.Button",
+          viewName: "webapp.typescript.view.Test",
+          i18NText: {
+            propertyName: "text",
+            key: "saveResults",
+          },
+        },
+      }) as unknown as WDI5Control
+    ).press();
+
+    await (
+      browser.asControl({
+        selector: {
+          controlType: "sap.m.Button",
+          properties: {
+            text: "Statistic",
+          },
+        },
+      }) as unknown as WDI5Control
+    ).press();
+
+    const text = await (
+      browser.asControl({
+        selector: {
+          controlType: "sap.m.Title",
+          viewName: "webapp.typescript.view.Test",
+          properties: {
+            text: "Statistic ",
+          },
+        },
+      }) as unknown as Title
+    ).getText();
+    expect(text).toEqual("Statistic ");
+  });
+
+  it("check my result", async () => {
+    const text = await (
+      browser.asControl({
+        selector: {
+          controlType: "sap.m.Text",
+          viewName: "webapp.typescript.view.Test",
+          bindingPath: {
+            path: "/results/5",
+            propertyPath: "points",
+            modelName: "supportModel",
+          },
+        },
+      }) as unknown as Text
+    ).getText(false);
+    expect(text).toEqual("90");
   });
 });

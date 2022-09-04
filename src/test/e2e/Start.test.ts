@@ -13,7 +13,7 @@ import Icon from "sap/ui/core/Icon";
 
 const createTemplate = Template(Start._viewName);
 
-describe("test1: Start page", () => {
+describe("test2: Start page", () => {
   before(async () => {
     await Start.open();
   });

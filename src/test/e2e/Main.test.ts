@@ -13,7 +13,7 @@ import Text from "sap/m/Text";
 const createTemplate = Template(Main._viewName);
 const templateStart = Template(Start._viewName);
 
-describe("test1: Start page", () => {
+describe("test1: Main page", () => {
   before(async () => {
     await Main.open();
   });
@@ -84,7 +84,7 @@ describe("test1: Start page", () => {
 
     const cancelButton = createTemplate("cancelButton");
     const cancelButtonText = await (browser.asControl(cancelButton) as unknown as Button).getText();
-    expect(cancelButtonText).toEqual("btnCancel");
+    expect(cancelButtonText).toEqual("Cancel");
   });
 
   it("should have change input text", async () => {
