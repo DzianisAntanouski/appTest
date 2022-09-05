@@ -8,6 +8,8 @@ import { wdi5Selector } from "wdio-ui5-service/dist/types/wdi5.types";
 import Template from "./pageObjects/Tempalte";
 import Test from "./pageObjects/Test";
 import ListBase from "sap/m/ListBase";
+import { WDI5Control } from "wdio-ui5-service/dist/lib/wdi5-control";
+import ManagedObject from "sap/ui/base/ManagedObject";
 
 const createTemplate = Template(Test._viewName);
 
@@ -39,10 +41,14 @@ describe("test1: Start page", () => {
         const Page: wdi5Selector = {
             selector: {
                 controlType: "sap.m.Page",
-                viewName: Test._viewName,
-            },
+                viewName: "webapp.typescript.view.Test",
+                i18NText: {
+                    propertyName: "title",
+                    key: "question"
+                }
+            }
         }
-        const page: Control[] = (browser.asControl(Page) as unknown as Page); 
+        const page = await browser.asControl(Page) as unknown as Page;
 
         await (await browser.asControl({
             selector: {
@@ -93,13 +99,13 @@ describe("test1: Start page", () => {
                 }
             }
         }).press();
-        
-        const path = page.map((elem) => {
+
+        const content = page.getAggregation('content') as ManagedObject[]
+        const path = content.map((elem) => {
             const table = elem as Table;
             return table.getBindingContext()?.getPath();
         })
-      
-        path.forEach(async (elem) => {
+        async function a(): Promise<void> {
             await browser.asControl({
                 selector: {
                     controlType: "sap.m.RadioButton",
@@ -124,9 +130,13 @@ describe("test1: Start page", () => {
                     }
                 }
             }).press();
-        })
+        }
+        a().catch((er) => console.log(er))
+        // await (a as unknown as WDI5Control | Control).press()
+        // void path.forEach(() => a.then((contr: WDI5Control & Control) => contr.press())
+        // )
 
-        expect(text).toEqual("Information");
+        // expect(text).toEqual("Information");
     });
     // it("should select answers", async () => {
     //  })
