@@ -10,6 +10,15 @@ export interface ITemplate {
     viewName: string;
   };
 }
+
+export interface ITestResults {
+  [key: string]: {
+    category: string;
+    email: string;
+    points: string;
+    subcategory: string;
+  };
+}
 // -------------AppController--------------------------
 
 export interface IAuthObject {

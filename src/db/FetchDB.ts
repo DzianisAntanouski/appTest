@@ -1,4 +1,4 @@
-import { IResults } from "../interface/Interface";
+import { IResults, ITestResults } from "../interface/Interface";
 export default class FetchDataBase {
   static async create(question: object, categoryName = "", subCategory = "", questions = "/questions") {
     return (await fetch(
@@ -49,7 +49,7 @@ export default class FetchDataBase {
       }
     );
   }
-  
+
   static async createCategory(email: string, categoryName = "", subCategory = "") {
     return (await fetch(
       `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/Data${categoryName}${subCategory}/createdBy.json`,
@@ -122,6 +122,6 @@ export default class FetchDataBase {
   static async getAllResults() {
     return await fetch(`https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/allResults.json`, { method: "GET" })
       .then((res) => res.json())
-      .then((res) => res as object);
+      .then((res) => res as ITestResults);
   }
 }

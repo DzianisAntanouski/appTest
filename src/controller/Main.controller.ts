@@ -16,11 +16,13 @@ import { IData, IListItem, IQuestion, IResult, IArguments, IParent, IQuestionStr
 import List from "sap/m/List";
 import MessageToast from "sap/m/MessageToast";
 import MessageBox, { Action } from "sap/m/MessageBox";
+import formatter from "../model/formatter";
 
 /**
  * @namespace webapp.typescript.controller
  */
 export default class Main extends BaseController {
+  formatter = formatter;
   oFragment: Promise<Dialog | Control | Control[]>;
   newQuestion: object = {
     question: "",
@@ -40,6 +42,33 @@ export default class Main extends BaseController {
     void this.getOwnerComponent().getModel().attachPropertyChange(this.changeProperty.bind(this), this);
   }
 
+  public onStatisticPress(): void {
+    void FetchDataBase.getAllResults()
+      .then((resp) => {
+        const modifyResp = Object.keys(resp)
+          .map((elem) => {
+            return {
+              date: elem,
+              category: resp[elem]["category"],
+              email: resp[elem]["email"],
+              points: resp[elem]["points"],
+              subcategory: resp[elem]["subcategory"],
+            };
+          })
+          .filter(
+            (elem) =>
+              (this.getView()?.getBindingContext() as Context).getPath().includes(elem.category) &&
+              (this.getView()?.getBindingContext() as Context).getPath().includes(elem.subcategory)
+          );
+        this.getSupportModel().setProperty("/results", modifyResp);
+      })
+      .then(() => void this.onShowStatistics());
+  }
+
+  public onCancelFragmentResult() {
+    void this.fragmentStatistics.then((oMessagePopover) => (oMessagePopover as Dialog).close());
+  }
+
   public changeProperty(): void {
     if (this.getSupportModel().getProperty("/edit")) {
       this.getSupportModel().setProperty("/change", true);
@@ -53,11 +82,13 @@ export default class Main extends BaseController {
       return;
     }
     const sPath: string = (oEvent.getParameter("arguments") as IArguments).sPath;
+    const sRightPath: string = sPath.replace(/-/g, "/");
     this.getView()?.bindObject({
-      path: `${sPath.replace(/-/g, "/")}`,
+      path: `${sRightPath}`,
     });
     this.getSupportModel().setProperty("/selected", false);
     this.getSupportModel().setProperty("/edit", false);
+    this.onPressNext();
   }
 
   public setActive(oEvent: Event): void {
@@ -133,8 +164,8 @@ export default class Main extends BaseController {
   public onPressNext(): void {
     this.highlightSwitcher();
     const oControls: Array<Control> = this.getInputListItem();
-    const oControl: Control = oControls.find((oControl) => oControl.getProperty("highlight") === "Information") as Control;
-    const oContext: Context = oControl.getBindingContext() as Context;
+    const oControl: Control | undefined = oControls.find((oControl) => oControl.getProperty("highlight") === "Information") as Control;
+    const oContext: Context = oControl?.getBindingContext() as Context;
     this.getView()?.byId("detailDetail")?.setBindingContext(oContext);
     this.setChecked();
   }
