@@ -8,7 +8,7 @@ import Router from "sap/ui/core/routing/Router";
 import History from "sap/ui/core/routing/History";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import FetchDataBase from "../db/FetchDB";
-import { FetchData, ICategory, IQuestion, IResponse, ISubCategory } from "../interface/Interface";
+import { FetchData, ICategory, IOwner, IQuestion, IResponse, ISubCategory } from "../interface/Interface";
 import Auth from "../db/Auth";
 import Fragment from "sap/ui/core/Fragment";
 import Dialog from "sap/m/Dialog";
@@ -17,6 +17,7 @@ import EventBus from "sap/ui/core/EventBus";
 import Context from "sap/ui/model/Context";
 import Detail from "./Detail.controller";
 import MessageBox from "sap/m/MessageBox";
+import UI5Element from "sap/ui/core/Element";
 
 /**
  * @namespace webapp.typescript.controller
@@ -25,6 +26,7 @@ export default abstract class BaseController extends Controller {
   oFragment: Promise<void | Dialog | Control | Control[]>;
   oAuthorizationDialog: Control | Control[];
   oEventBus: EventBus;
+  fragmentStatistics: Promise<Dialog | Control | Control[]>;
 
   public async tryAuthorization(email: string, password: string): Promise<void> {
     let oResponse: IResponse | null = (await Auth.fnRegisterNewUser(email, password)) as IResponse;
@@ -68,7 +70,10 @@ export default abstract class BaseController extends Controller {
       (this as unknown as Detail).onPressAddCategory();
     } else if (!oInitControl) {
       const sPath: string = (this.getView()?.getBindingContext() as Context).getPath();
-      this.oEventBus.publish("navigation", "navToMain", { sPath, event: false });
+      const oCreatedBy: object = ((this.getModel() as JSONModel).getProperty(sPath) as IOwner).createdBy;
+      if (!oCreatedBy || Object.values(oCreatedBy)[0] === this.getSupportModel().getProperty("/auth/email")) {
+        this.oEventBus.publish("navigation", "navToMain", { sPath, event: false });
+      } else MessageBox.error(this.i18n("authorizationMTPageErrorMessage"));
     }
   }
 
@@ -190,5 +195,21 @@ export default abstract class BaseController extends Controller {
     const resourceModel = this.getOwnerComponent().getModel("i18n") as ResourceModel;
     const oBundle = resourceModel.getResourceBundle() as ResourceBundle;
     return oBundle.getText(sKey, aParam);
+  }
+
+  public onShowStatistics() {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    if (!this.fragmentStatistics) {
+      const oView = this.getView();
+      this.fragmentStatistics = Fragment.load({
+        id: oView?.getId(),
+        name: "webapp.typescript.view.fragments.Statistics",
+        controller: this,
+      }).then((oMessagePopover) => {
+        oView?.addDependent(oMessagePopover as UI5Element);
+        return oMessagePopover;
+      });
+    }
+    void this.fragmentStatistics.then((oMessagePopover) => (oMessagePopover as Dialog).open());
   }
 }

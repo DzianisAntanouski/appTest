@@ -20,7 +20,7 @@
 			<OverflowToolbar>
 				<ToolbarSpacer/>
 				<Button id="submitBtn" text="{i18n>btnSubmit}" press='.onSubmitPress'/>
-				<Button text="{i18n>btnCancel}" press='.onCancelPress' />
+				<Button text="{i18n>btnClear}" press='.onPressClear' />
 			</OverflowToolbar>
 		</footer>
 	</Page>

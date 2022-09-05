@@ -5,6 +5,12 @@
 
 		<table:Table rows="{supportModel>/results}" enableSelectAll="false" selectionMode="None"  class='sapUiSmallMargin'>
 			<table:columns>
+				<table:Column sortProperty="date" width="200px">
+					<Text text="{i18n>date}" />
+					<table:template>
+						<Text text="{path: 'supportModel>date', formatter: '.formatter.formatDate'}" />
+					</table:template>
+				</table:Column>
 				<table:Column sortProperty="email">
 					<Text text="{i18n>email}" />
 					<table:template>
@@ -32,7 +38,7 @@
 			</table:columns>
 		</table:Table>
 		<buttons>
-			<Button text="{i18n>btnCancel}" press="onCancelFragmentResult" />
+			<Button text="{i18n>btnOk}" press="onCancelFragmentResult" />
 		</buttons>
 	</Dialog>
 </core:FragmentDefinition>

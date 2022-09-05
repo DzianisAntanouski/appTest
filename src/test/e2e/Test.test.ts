@@ -1,172 +1,320 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import Page from "sap/m/Page";
-import Text from "sap/m/Text";
-import Control from "sap/ui/core/Control";
-import Table from "sap/m/Table";
+/* eslint-disable @typescript-eslint/await-thenable */
 import { wdi5 } from "wdio-ui5-service";
-import { wdi5Selector } from "wdio-ui5-service/dist/types/wdi5.types";
-import Template from "./pageObjects/Tempalte";
+import { expect } from "expect";
 import Test from "./pageObjects/Test";
-import ListBase from "sap/m/ListBase";
 import { WDI5Control } from "wdio-ui5-service/dist/lib/wdi5-control";
-import ManagedObject from "sap/ui/base/ManagedObject";
+import Text from "sap/m/Text";
+import Title from "sap/m/Title";
 
-const createTemplate = Template(Test._viewName);
+const iPressTheFirstAnswer = async () => {
+  await (
+    browser.asControl({
+      selector: {
+        controlType: "sap.m.RadioButton",
+        viewName: "webapp.typescript.view.Test",
+        properties: {
+          editable: true,
+        },
+        ancestor: {
+          controlType: "sap.m.ColumnListItem",
+          viewName: "webapp.typescript.view.Test",
+          bindingPath: {
+            path: "/Data/FrontEnd/subCategory/CSS/questions/-N9uwG3vLxqZ0wkp0hH0/answers/0",
+          },
+          ancestor: {
+            controlType: "sap.m.Table",
+            viewName: "webapp.typescript.view.Test",
+            bindingPath: {
+              path: "/Data/FrontEnd/subCategory/CSS/questions/-N9uwG3vLxqZ0wkp0hH0",
+              propertyPath: "answers",
+            },
+          },
+        },
+      },
+    }) as unknown as WDI5Control
+  ).press();
+};
+const iPressTheSecondAnswer = async () => {
+  await (
+    browser.asControl({
+      selector: {
+        controlType: "sap.m.RadioButton",
+        viewName: "webapp.typescript.view.Test",
+        properties: {
+          editable: true,
+        },
+        ancestor: {
+          controlType: "sap.m.ColumnListItem",
+          viewName: "webapp.typescript.view.Test",
+          bindingPath: {
+            path: "/Data/FrontEnd/subCategory/CSS/questions/-N9uxyk7BmxtMV5XgyB0/answers/0",
+          },
+          ancestor: {
+            controlType: "sap.m.Table",
+            viewName: "webapp.typescript.view.Test",
+            bindingPath: {
+              path: "/Data/FrontEnd/subCategory/CSS/questions/-N9uxyk7BmxtMV5XgyB0",
+              propertyPath: "answers",
+            },
+          },
+        },
+      },
+    }) as unknown as WDI5Control
+  ).press();
+};
+const iPressTheThirdAnswer = async () => {
+  await (
+    browser.asControl({
+      selector: {
+        controlType: "sap.m.RadioButton",
+        viewName: "webapp.typescript.view.Test",
+        properties: {
+          editable: true,
+        },
+        ancestor: {
+          controlType: "sap.m.ColumnListItem",
+          viewName: "webapp.typescript.view.Test",
+          bindingPath: {
+            path: "/Data/FrontEnd/subCategory/CSS/questions/-N9uy6WxLKj_9VED_IME/answers/0",
+          },
+          ancestor: {
+            controlType: "sap.m.Table",
+            viewName: "webapp.typescript.view.Test",
+            bindingPath: {
+              path: "/Data/FrontEnd/subCategory/CSS/questions/-N9uy6WxLKj_9VED_IME",
+              propertyPath: "answers",
+            },
+          },
+        },
+      },
+    }) as unknown as WDI5Control
+  ).press();
+};
+const iPressTheFourthAnswer = async () => {
+  await (
+    browser.asControl({
+      selector: {
+        controlType: "sap.m.RadioButton",
+        viewName: "webapp.typescript.view.Test",
+        properties: {
+          editable: true,
+        },
+        ancestor: {
+          controlType: "sap.m.ColumnListItem",
+          viewName: "webapp.typescript.view.Test",
+          bindingPath: {
+            path: "/Data/FrontEnd/subCategory/CSS/questions/-N9uyWzTtv7l3PFx5UsN/answers/0",
+          },
+          ancestor: {
+            controlType: "sap.m.Table",
+            viewName: "webapp.typescript.view.Test",
+            bindingPath: {
+              path: "/Data/FrontEnd/subCategory/CSS/questions/-N9uyWzTtv7l3PFx5UsN",
+              propertyPath: "answers",
+            },
+          },
+        },
+      },
+    }) as unknown as WDI5Control
+  ).press();
+};
+const iPressTheFifthAnswer = async () => {
+  await (
+    browser.asControl({
+      selector: {
+        controlType: "sap.m.RadioButton",
+        viewName: "webapp.typescript.view.Test",
+        properties: {
+          editable: true,
+        },
+        ancestor: {
+          controlType: "sap.m.ColumnListItem",
+          viewName: "webapp.typescript.view.Test",
+          bindingPath: {
+            path: "/Data/FrontEnd/subCategory/CSS/questions/-N9uyzMbtKoQzEDnAjH_/answers/0",
+          },
+          ancestor: {
+            controlType: "sap.m.Table",
+            viewName: "webapp.typescript.view.Test",
+            bindingPath: {
+              path: "/Data/FrontEnd/subCategory/CSS/questions/-N9uyzMbtKoQzEDnAjH_",
+              propertyPath: "answers",
+            },
+          },
+        },
+      },
+    }) as unknown as WDI5Control
+  ).press();
+};
+const iPressTheSixthAnswer = async () => {
+  await (
+    browser.asControl({
+      selector: {
+        controlType: "sap.m.RadioButton",
+        viewName: "webapp.typescript.view.Test",
+        properties: {
+          editable: true,
+        },
+        ancestor: {
+          controlType: "sap.m.ColumnListItem",
+          viewName: "webapp.typescript.view.Test",
+          bindingPath: {
+            path: "/Data/FrontEnd/subCategory/CSS/questions/-N9uzAqgqVnZIm_feMvv/answers/0",
+          },
+          ancestor: {
+            controlType: "sap.m.Table",
+            viewName: "webapp.typescript.view.Test",
+            bindingPath: {
+              path: "/Data/FrontEnd/subCategory/CSS/questions/-N9uzAqgqVnZIm_feMvv",
+              propertyPath: "answers",
+            },
+          },
+        },
+      },
+    }) as unknown as WDI5Control
+  ).press();
+};
+const iPressTheSeventhAnswer = async () => {
+  await (
+    browser.asControl({
+      selector: {
+        controlType: "sap.m.RadioButton",
+        viewName: "webapp.typescript.view.Test",
+        properties: {
+          editable: true,
+        },
+        ancestor: {
+          controlType: "sap.m.ColumnListItem",
+          viewName: "webapp.typescript.view.Test",
+          bindingPath: {
+            path: "/Data/FrontEnd/subCategory/CSS/questions/undefined/answers/0",
+          },
+          ancestor: {
+            controlType: "sap.m.Table",
+            viewName: "webapp.typescript.view.Test",
+            bindingPath: {
+              path: "/Data/FrontEnd/subCategory/CSS/questions/undefined",
+              propertyPath: "answers",
+            },
+          },
+        },
+      },
+    }) as unknown as WDI5Control
+  ).press();
+};
 
-describe("test1: Start page", () => {
-    before(async () => {
-        await Test.open();
-    });
+const iPressSubmitButton = async () => {
+  await (
+    browser.asControl({
+      selector: {
+        id: "submitBtn",
+        viewName: "webapp.typescript.view.Test",
+      },
+    }) as unknown as WDI5Control
+  ).press();
+};
 
-    it("should have the right title", async () => {
-        const page = await browser.asControl({
-            selector: {
-                controlType: "sap.m.Title",
-                properties: {
-                    text: "Questions"
-                }
-            }
-        });
-        const text = await page.getProperty('text') as Text;
-        expect(text).toEqual("Questions");
-    });
-    it('should open information dialog', async () => {
+describe("test3: Test page", () => {
+  before(async () => {
+    await Test.open();
+  });
 
-        // const page: Control[] = (await browser.asControl({
-        //     selector: {
-        //         id: "pageTest",
-        //         viewName: "webapp.typescript.view.Test"
-        //     }
-        // }) as unknown as Page).getAggregation('content')
-        const Page: wdi5Selector = {
-            selector: {
-                controlType: "sap.m.Page",
-                viewName: "webapp.typescript.view.Test",
-                i18NText: {
-                    propertyName: "title",
-                    key: "question"
-                }
-            }
-        }
-        const page = await browser.asControl(Page) as unknown as Page;
+  it("should have the right title", async () => {
+    const title = await browser.getTitle();
+    expect(title).toEqual("UI5 Application typescript");
+  });
 
-        await (await browser.asControl({
-            selector: {
-                controlType: "sap.m.Button",
-                viewName: "webapp.typescript.view.Test",
-                i18NText: {
-                    propertyName: "text",
-                    key: "btnSubmit"
-                },
-            }
-        })).press();
+  it("should select all first items", async () => {
+    await iPressTheFirstAnswer();
+    await iPressTheSecondAnswer();
+    await iPressTheThirdAnswer();
+    await iPressTheFourthAnswer();
+    await iPressTheFifthAnswer();
+    await iPressTheSixthAnswer();
+    await iPressTheSeventhAnswer();
+    await iPressSubmitButton();
+    const rightAnswer = await (
+      browser.asControl({
+        selector: {
+          controlType: "sap.m.Text",
+          viewName: "webapp.typescript.view.Test",
+          bindingPath: {
+            path: "/resultsByQuestions/5",
+            propertyPath: "points",
+            modelName: "supportModel",
+          },
+        },
+      }) as unknown as Text
+    ).getText(false);
+    expect(rightAnswer).toEqual("1");
+  });
 
-        const dialog = await browser.asControl({
-            selector: {
-                controlType: "sap.m.Title",
-                properties: {
-                    text: "Information"
-                },
-                searchOpenDialogs: true,
-                interaction: {
-                    idSuffix: "inner"
-                }
-            }
-        });
+  it("should have right point result (28.6)", async () => {
+    const text = await (
+      browser.asControl({
+        selector: {
+          id: "idFooterText",
+          viewName: "webapp.typescript.view.Test",
+        },
+      }) as unknown as Text
+    ).getText(false);
+    expect(text).toEqual("Your results: 28.6");
+  });
 
-        const text = await dialog.getProperty('text') as Text;
-        await browser.asControl({
-            selector: {
-                controlType: "sap.m.Button",
-                properties: {
-                    text: "OK"
-                },
-                searchOpenDialogs: true,
-                interaction: {
-                    idSuffix: "inner"
-                }
-            }
-        }).press();
-        await browser.asControl({
-            selector: {
-                controlType: "sap.m.Button",
-                properties: {
-                    text: "OK"
-                },
-                searchOpenDialogs: true,
-                interaction: {
-                    idSuffix: "inner"
-                }
-            }
-        }).press();
+  it("should have save result and check statistics dialog title", async () => {
+    await (
+      browser.asControl({
+        selector: {
+          controlType: "sap.m.Button",
+          viewName: "webapp.typescript.view.Test",
+          i18NText: {
+            propertyName: "text",
+            key: "saveResults",
+          },
+        },
+      }) as unknown as WDI5Control
+    ).press();
 
-        const content = page.getAggregation('content') as ManagedObject[]
-        const path = content.map((elem) => {
-            const table = elem as Table;
-            return table.getBindingContext()?.getPath();
-        })
-        async function a(): Promise<void> {
-            await browser.asControl({
-                selector: {
-                    controlType: "sap.m.RadioButton",
-                    viewName: "webapp.typescript.view.Test",
-                    properties: {
-                        editable: true
-                    },
-                    ancestor: {
-                        controlType: "sap.m.ColumnListItem",
-                        viewName: "webapp.typescript.view.Test",
-                        bindingPath: {
-                            path: "/Data/FrontEnd/subCategory/JavaScript/questions/-N9v2e8IKgTeZwcCGYvq/answers/2"
-                        },
-                        ancestor: {
-                            controlType: "sap.m.Table",
-                            viewName: "webapp.typescript.view.Test",
-                            bindingPath: {
-                                path: "/Data/FrontEnd/subCategory/JavaScript/questions/-N9v2e8IKgTeZwcCGYvq",
-                                propertyPath: "answers"
-                            }
-                        }
-                    }
-                }
-            }).press();
-        }
-        a().catch((er) => console.log(er))
-        // await (a as unknown as WDI5Control | Control).press()
-        // void path.forEach(() => a.then((contr: WDI5Control & Control) => contr.press())
-        // )
+    await (
+      browser.asControl({
+        selector: {
+          controlType: "sap.m.Button",
+          properties: {
+            text: "Statistic",
+          },
+        },
+      }) as unknown as WDI5Control
+    ).press();
 
-        // expect(text).toEqual("Information");
-    });
-    // it("should select answers", async () => {
-    //  })
-    //  await browser.asControl({
-    //     selector: {
-    //         controlType: "sap.m.Button",
-    //         viewName: "webapp.typescript.view.Test",
-    //         i18NText: {
-    //             propertyName: "text",
-    //             key: "btnSubmit"
-    //         },
-    //     }
-    // }).press();
-    // const dialog = await browser.asControl({
-    //     selector: {
-    //         controlType: "sap.m.Title",
-    //         properties: {
-    //             text: "Information"
-    //         },
-    //         searchOpenDialogs: true,
-    //         interaction: {
-    //             idSuffix: "inner"
-    //         }
-    //     }
-    // });
-    // const text = await dialog.getProperty('text') as Text;
-    // expect(text).toEqual("Information");
+    const text = await (
+      browser.asControl({
+        selector: {
+          controlType: "sap.m.Title",
+          viewName: "webapp.typescript.view.Test",
+          properties: {
+            text: "Statistic ",
+          },
+        },
+      }) as unknown as Title
+    ).getText();
+    expect(text).toEqual("Statistic ");
+  });
 
+  it("check my result", async () => {
+    const text = await (
+      browser.asControl({
+        selector: {
+          controlType: "sap.m.Text",
+          viewName: "webapp.typescript.view.Test",
+          bindingPath: {
+            path: "/results/5",
+            propertyPath: "points",
+            modelName: "supportModel",
+          },
+        },
+      }) as unknown as Text
+    ).getText(false);
+    expect(text).toEqual("90");
+  });
 });
-
-
-
 

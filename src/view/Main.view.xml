@@ -12,9 +12,10 @@
 		showFooter="{= ${supportModel>/edit}}">
 		<subHeader>
 			<OverflowToolbar>
-				<Button text="{i18n>deleteCategory}" type="Reject" enabled="{= ${supportModel>/edit}}" press=".onPressDeleteSubCategory"/>
-				<ToolbarSpacer/>				
+				<Button text="{i18n>btnShowStatistics}" press="onStatisticPress" type="Ghost"/>
+				<ToolbarSpacer/>
 				<Button id="editButtonMain" text="{i18n>editMode}" press=".onPressEdit" enabled="{= !${supportModel>/edit}}"/>	
+				<Button text="{i18n>deleteCategory}" type="Reject" enabled="{= ${supportModel>/edit}}" press=".onPressDeleteSubCategory"/>
 				<Button text="{i18n>btnDelete}" type="Reject" enabled="{= ${supportModel>/selected}}" press=".onPressDeleteQuestion"/>				
 			</OverflowToolbar>
 		</subHeader>
