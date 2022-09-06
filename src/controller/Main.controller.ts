@@ -4,7 +4,7 @@ import Event from "sap/ui/base/Event";
 import Control from "sap/ui/core/Control";
 import Context from "sap/ui/model/Context";
 import models from "../model/models";
-import { MessageType } from "sap/ui/core/library";
+import { MessageType, ValueState } from "sap/ui/core/library";
 import Fragment from "sap/ui/core/Fragment";
 import Dialog from "sap/m/Dialog";
 import UI5Element from "sap/ui/core/Element";
@@ -181,7 +181,59 @@ export default class Main extends BaseController {
     void this.oFragment.then((oMessagePopover) => (oMessagePopover as Dialog).close());
   }
 
+  // public checkAddFragmentsField() {
+  //   const checkBoxes = ["cbanswer1", "cbanswer2", "cbanswer3", "cbanswer4"]
+  //   const checkSelected = (sId: string) => {
+  //     return (this.byId(sId) as CheckBox).getSelected()
+  //   }
+  //   const checkBoxResult = checkBoxes.map(sId => checkSelected(sId)).filter(oCheckBox => !oCheckBox);
+  //   const getAnswersLength = (sId: string) => {
+  //     return (this.byId(sId) as Input)
+  //   }
+  //   const answersId = ["answer1", "answer2", "answer3", "answer4"]
+  //   const answersResult = answersId.map(sId => getAnswersLength(sId)).filter(elem => elem.getValue().length < 3)
+  //   if (checkBoxResult.length === 4) {
+  //     MessageBox.error("Check one or more right answer")
+  //     return
+  //   } else if((this.byId("newQ") as Input).getValue().length < 3) {
+  //     void (this.byId("newQ") as Input).setValueState(ValueState.Error)
+  //     void (this.byId("newQ") as Input).setValueStateText("Error: min length 3")      
+  //     return
+  //   } else if (answersResult.length) {
+  //     void answersResult.forEach(oInput => {
+  //       oInput.setValueState(ValueState.Error)
+  //       oInput.setValueStateText("Error: min length 3")
+  //     })
+  //     return
+  //   }
+  // }
+
   public onPressFragmentAdd(): void {
+    const checkBoxes = ["cbanswer1", "cbanswer2", "cbanswer3", "cbanswer4"]
+    const checkSelected = (sId: string) => {
+      return (this.byId(sId) as CheckBox).getSelected()
+    }
+    const checkBoxResult = checkBoxes.map(sId => checkSelected(sId)).filter(oCheckBox => !oCheckBox);
+    const getAnswersLength = (sId: string) => {
+      return (this.byId(sId) as Input)
+    }
+    const answersId = ["answer1", "answer2", "answer3", "answer4"]
+    const answersResult = answersId.map(sId => getAnswersLength(sId)).filter(elem => elem.getValue().length < 3)
+    if (checkBoxResult.length === 4) {
+      MessageBox.error("Check one or more right answer")
+      return
+    } else if((this.byId("newQ") as Input).getValue().length < 3) {
+      void (this.byId("newQ") as Input).setValueState(ValueState.Error)
+      void (this.byId("newQ") as Input).setValueStateText("Error: min length 3")      
+      return
+    } else if (answersResult.length) {
+      void answersResult.forEach(oInput => {
+        oInput.setValueState(ValueState.Error)
+        oInput.setValueStateText("Error: min length 3")
+      })
+      return
+    }
+    // if (checkSelected("cbanswer1") || checkSelected("cbanswer2") || checkSelected("cbanswer3") || checkSelected("cbanswer4"))
     const getTemplate = (sProp: string): string => {
       return (this.getModel() as JSONModel).getProperty(`/newQuestion/${sProp}`) as string;
     };
