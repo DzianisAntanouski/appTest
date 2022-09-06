@@ -27,7 +27,7 @@
     "@sapui5/ts-types-esm": "^1.105.0",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",
-    "@ui5/cli": "^2.14.1",
+    "@ui5/cli": "^2.14.11",
     "@wdio/cli": "^7.23.0",
     "@wdio/local-runner": "^7.23.0",
     "@wdio/mocha-framework": "^7.23.0",

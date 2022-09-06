@@ -15,9 +15,9 @@ export const config: wdi5Config = {
     // ====================
     //
     //
-    // =====================
+    // ======================
     // ts-node Configurations
-    // =====================
+    // ======================
     //
     // You can write tests using TypeScript to get autocompletion and type safety.
     // You will need typescript and ts-node installed as devDependencies.

@@ -70,6 +70,10 @@ export default class Main extends BaseController {
   }
 
   public onPatternMatched(oEvent: Event) {
+    if((oEvent.getParameter("arguments") as IArguments).sPath === "redirect") {
+      this.navTo("start")
+      return
+    }
     if (!localStorage.auth) {
       this.navTo("start");
       MessageToast.show(this.i18n("authorizationMainPageErrorMessage"));
