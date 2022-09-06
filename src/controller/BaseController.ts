@@ -58,8 +58,8 @@ export default abstract class BaseController extends Controller {
 
   public async onLogInButtonPress(): Promise<void> {
     this.oEventBus = this.getOwnerComponent().getEventBus();
-    const sEmail = this.getModel("supportModel")?.getProperty("/email") as string;
-    const sPassword = this.getModel("supportModel")?.getProperty("/password") as string;
+    const sEmail = this.getSupportModel().getProperty("/email") as string;
+    const sPassword = this.getSupportModel().getProperty("/password") as string;
 
     await this.tryAuthorization(sEmail, sPassword);
 

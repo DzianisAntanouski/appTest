@@ -43,26 +43,20 @@ export default class Main extends BaseController {
   }
 
   public onStatisticPress(): void {
-    void FetchDataBase.getAllResults()
-      .then((resp) => {
-        const modifyResp = Object.keys(resp)
-          .map((elem) => {
-            return {
-              date: elem,
-              category: resp[elem]["category"],
-              email: resp[elem]["email"],
-              points: resp[elem]["points"],
-              subcategory: resp[elem]["subcategory"],
-            };
-          })
-          .filter(
-            (elem) =>
-              (this.getView()?.getBindingContext() as Context).getPath().includes(elem.category) &&
-              (this.getView()?.getBindingContext() as Context).getPath().includes(elem.subcategory)
-          );
-        this.getSupportModel().setProperty("/results", modifyResp);
+    void FetchDataBase.getAllResults().then((resp) => {
+      const modifyResp = Object.keys(resp).map(elem => {          
+        return {
+          date: elem, 
+          category: resp[elem]['category'], 
+          email: resp[elem]['email'], 
+          points: resp[elem]['points'],
+          subcategory: resp[elem]['subcategory']
+        }
       })
-      .then(() => void this.onShowStatistics());
+      .filter(elem => (this.getView()?.getBindingContext() as Context).getPath().includes(elem.category) && (this.getView()?.getBindingContext() as Context).getPath().includes(elem.subcategory))      
+      this.getSupportModel().setProperty("/results", modifyResp);
+    }).then(() => void this.onShowStatistics());
+    
   }
 
   public onCancelFragmentResult() {
@@ -76,13 +70,17 @@ export default class Main extends BaseController {
   }
 
   public onPatternMatched(oEvent: Event) {
+    if((oEvent.getParameter("arguments") as IArguments).sPath === "redirect") {
+      this.navTo("start")
+      return
+    }
     if (!localStorage.auth) {
       this.navTo("start");
       MessageToast.show(this.i18n("authorizationMainPageErrorMessage"));
       return;
     }
     const sPath: string = (oEvent.getParameter("arguments") as IArguments).sPath;
-    const sRightPath: string = sPath.replace(/-/g, "/");
+    const sRightPath: string = sPath.replace(/-/g, "/")
     this.getView()?.bindObject({
       path: `${sRightPath}`,
     });
@@ -231,9 +229,11 @@ export default class Main extends BaseController {
   public onPressDeleteSubCategory() {
     const sPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().split("/");
     const fetchToRemoveSubCategory = () => {
-      void FetchDataBase.deleteCategory(sPath[2], sPath[4]).then(() => {
-        this.navTo("start");
-      });
+      void FetchDataBase.deleteCategory(sPath[2], sPath[4])
+      .then(() => this.fireBaseRead())
+        .then(() => {
+          this.navTo("start");
+        });
     };
     this.getConfirm(fetchToRemoveSubCategory, "mainPageConfirmationDialogText", "mainPageConfirmationDialogTextRemove");
   }
@@ -255,14 +255,22 @@ export default class Main extends BaseController {
           () =>
             void this.fireBaseRead()
               .then(() => this.getSupportModel().setProperty("/edit", true))
+              .then(() => this.getSupportModel().setProperty("/selected", false))
               .then(() => (oControls as RadioButton[]).forEach((oRadioButton) => oRadioButton.setSelected(false)))
         );
       };
       this.getConfirm(fetchToRemoveQuestion, "mainPageConfirmationDialogText", "mainPageConfirmationDialogTextRemove");
-    }
+    }    
   }
 
-  public onCheck(): void {
+  public onCheck(oEvent: Event): void {
+    const sPath: string = ((oEvent.getSource() as CheckBox).getBindingContext() as Context).getPath();
+    const nIndex = Number(sPath.slice(-1)) + 1;
+    const rightAnswer = sPath.replace(/answers\/[0-9]/g, "rightAnswer");
+    let aRightAnswer = this.getModel()?.getProperty(rightAnswer) as number[]
+    aRightAnswer.includes(nIndex) ? aRightAnswer = aRightAnswer.filter(elem => elem !== nIndex) : aRightAnswer.push(nIndex);
+    
+    (this.getModel() as JSONModel).setProperty(rightAnswer, aRightAnswer)
     this.getSupportModel().setProperty("/change", true);
   }
 
