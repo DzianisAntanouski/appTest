@@ -42,6 +42,10 @@ export default class Start extends BaseController {
     }
   }
 
+  public onPressBack() {
+    this.navTo("main", {sPath: "redirect"})
+  }
+
   public onSubmitPress(): void {
     const checkedAnswers = this.getCheckedAnswers();
     const text = this.i18n("messageBeforeSubmitAnswers");
