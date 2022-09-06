@@ -70,11 +70,7 @@ export default class Start extends BaseController {
     return checkedAnswers.some((array) => array.length > 0);
   }
 
-
-
-
   public onPressClear(): void {
-
     const checkedAnswers = this.getCheckedAnswers();
     const text = this.i18n("messageBeforeResetAnswers");
     if (this.checkBeforeReset(checkedAnswers)) {
@@ -88,6 +84,7 @@ export default class Start extends BaseController {
       });
     }
   }
+
   public resetAllSelectedAnswers(): void {
     const arrayTable = this.getView()
       ?.getControlsByFieldGroupId("table")
@@ -123,8 +120,8 @@ export default class Start extends BaseController {
 
   public calculateResults(index: number, rightAnswersWord: string[][], isTrue: boolean[][]): number {
     const allRight = rightAnswersWord[index].length;
-    const clientRight = isTrue[index].filter((el) => el === true).length;
-    const clientFalse = isTrue[index].filter((el) => el === false).length;
+    const clientRight = isTrue[index].filter((el) => !!el).length;
+    const clientFalse = isTrue[index].filter((el) => !el).length;
     return +(clientRight / allRight - clientFalse / allRight).toFixed(1);
   }
 
