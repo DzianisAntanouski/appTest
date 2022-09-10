@@ -8,9 +8,9 @@ import Event from "sap/ui/base/Event";
 import Core from "sap/ui/core/Core";
 import EventBus from "sap/ui/core/EventBus";
 import BaseController from "./BaseController";
-import FetchDataBase from "../db/FetchDB";
 import Context from "sap/ui/model/Context";
 import formatter from "../model/formatter";
+import CRUDModel from '../model/CRUDModel';
 
 /**
  * @namespace webapp.typescript.controller
@@ -68,7 +68,7 @@ export default class Detail extends BaseController {
               MessageToast.show(this.i18n("submitMessage", [sText]));
               const aPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().split("/");
               const sEmail: string = this.getSupportModel().getProperty("/auth/email") as string;
-              void FetchDataBase.createCategory(sEmail, `/${aPath[2]}`, `/${sText}`).then(() => void this.fireBaseRead());
+              void (this.getModel() as CRUDModel).createCategory(sEmail, `/${aPath[2]}`, `/${sText}`);
               void (Core.byId("categoryName") as TextArea).setValue("");
               this.oSubmitDialog.close();
             },
