@@ -6,6 +6,8 @@ import Context from "sap/ui/model/Context";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import MessageBox from "sap/m/MessageBox";
 import { IOwner } from "../interface/Interface";
+import FeedInput from "sap/m/FeedInput";
+import DateFormat from "sap/ui/core/format/DateFormat";
 
 /**
  * @namespace webapp.typescript.controller
@@ -17,8 +19,23 @@ export default class DetailDetail extends BaseController {
     this.oEventBus = this.getOwnerComponent().getEventBus();
   }
 
+  /**
+   * onPost
+   */
+  public onPost(oEvent: Event): void {
+      var oFormat = DateFormat.getDateTimeInstance({ style: "medium" });
+      var oDate = new Date();
+      var sDate = oFormat.format(oDate);
+    const oPost = {
+      author: this.getSupportModel().getProperty('/auth').email as string,
+      text: (oEvent.getSource() as FeedInput).getValue(),
+      date: sDate
+    }
+    debugger
+  }
+
   public handleClose() {
-    MessageToast.show(this.i18n("loadingNewPageMessage"));
+    MessageToast.show(this.i18n("loadingNewPageMessage") as string);
     this.oEventBus.publish("flexible", "setDetailPage");
   }
 
@@ -36,7 +53,7 @@ export default class DetailDetail extends BaseController {
     if (!this.getSupportModel().getProperty("/auth")) this.loadAuthorizationDialog();
     else if (!oCreatedBy || Object.values(oCreatedBy)[0] === this.getSupportModel().getProperty("/auth/email")) {
       this.oEventBus.publish("navigation", "navToMain", oEvent);
-    } else MessageBox.error(this.i18n("authorizationMTPageErrorMessage"));
+    } else MessageBox.error(this.i18n("authorizationMTPageErrorMessage") as string);
   }
 
   /**

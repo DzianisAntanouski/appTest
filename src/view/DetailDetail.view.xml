@@ -6,14 +6,32 @@
 			<Button id="closeButton" type="Transparent" icon="sap-icon://decline" press="handleClose"  tooltip="Close end column" />
 		</headerContent>
 		<content>
-			<GenericTile id="manageTest" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleNavToManage" header="{i18n>manageTest}"
+			<FeedInput
+				post="onPost"
+				icon=""
+				class="sapUiSmallMarginTopBottom" />
+			<List
+				showSeparators="Inner"
+				items="{/EntryCollection}" >
+				<FeedListItem
+					sender="{Author}"
+					icon="{AuthorPicUrl}"
+					senderPress="onSenderPress"
+					iconPress="onIconPress"
+					iconDensityAware="false"
+					info="{Type}"
+					timestamp="{Date}"
+					text="{Text}"
+					convertLinksToAnchorTags="All"/>
+			</List>
+			<!-- <GenericTile id="manageTest" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleNavToManage" header="{i18n>manageTest}"
 				subheader="{i18n>manage} {name} {i18n>test}"  frameType= "TwoByHalf">
 				<TileContent />
 			</GenericTile>
 			<GenericTile id="runTest" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleNavToTest" header="{i18n>runTest}"
 				subheader="{i18n>complete} {name} {i18n>test}"  frameType= "TwoByHalf">
 				<TileContent />
-			</GenericTile>
+			</GenericTile> -->
 		</content>
 	</Page>
 </mvc:View>
