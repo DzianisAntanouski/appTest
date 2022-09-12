@@ -9,10 +9,7 @@
 		"applicationVersion": {
 			"version": "1.0.0"
 		},
-		"dataSources": {
-			"JSONmodel": {
-				"type": "JSON"
-			},
+		"dataSources": {			
 			"supportModel": {
 				"uri": "model/supportModel.json",
 				"type": "JSON"
@@ -49,13 +46,7 @@
 			"compact": true,
 			"cozy": true
 		},
-		"models": {
-			"": {
-				"dataSource": "JSONmodel",
-				"settings": {
-					"defaultBindingMode": "TwoWay"
-				}
-			},
+		"models": {			
 			"supportModel": {
 				"dataSource": "supportModel",
 				"settings": {
