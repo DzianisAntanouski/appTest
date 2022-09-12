@@ -9,12 +9,14 @@ import { IOwner, IPost } from '../interface/Interface';
 import FeedInput from "sap/m/FeedInput";
 import DateFormat from "sap/ui/core/format/DateFormat";
 import CRUDModel from '../model/CRUDModel';
+import formatter from "../model/formatter";
 
 /**
  * @namespace webapp.typescript.controller
  */
 export default class DetailDetail extends BaseController {
   oEventBus: EventBus;
+  formatter = formatter;
 
   public onInit(): void {
     this.oEventBus = this.getOwnerComponent().getEventBus();
