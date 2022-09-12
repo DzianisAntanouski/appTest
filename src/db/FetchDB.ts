@@ -119,7 +119,7 @@ export default class FetchDataBase {
       .then((res) => res as object);
   }
 
-  static async getAllResults() {
+  static async getAllResults(): Promise<ITestResults> {
     return await fetch(`https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/allResults.json`, { method: "GET" })
       .then((res) => res.json())
       .then((res) => res as ITestResults);
