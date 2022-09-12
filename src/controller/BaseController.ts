@@ -7,8 +7,7 @@ import ResourceBundle from "sap/base/i18n/ResourceBundle";
 import Router from "sap/ui/core/routing/Router";
 import History from "sap/ui/core/routing/History";
 import JSONModel from "sap/ui/model/json/JSONModel";
-import FetchDataBase from "../db/FetchDB";
-import { FetchData, ICategory, IOwner, IQuestion, IResponse, ISubCategory } from "../interface/Interface";
+import { ICategory, IOwner, IQuestion, IResponse } from "../interface/Interface";
 import Auth from "../db/Auth";
 import Fragment from "sap/ui/core/Fragment";
 import Dialog from "sap/m/Dialog";
@@ -18,6 +17,7 @@ import Context from "sap/ui/model/Context";
 import Detail from "./Detail.controller";
 import MessageBox from "sap/m/MessageBox";
 import UI5Element from "sap/ui/core/Element";
+import CRUDModel from '../model/CRUDModel';
 
 /**
  * @namespace webapp.typescript.controller
@@ -38,7 +38,7 @@ export default abstract class BaseController extends Controller {
       }
     }
     this.getSupportModel().setProperty("/auth", oResponse);
-    if (oResponse) void FetchDataBase.saveUser(oResponse.email, oResponse.idToken);
+    if (oResponse) void (this.getModel() as CRUDModel).saveUser(oResponse.email, oResponse.idToken);
     localStorage.setItem("auth", JSON.stringify(oResponse));
   }
 
@@ -101,25 +101,25 @@ export default abstract class BaseController extends Controller {
     return UIComponent.getRouterFor(this);
   }
 
-  public async fireBaseRead(categoryName = "", subCategory = ""): Promise<void> {
-    const qListModel: JSONModel = this.getOwnerComponent().getModel() as JSONModel;
-    const fetchData: FetchData = (await FetchDataBase.read(categoryName, subCategory)) as FetchData;
+  // public async fireBaseRead(categoryName = "", subCategory = ""): Promise<void> {
+  //   const qListModel: JSONModel = this.getOwnerComponent().getModel() as JSONModel;
+  //   const fetchData: FetchData = (await (this.getModel() as CRUDModel).read(categoryName, subCategory)) as FetchData;
 
-    const modelStructureToBinding: ISubCategory = {};
-    void Object.keys(fetchData).forEach((elem: string) => {
-      modelStructureToBinding[elem] = {
-        categoryName: elem,
-        subCategory: fetchData[elem] as unknown as FetchData,
-      };
-      Object.keys(fetchData[elem]).forEach((el) => {
-        modelStructureToBinding[elem]["subCategory"][el].name = el;
-      });
-      return fetchData[elem];
-    });
+  //   const modelStructureToBinding: ISubCategory = {};
+  //   void Object.keys(fetchData).forEach((elem: string) => {
+  //     modelStructureToBinding[elem] = {
+  //       categoryName: elem,
+  //       subCategory: fetchData[elem] as unknown as FetchData,
+  //     };
+  //     Object.keys(fetchData[elem]).forEach((el) => {
+  //       modelStructureToBinding[elem]["subCategory"][el].name = el;
+  //     });
+  //     return fetchData[elem];
+  //   });
 
-    qListModel.setProperty("/Data", modelStructureToBinding);
-    qListModel.setProperty("/edit", false);
-  }
+  //   qListModel.setProperty("/Data", modelStructureToBinding);
+  //   qListModel.setProperty("/edit", false);
+  // }
 
   setAllQuestions(): void {
     const oModel = this.getModel() as JSONModel;

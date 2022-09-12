@@ -4,19 +4,19 @@ import Event from "sap/ui/base/Event";
 import Control from "sap/ui/core/Control";
 import Context from "sap/ui/model/Context";
 import models from "../model/models";
-import { MessageType } from "sap/ui/core/library";
+import { MessageType, ValueState } from "sap/ui/core/library";
 import Fragment from "sap/ui/core/Fragment";
 import Dialog from "sap/m/Dialog";
 import UI5Element from "sap/ui/core/Element";
 import Input from "sap/m/Input";
 import CheckBox from "sap/m/CheckBox";
-import FetchDataBase from "../db/FetchDB";
 import RadioButton from "sap/m/RadioButton";
 import { IData, IListItem, IQuestion, IResult, IArguments, IParent, IQuestionStructure } from "../interface/Interface";
 import List from "sap/m/List";
 import MessageToast from "sap/m/MessageToast";
 import MessageBox, { Action } from "sap/m/MessageBox";
 import formatter from "../model/formatter";
+import CRUDModel from "../model/CRUDModel";
 
 /**
  * @namespace webapp.typescript.controller
@@ -39,11 +39,10 @@ export default class Main extends BaseController {
   public onInit(): void {
     void this.getView()?.attachAfterRendering(this.changeUIAfterRendering.bind(this));
     void this.getOwnerComponent().getRouter().getRoute("main")?.attachPatternMatched(this.onPatternMatched.bind(this), this);
-    void this.getOwnerComponent().getModel().attachPropertyChange(this.changeProperty.bind(this), this);
   }
 
   public onStatisticPress(): void {
-    void FetchDataBase.getAllResults().then((resp) => {
+    void (this.getModel() as CRUDModel).getAllResults().then((resp) => {
       const modifyResp = Object.keys(resp).map(elem => {          
         return {
           date: elem, 
@@ -61,12 +60,6 @@ export default class Main extends BaseController {
 
   public onCancelFragmentResult() {
     void this.fragmentStatistics.then((oMessagePopover) => (oMessagePopover as Dialog).close());
-  }
-
-  public changeProperty(): void {
-    if (this.getSupportModel().getProperty("/edit")) {
-      this.getSupportModel().setProperty("/change", true);
-    }
   }
 
   public onPatternMatched(oEvent: Event) {
@@ -181,7 +174,59 @@ export default class Main extends BaseController {
     void this.oFragment.then((oMessagePopover) => (oMessagePopover as Dialog).close());
   }
 
+  // public checkAddFragmentsField() {
+  //   const checkBoxes = ["cbanswer1", "cbanswer2", "cbanswer3", "cbanswer4"]
+  //   const checkSelected = (sId: string) => {
+  //     return (this.byId(sId) as CheckBox).getSelected()
+  //   }
+  //   const checkBoxResult = checkBoxes.map(sId => checkSelected(sId)).filter(oCheckBox => !oCheckBox);
+  //   const getAnswersLength = (sId: string) => {
+  //     return (this.byId(sId) as Input)
+  //   }
+  //   const answersId = ["answer1", "answer2", "answer3", "answer4"]
+  //   const answersResult = answersId.map(sId => getAnswersLength(sId)).filter(elem => elem.getValue().length < 3)
+  //   if (checkBoxResult.length === 4) {
+  //     MessageBox.error("Check one or more right answer")
+  //     return
+  //   } else if((this.byId("newQ") as Input).getValue().length < 3) {
+  //     void (this.byId("newQ") as Input).setValueState(ValueState.Error)
+  //     void (this.byId("newQ") as Input).setValueStateText("Error: min length 3")      
+  //     return
+  //   } else if (answersResult.length) {
+  //     void answersResult.forEach(oInput => {
+  //       oInput.setValueState(ValueState.Error)
+  //       oInput.setValueStateText("Error: min length 3")
+  //     })
+  //     return
+  //   }
+  // }
+
   public onPressFragmentAdd(): void {
+    const checkBoxes = ["cbanswer1", "cbanswer2", "cbanswer3", "cbanswer4"]
+    const checkSelected = (sId: string) => {
+      return (this.byId(sId) as CheckBox).getSelected()
+    }
+    const checkBoxResult = checkBoxes.map(sId => checkSelected(sId)).filter(oCheckBox => !oCheckBox);
+    const getAnswersLength = (sId: string) => {
+      return (this.byId(sId) as Input)
+    }
+    const answersId = ["answer1", "answer2", "answer3", "answer4"]
+    const answersResult = answersId.map(sId => getAnswersLength(sId)).filter(elem => elem.getValue().length < 3)
+    if (checkBoxResult.length === 4) {
+      MessageBox.error("Check one or more right answer")
+      return
+    } else if((this.byId("newQ") as Input).getValue().length < 3) {
+      void (this.byId("newQ") as Input).setValueState(ValueState.Error)
+      void (this.byId("newQ") as Input).setValueStateText("Error: min length 3")       
+      return
+    } else if (answersResult.length) {
+      void answersResult.forEach(oInput => {
+        oInput.setValueState(ValueState.Error)
+        oInput.setValueStateText("Error: min length 3")
+      })
+      return
+    }
+    // if (checkSelected("cbanswer1") || checkSelected("cbanswer2") || checkSelected("cbanswer3") || checkSelected("cbanswer4"))
     const getTemplate = (sProp: string): string => {
       return (this.getModel() as JSONModel).getProperty(`/newQuestion/${sProp}`) as string;
     };
@@ -197,8 +242,7 @@ export default class Main extends BaseController {
 
     const aPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().slice(1).split("/");
 
-    void FetchDataBase.create(newQuestion, "/" + aPath[1], "/" + aPath[3])
-      .then(() => void this.fireBaseRead())
+    void (this.getModel() as CRUDModel).create(newQuestion, "/" + aPath[1], "/" + aPath[3])
       .then(() => this.getSupportModel().setProperty("/edit", true));
     this.clearFragmentInputs();
     void this.oFragment.then((oMessagePopover) => (oMessagePopover as Dialog).close());
@@ -229,8 +273,7 @@ export default class Main extends BaseController {
   public onPressDeleteSubCategory() {
     const sPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().split("/");
     const fetchToRemoveSubCategory = () => {
-      void FetchDataBase.deleteCategory(sPath[2], sPath[4])
-      .then(() => this.fireBaseRead())
+      void (this.getModel() as CRUDModel).deleteCategory(sPath[2], sPath[4])
         .then(() => {
           this.navTo("start");
         });
@@ -251,13 +294,10 @@ export default class Main extends BaseController {
       const sId: string | undefined = (sSelectedControl as string).split("/").pop();
       const aPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().slice(1).split("/");
       const fetchToRemoveQuestion = () => {
-        void FetchDataBase.delete(sId as string, "/" + aPath[1], "/" + aPath[3]).then(
-          () =>
-            void this.fireBaseRead()
-              .then(() => this.getSupportModel().setProperty("/edit", true))
-              .then(() => this.getSupportModel().setProperty("/selected", false))
-              .then(() => (oControls as RadioButton[]).forEach((oRadioButton) => oRadioButton.setSelected(false)))
-        );
+        void (this.getModel() as CRUDModel).delete(sId as string, "/" + aPath[1], "/" + aPath[3])
+          .then(() => this.getSupportModel().setProperty("/edit", true))
+          .then(() => this.getSupportModel().setProperty("/selected", false))
+          .then(() => (oControls as RadioButton[]).forEach((oRadioButton) => oRadioButton.setSelected(false)))
       };
       this.getConfirm(fetchToRemoveQuestion, "mainPageConfirmationDialogText", "mainPageConfirmationDialogTextRemove");
     }    
@@ -297,7 +337,7 @@ export default class Main extends BaseController {
           body: { answers: elem.answers, question: elem.question, rightAnswer: elem.rightAnswer },
         };
       }) as unknown as IResult[];
-      void aResult.forEach((elem) => void FetchDataBase.patch(elem.id, elem.body, "/" + aPath[1], "/" + aPath[3]));
+      void aResult.forEach((elem) => void (this.getModel() as CRUDModel).patch(elem.id, elem.body, "/" + aPath[1], "/" + aPath[3]));
     }
     this.getSupportModel().setProperty("/change", false);
   }

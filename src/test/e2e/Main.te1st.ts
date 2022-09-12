@@ -21,12 +21,7 @@ describe("test1: Main page", () => {
   it("should have the right title", async () => {
     const title = await browser.getTitle();
     expect(title).toEqual("UI5 Application typescript");
-  });
-
-  // it("should have control that opens Create page", async () => {
-  //   const url = await browser.getUrl();
-  //   expect(url).toMatch(/https:\/\/apptest-firebase-b0b0c.web.app\/#\/main-Data-FrontEnd-subCategory-CSS/);
-  // });
+  });  
 
   it("should heave authorization and return to manage page", async () => {
     const avatarButton: wdi5Selector = templateStart("avatarBtn");
