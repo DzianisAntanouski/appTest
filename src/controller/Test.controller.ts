@@ -11,7 +11,7 @@ import Table from "sap/m/Table";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import { IQuestion, IResultQuestion } from "../interface/Interface";
 import Event from "sap/ui/base/Event";
-import FetchDataBase from "../db/FetchDB";
+import CRUDModel from "../model/CRUDModel";
 
 /**
  * @namespace webapp.typescript.controller
@@ -41,7 +41,7 @@ export default class Start extends BaseController {
   }
 
   public onPressBack() {
-    this.navTo("main", {sPath: "redirect"})
+    this.navTo("start")
   }
 
   public onSubmitPress(): void {
@@ -217,9 +217,9 @@ export default class Start extends BaseController {
     const emailText = this.getSupportModel().getProperty("/auth/email") as string;
     const emailOrAnonimus = emailText ? emailText : text;
     const results = { email: emailOrAnonimus, category, subcategory, points: +pointsCurrent };
-    void FetchDataBase.postResults(results, data, category, subcategory);
-    void FetchDataBase.postAllResults(results, data).then(() => {
-      void FetchDataBase.getAllResults().then((resp) => {
+    void (this.getModel() as CRUDModel).postResults(results, data, category, subcategory);
+    void (this.getModel() as CRUDModel).postAllResults(results, data).then(() => {
+      void (this.getModel() as CRUDModel).getAllResults().then((resp) => {
         const modifyResp = Object.keys(resp).map((elem) => {
           return {
             date: elem,
