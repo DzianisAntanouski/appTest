@@ -32,7 +32,7 @@ export default class Detail extends BaseController {
    * sap.ui.base.ObjectPool after the event handler is done.
    */
   public handleDetailPress(oEvent: Event): void {
-    MessageToast.show(this.i18n("loadingNewPageMessage"));
+    MessageToast.show(this.i18n("loadingNewPageMessage") as string);
     this.oEventBus.publish("flexible", "setDetailDetailPage", oEvent);
   }
 

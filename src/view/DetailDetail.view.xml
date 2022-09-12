@@ -12,16 +12,16 @@
 				class="sapUiSmallMarginTopBottom" />
 			<List
 				showSeparators="Inner"
-				items="{/EntryCollection}" >
+				items="{}" >
 				<FeedListItem
-					sender="{Author}"
-					icon="{AuthorPicUrl}"
+					sender="{author}"
+					icon=""
 					senderPress="onSenderPress"
 					iconPress="onIconPress"
 					iconDensityAware="false"
 					info="{Type}"
-					timestamp="{Date}"
-					text="{Text}"
+					timestamp="{date}"
+					text="{text}"
 					convertLinksToAnchorTags="All"/>
 			</List>
 			<!-- <GenericTile id="manageTest" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleNavToManage" header="{i18n>manageTest}"

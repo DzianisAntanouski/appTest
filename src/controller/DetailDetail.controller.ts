@@ -5,9 +5,10 @@ import BaseController from "./BaseController";
 import Context from "sap/ui/model/Context";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import MessageBox from "sap/m/MessageBox";
-import { IOwner } from "../interface/Interface";
+import { IOwner, IPost } from '../interface/Interface';
 import FeedInput from "sap/m/FeedInput";
 import DateFormat from "sap/ui/core/format/DateFormat";
+import CRUDModel from '../model/CRUDModel';
 
 /**
  * @namespace webapp.typescript.controller
@@ -23,15 +24,28 @@ export default class DetailDetail extends BaseController {
    * onPost
    */
   public onPost(oEvent: Event): void {
-      var oFormat = DateFormat.getDateTimeInstance({ style: "medium" });
-      var oDate = new Date();
-      var sDate = oFormat.format(oDate);
-    const oPost = {
+    if (!this.getSupportModel().getProperty('/auth')) {
+      const oControl = (oEvent.getSource() as FeedInput)
+      const sText = oControl.getValue()
+      const pReturnText = new Promise((resolve, reject) => {
+        resolve(sText);        
+      });
+      
+      pReturnText.then((value) => {
+        oControl.setValue(value as string);
+      });
+      return
+    } 
+    const oFormat = DateFormat.getDateTimeInstance({ style: "medium" });
+    const oDate = new Date();
+    const sDate = oFormat.format(oDate);
+    const oPost: IPost = {
       author: this.getSupportModel().getProperty('/auth').email as string,
       text: (oEvent.getSource() as FeedInput).getValue(),
       date: sDate
     }
-    debugger
+    const aPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().split("/")
+    void (this.getModel() as CRUDModel).createPost(aPath[2], aPath[3], oPost)
   }
 
   public handleClose() {
