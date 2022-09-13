@@ -9,7 +9,7 @@ import Context from "sap/ui/model/Context";
 import { IAuthObject, IEvent, IOption, IParent } from "../interface/Interface";
 import Fragment from "sap/ui/core/Fragment";
 import Popover from "sap/m/Popover";
-import CRUDModel from '../model/CRUDModel';
+import CRUDModel from "../model/CRUDModel";
 
 /**
  * @namespace webapp.typescript.controller
@@ -54,7 +54,8 @@ export default class Start extends BaseController {
   }
 
   public setDetailDetailPage(a: string, b: string, oEvent: Event) {
-    const oContext: Context = (oEvent.getSource() as Control).getBindingContext() as Context;
+    const sPath = ((oEvent.getSource() as Control).getBindingContext() as Context).getPath().replace("Data", "Posts").replace("/subCategory", "")
+    const oContext: Context = (this.getModel() as CRUDModel).createBindingContext(sPath) as Context
     void this.loadView({
       id: "endView",
       viewName: "webapp.typescript.view.DetailDetail",

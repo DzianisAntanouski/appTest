@@ -11,6 +11,12 @@ export interface ITemplate {
   };
 }
 
+export interface IPost {
+  author: string
+  text: string
+  date: string
+}
+
 export interface ITestResults {
   [key: string]: {
     category: string;

@@ -12,6 +12,7 @@ export default class App extends BaseController {
     const oCRUDModel = new CRUDModel()
     this.getView()?.setModel(oCRUDModel);
     void (this.getModel() as CRUDModel).read().then(() => setQuestion())
+    void (this.getModel() as CRUDModel).readPost()
     // void this.fireBaseRead().then(() => setQuestion());
 
     const authorization: string | null = localStorage.getItem("auth");
