@@ -201,7 +201,7 @@ export default class Main extends BaseController {
   //   }
   // }
 
-  public onPressFragmentAdd(): void {
+  public onPressFragmentAdd(): void {    
     const checkBoxes = ["cbanswer1", "cbanswer2", "cbanswer3", "cbanswer4"]
     const checkSelected = (sId: string) => {
       return (this.byId(sId) as CheckBox).getSelected()
