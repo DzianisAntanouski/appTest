@@ -1,19 +1,37 @@
 <mvc:View xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"  
     controllerName="webapp.typescript.controller.DetailDetail" 
     height="100%">
-	<Page id="detailDetailPage" title="{i18n>runAndManageTests}" backgroundDesign="Transparent">
+	<Page id="detailDetailPage" title="{path: '', formatter: '.formatter.formatTitlePosts'}" backgroundDesign="Transparent">
 		<headerContent>
 			<Button id="closeButton" type="Transparent" icon="sap-icon://decline" press="handleClose"  tooltip="Close end column" />
 		</headerContent>
 		<content>
-			<GenericTile id="manageTest" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleNavToManage" header="{i18n>manageTest}"
+			<FeedInput
+				post="onPost"
+				icon=""
+				class="sapUiSmallMarginTopBottom" />
+			<List
+				showSeparators="Inner"
+				items="{}" >
+				<FeedListItem
+					sender="{author}"
+					icon=""
+					senderPress="onSenderPress"
+					iconPress="onIconPress"
+					iconDensityAware="false"
+					info="{Type}"
+					timestamp="{date}"
+					text="{text}"
+					convertLinksToAnchorTags="All"/>
+			</List>
+			<!-- <GenericTile id="manageTest" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleNavToManage" header="{i18n>manageTest}"
 				subheader="{i18n>manage} {name} {i18n>test}"  frameType= "TwoByHalf">
 				<TileContent />
 			</GenericTile>
 			<GenericTile id="runTest" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleNavToTest" header="{i18n>runTest}"
 				subheader="{i18n>complete} {name} {i18n>test}"  frameType= "TwoByHalf">
 				<TileContent />
-			</GenericTile>
+			</GenericTile> -->
 		</content>
 	</Page>
 </mvc:View>
