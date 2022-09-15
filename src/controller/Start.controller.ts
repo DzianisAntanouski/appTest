@@ -20,7 +20,6 @@ export default class Start extends BaseController {
   oDiscardFragment: Popover;
 
   public onInit(): void {
-    debugger
     this.oEventBus = this.getOwnerComponent().getEventBus();
     this.oEventBus.subscribe("flexible", "setDetailPage", this.setDetailPage.bind(this), this);
     this.oEventBus.subscribe("flexible", "setDetailDetailPage", this.setDetailDetailPage.bind(this), this);
@@ -70,7 +69,6 @@ export default class Start extends BaseController {
   }
 
   public loadView(options: IOption): Promise<XMLView> {
-    debugger;
     // eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/no-unsafe-assignment
     const mViews: Promise<XMLView> | any = (this.mViews = this.mViews || Object.create(null));
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -97,7 +95,6 @@ export default class Start extends BaseController {
   }
 
   public onPressAvatar(oEvent: Event) {
-    debugger
     if (!this.getSupportModel().getProperty("/auth")) this.loadAuthorizationDialog(oEvent.getSource() as Control);
     else {
       const oButton = oEvent.getSource();
