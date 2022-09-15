@@ -94,6 +94,17 @@ export default class Detail extends BaseController {
    * sap.ui.base.ObjectPool after the event handler is done.
    */
   onRunTest(oEvent: Event) {
+    console.log(oEvent)
     this.oEventBus.publish("navigation", "navToTesting", oEvent);
+    
+  }
+  onManageTest(oEvent: Event){
+    console.log('onManageTest')
+    this.oEventBus.publish("navigation", "navToMain", oEvent);
+  }
+  onCardClick(oEvent: Event){
+    console.log("cardClick")
+    this.oEventBus.publish("flexible", "setDetailDetailPage", oEvent);
+   
   }
 }
