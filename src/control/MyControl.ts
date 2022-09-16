@@ -4,6 +4,7 @@ import RenderManager from "sap/ui/core/RenderManager";
 import Control from 'sap/ui/core/Control';
 import CustomData from "sap/ui/core/CustomData";
 import Text from "sap/m/Text";
+import { TextAlign } from "sap/ui/core/library";
 
 
 /**
@@ -69,21 +70,24 @@ export default class MyControl extends Control {
 			rm.openStart("div", control).class('card__face').class('card__face--front').openEnd()
 			rm.renderControl(new Text({
 				text: control.getHeader(),
-				renderWhitespace: true
+				textAlign: TextAlign.Center
 			}).addStyleClass('header'));
 			rm.renderControl(new Text({
 				text: control.getSubheader(),
-				renderWhitespace: true
+				textAlign: TextAlign.Center
+
 			}).addStyleClass('subheader'))
 			rm.close("div");
 			rm.openStart("div", control).class('card__face').class('card__face--back').openEnd()
 			rm.renderControl(new Text({
 				text: control.getHeader(),
-				renderWhitespace: true
+				textAlign: TextAlign.Center
+
 			}).addStyleClass('header'));
 			rm.renderControl(new Text({
 				text: control.getSubheader(),
-				renderWhitespace: true
+				textAlign: TextAlign.Center
+
 			}).addStyleClass('subheader'))
 			rm.renderControl(new Button({
 				text: "Run",
@@ -104,14 +108,13 @@ export default class MyControl extends Control {
 		const element = event.target as HTMLDivElement
 		const parent = element.closest('.card') as HTMLDivElement
 		const cards = document.querySelectorAll('.card')
-
 		cards.forEach((card) => { card.classList.remove('is-flipped'); card.classList.remove('highLight') })
 		parent.classList.toggle('is-flipped')
 		parent.classList.toggle('highLight')
 		if (element.classList.contains('card__face--front') || element.closest('card__face--front')) {
 			this.fireEvent('onClickCard')
 		}
-		// debugger;
+
 
 	}
 

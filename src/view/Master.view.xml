@@ -5,8 +5,7 @@
     height="100%">
 	<Page id="masterPage" title="{i18n>categories}" content="{/Data}">
         <content>
-			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleMasterPress" header="{categoryName}"
-				frameType= "OneByOne">
+			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleMasterPress" header="{categoryName}">
 				<TileContent />
 			</GenericTile>
 		</content>
