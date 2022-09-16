@@ -6,7 +6,7 @@
             <columns>                    
                 <Column width="15%" demandPopin="true" />                        
                 <Column width="70%" demandPopin="true" /> 
-                <Column width="60px" demandPopin="true" /> 
+                <Column width="60px" demandPopin="true" />
 
             </columns>
             <items>

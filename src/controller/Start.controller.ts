@@ -117,6 +117,7 @@ export default class Start extends BaseController {
     const sEmail = (JSON.parse(localStorage.getItem("auth") as string) as IAuthObject).email
     void (this.getView()?.getModel() as CRUDModel).saveUser(sEmail, "")
     localStorage.clear();
+    this.setOffLineUser();
     this.getSupportModel().setProperty("/auth", null);
     this.oDiscardFragment.close();
   }
