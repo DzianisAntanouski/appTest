@@ -1,6 +1,10 @@
 import UIComponent from "sap/ui/core/UIComponent";
 import { support } from "sap/ui/Device";
-import models from "./model/models";
+import JSONModel from "sap/ui/model/json/JSONModel";
+// import models2 from "./model/models";
+// import models from "sap/firebase/SAP-Firebase-Connect/model/models";
+import Firebase from './Firebase';
+import { IAuthObject } from "./interface/Interface";
 
 /**
  * @namespace webapp.typescript
@@ -16,10 +20,14 @@ export default class Component extends UIComponent {
     // call the base component's init function
     super.init();
 
-    this.setModel(models.createDeviceModel(), "device");
+    // this.setModel(models2.createDeviceModel(), "device");
 
     // create the views based on the url/hash
     this.getRouter().initialize();
+    const fbModel = new Firebase().initializeFirebase()
+    // Import Firebase in the sap.ui.define
+			// set the firebase model by calling the initializeFirebase function in the Firebase.js file
+		this.setModel(fbModel, "firebase")
   }
 
   /**
@@ -43,5 +51,16 @@ export default class Component extends UIComponent {
       }
     }
     return this.contentDensityClass;
+  }
+  
+  public onWindowBeforeUnload(): void {
+    const firebaseModel = this.getModel("firebase") as JSONModel;
+    const userCollection = firebaseModel.getData().firestore.collection("userStatus");
+    if (this.getModel('supportModel').getProperty('/auth')) {
+      userCollection.doc(`${(this.getModel('supportModel').getProperty("/auth") as IAuthObject).email}`).set({
+        email: `${(this.getModel('supportModel').getProperty("/auth") as IAuthObject).email}`,
+        online: false 
+      });
+    }
   }
 }

@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import Controller from "sap/ui/core/mvc/Controller";
 import UIComponent from "sap/ui/core/UIComponent";
 import AppComponent from "../Component";
@@ -7,7 +10,7 @@ import ResourceBundle from "sap/base/i18n/ResourceBundle";
 import Router from "sap/ui/core/routing/Router";
 import History from "sap/ui/core/routing/History";
 import JSONModel from "sap/ui/model/json/JSONModel";
-import { ICategory, IOwner, IQuestion, IResponse } from "../interface/Interface";
+import { IAuthObject, ICategory, IOwner, IQuestion, IResponse } from "../interface/Interface";
 import Auth from "../db/Auth";
 import Fragment from "sap/ui/core/Fragment";
 import Dialog from "sap/m/Dialog";
@@ -17,7 +20,7 @@ import Context from "sap/ui/model/Context";
 import Detail from "./Detail.controller";
 import MessageBox from "sap/m/MessageBox";
 import UI5Element from "sap/ui/core/Element";
-import CRUDModel from '../model/CRUDModel';
+import CRUDModel from "../model/CRUDModel";
 
 /**
  * @namespace webapp.typescript.controller
@@ -38,7 +41,10 @@ export default abstract class BaseController extends Controller {
       }
     }
     this.getSupportModel().setProperty("/auth", oResponse);
-    if (oResponse) void (this.getModel() as CRUDModel).saveUser(oResponse.email, oResponse.idToken);
+    if (oResponse) {      
+      void (this.getModel() as CRUDModel).saveUser(oResponse.email, oResponse.idToken);
+      this.setOnLineUser();
+    } 
     localStorage.setItem("auth", JSON.stringify(oResponse));
   }
 
@@ -212,4 +218,28 @@ export default abstract class BaseController extends Controller {
     }
     void this.fragmentStatistics.then((oMessagePopover) => (oMessagePopover as Dialog).open());
   }
+
+  // work with user status  
+  public setOnLineUser() {
+    const firebaseModel = this.getOwnerComponent().getModel("firebase") as JSONModel;
+    const userCollection = firebaseModel.getData().firestore.collection("userStatus");
+    if (this.getSupportModel().getProperty("/auth")) {
+      userCollection.doc(`${(this.getSupportModel().getProperty("/auth") as IAuthObject).email}`).set({ 
+        email: `${(this.getSupportModel().getProperty("/auth") as IAuthObject).email}`,
+        online: true 
+      });
+    }
+  }
+
+  public setOffLineUser() {
+    const firebaseModel = this.getOwnerComponent().getModel("firebase") as JSONModel;
+    const userCollection = firebaseModel.getData().firestore.collection("userStatus");
+    if (this.getSupportModel().getProperty("/auth")) {
+      userCollection.doc(`${(this.getSupportModel().getProperty("/auth") as IAuthObject).email}`).set({ 
+        email: `${(this.getSupportModel().getProperty("/auth") as IAuthObject).email}`,
+        online: false 
+      });
+    }
+  }
+  // end work with user status
 }

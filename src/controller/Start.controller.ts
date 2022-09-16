@@ -6,7 +6,7 @@ import FlexibleColumnLayout from "sap/f/FlexibleColumnLayout";
 import Event from "sap/ui/base/Event";
 import Control from "sap/ui/core/Control";
 import Context from "sap/ui/model/Context";
-import { IEvent, IOption, IParent } from "../interface/Interface";
+import { IAuthObject, IEvent, IOption, IParent } from "../interface/Interface";
 import Fragment from "sap/ui/core/Fragment";
 import Popover from "sap/m/Popover";
 import CRUDModel from "../model/CRUDModel";
@@ -114,7 +114,10 @@ export default class Start extends BaseController {
   }
 
   public handleDiscardPopover() {
+    const sEmail = (JSON.parse(localStorage.getItem("auth") as string) as IAuthObject).email
+    void (this.getView()?.getModel() as CRUDModel).saveUser(sEmail, "")
     localStorage.clear();
+    this.setOffLineUser();
     this.getSupportModel().setProperty("/auth", null);
     this.oDiscardFragment.close();
   }
