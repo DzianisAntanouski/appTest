@@ -51,6 +51,7 @@
   "dependencies": {
     "@sap/approuter": "^11.3.4",
     "@sapui5/ts-types": "^1.102.5",
+    "@ui5/builder": "^2.11.5",
     "typedoc": "^0.23.11"
   }
 }
