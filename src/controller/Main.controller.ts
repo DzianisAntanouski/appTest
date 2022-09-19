@@ -27,6 +27,7 @@ import formatter from "../model/formatter";
 import CRUDModel from "../model/CRUDModel";
 import Table from "sap/m/Table";
 import Button from "sap/m/Button";
+import { events } from "sap/ui/events/PseudoEvents";
 
 /**
  * @namespace webapp.typescript.controller
@@ -109,12 +110,30 @@ export default class Main extends BaseController {
     this.getSupportModel().setProperty("/selected", false);
     this.getSupportModel().setProperty("/edit", false);
     this.onPressNext();
+    this.defineAddAnswerBtnDisability();
   }
 
   public setActive(oEvent: Event): void {
-    if ((oEvent.getSource() as List).getItems().length) {
-      this.onPressNext(); 
-      // debugger
+    const aListItemsArray = (oEvent.getSource() as List).getItems();
+    const oDetailDetailView = this.getView()?.byId("detailDetail");
+    if (aListItemsArray.length) {
+      // this.onPressNext();
+      //! снимаю все хайлайты
+      aListItemsArray.forEach((element) => {
+        element.setProperty("highlight", MessageType.None);
+      });
+      this.determineManageTestPageValidity();
+      //! сетаю на нужный лист айтем
+      aListItemsArray[aListItemsArray.length - 1].setProperty(
+        "highlight",
+        MessageType.Information
+      );
+      //! сетаю нужный контекст
+      const oNecessaryContext: Context = (oEvent.getSource() as List)
+        .getItems()
+        [aListItemsArray.length - 1].getBindingContext() as Context;
+      oDetailDetailView?.setBindingContext(oNecessaryContext);
+      //
       // (oEvent.getSource() as List).setProperty("highlight", MessageType.Information)
     }
   }
@@ -128,7 +147,7 @@ export default class Main extends BaseController {
     }
   }
 
-  private highlightSwitcher(): void { 
+  private highlightSwitcher(): void {
     const oControls: Array<Control> = this.getInputListItem();
     if (!oControls.length) return;
     const nIndex: number = oControls.findIndex(
@@ -137,6 +156,7 @@ export default class Main extends BaseController {
     oControls.forEach((oControl) =>
       oControl.setProperty("highlight", MessageType.None)
     );
+    this.determineManageTestPageValidity();
     if (nIndex < 0 || nIndex === oControls.length - 1) {
       oControls[0].setProperty("highlight", MessageType.Information);
     } else {
@@ -163,7 +183,20 @@ export default class Main extends BaseController {
         );
   }
 
-  public onListItemPress(oEvent: Event): void { 
+  public defineAddAnswerBtnDisability() {
+    const aQuestions = (this.getView()?.byId("qList") as List).getItems();
+    const aAnswers = (this.getView()?.byId("answerstable") as Table).getItems();
+    const bIsPageInEditMode = this.getSupportModel().getProperty("/edit");
+    const isAddAnswerBtnEnabled =
+      bIsPageInEditMode && !!aQuestions.length && aAnswers.length < 4;
+
+    this.getSupportModel().setProperty(
+      "/isAddAnswerBtnEnabled",
+      isAddAnswerBtnEnabled
+    );
+  }
+
+  public onListItemPress(oEvent: Event): void {
     const oListItem: Control = oEvent.getParameter("srcControl") as Control;
     if (oListItem.getBindingContext()) {
       const oContext: Context = oListItem.getBindingContext() as Context;
@@ -173,8 +206,10 @@ export default class Main extends BaseController {
     this.getInputListItem().forEach((oControl) =>
       oControl.setProperty("highlight", MessageType.None)
     );
+    this.determineManageTestPageValidity();
     this.findListItem(oListItem as IParent);
     void this.setChecked();
+    this.defineAddAnswerBtnDisability();
   }
 
   public setChecked(): void {
@@ -205,9 +240,10 @@ export default class Main extends BaseController {
     );
     this.saveState();
     this.setChecked();
+    this.defineAddAnswerBtnDisability();
   }
 
-  public onPressNext(): void { 
+  public onPressNext(): void {
     this.highlightSwitcher();
     const oControls: Array<Control> = this.getInputListItem();
     const oControl: Control | undefined = oControls.find(
@@ -216,6 +252,8 @@ export default class Main extends BaseController {
     const oContext: Context = oControl?.getBindingContext() as Context;
     this.getView()?.byId("detailDetail")?.setBindingContext(oContext);
     this.setChecked();
+    this.defineAddAnswerBtnDisability();
+    this.determineManageTestPageValidity();
   }
 
   private clearFragmentInputs(): void {
@@ -395,6 +433,7 @@ export default class Main extends BaseController {
         .getPath()
         .slice(1)
         .split("/");
+
       const fetchToRemoveQuestion = () => {
         void (this.getModel() as CRUDModel)
           .delete(sId as string, "/" + aPath[1], "/" + aPath[3])
@@ -421,6 +460,7 @@ export default class Main extends BaseController {
     const nIndex = Number(sPath.slice(-1)) + 1;
     const rightAnswer = sPath.replace(/answers\/[0-9]/g, "rightAnswer");
     let aRightAnswer = this.getModel()?.getProperty(rightAnswer) as number[];
+    aRightAnswer[0] === 5 ? aRightAnswer.shift() : null
     aRightAnswer.includes(nIndex)
       ? (aRightAnswer = aRightAnswer.filter((elem) => elem !== nIndex))
       : aRightAnswer.push(nIndex);
@@ -435,10 +475,7 @@ export default class Main extends BaseController {
 
   public onPressSave(): void {
     this.getSupportModel().setProperty("/selected", false);
-    this.getSupportModel().setProperty(
-      "/edit",
-      !this.getSupportModel().getProperty("/edit")
-    );
+
     const oControls: Control[] | undefined = this.getView()
       ?.getControlsByFieldGroupId("questions")
       .filter(
@@ -448,8 +485,9 @@ export default class Main extends BaseController {
     oControls?.forEach((oRadioButton) =>
       (oRadioButton as RadioButton).setSelected(false)
     );
-
-    if (this.getSupportModel().getProperty("/change")) {
+    // ! this.getSupportModel().getProperty("/change")
+    this.determineManageTestPageValidity();
+    if (this.getSupportModel().getProperty("/isManageTestPageValid")) {
       const aPath: string[] = (this.getView()?.getBindingContext() as Context)
         .getPath()
         .slice(1)
@@ -471,6 +509,7 @@ export default class Main extends BaseController {
           },
         };
       }) as unknown as IResult[];
+
       void aResult.forEach(
         (elem) =>
           void (this.getModel() as CRUDModel).patch(
@@ -480,8 +519,15 @@ export default class Main extends BaseController {
             "/" + aPath[3]
           )
       );
+
+      // disable save btn
+      this.getSupportModel().setProperty(
+        "/edit",
+        !this.getSupportModel().getProperty("/edit")
+      );
     }
     this.getSupportModel().setProperty("/change", false);
+    this.defineAddAnswerBtnDisability();
   }
 
   public onPressNavBack() {
@@ -519,24 +565,66 @@ export default class Main extends BaseController {
   }
 
   public onPressCancel() {
-    if (this.getSupportModel().getProperty("/change")) {
+    // if (this.getSupportModel().getProperty("/change")) {
+    //   const onPressYesAction = () => {
+    //     // (this.getModel() as JSONModel).setProperty(sPath, this.oState);
+    //     this.setChecked();
+    //     this.highlightSwitcher();
+    //     this.getSupportModel().setProperty("/change", false);
+    //   };
+    //   this.getConfirm(
+    //     onPressYesAction,
+    //     "mainPageConfirmationDialogText",
+    //     "mainPageConfirmationDialogTitle"
+    //   );
+    // }
+
+    const sPath = (this.getView()?.getBindingContext() as Context).getPath();
+    const oCurrentState = (this.getModel() as JSONModel).getProperty(
+      sPath
+    ) as IQuestionStructure;
+    if (!this.isObjectsEqual(oCurrentState, this.oState)) {
       const onPressYesAction = () => {
-        const sPath = (
-          this.getView()?.getBindingContext() as Context
-        ).getPath();
         (this.getModel() as JSONModel).setProperty(sPath, this.oState);
         this.setChecked();
         this.highlightSwitcher();
-        this.getSupportModel().setProperty("/change", false);
+        this.getSupportModel().setProperty("/edit", false);
+        this.defineAddAnswerBtnDisability();
       };
       this.getConfirm(
         onPressYesAction,
         "mainPageConfirmationDialogText",
         "mainPageConfirmationDialogTitle"
       );
+    } else {
+      this.getSupportModel().setProperty("/edit", false);
     }
-    this.getSupportModel().setProperty("/edit", false);
+    this.defineAddAnswerBtnDisability();
     this.getSupportModel().setProperty("/change", false);
+  }
+
+  private isObjectsEqual(object1: object, object2: object) {
+    const props1 = Object.getOwnPropertyNames(object1);
+    const props2 = Object.getOwnPropertyNames(object2);
+
+    if (props1.length !== props2.length) {
+      return false;
+    }
+
+    for (let i = 0; i < props1.length; i += 1) {
+      const prop = props1[i];
+      const bothAreObjects =
+        typeof object1[prop] === "object" && typeof object2[prop] === "object";
+
+      if (
+        (!bothAreObjects && object1[prop] !== object2[prop]) ||
+        (bothAreObjects && !this.isObjectsEqual(object1[prop], object2[prop]))
+      ) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   public getConfirm(
@@ -556,16 +644,15 @@ export default class Main extends BaseController {
   }
 
   // new logic for adding questions
-  public onPressAddQuestionBtn() {
-    // получить длину массива вопросов
+  public onPressAddQuestionBtn(oEvent: Event) {
     const nIndex = (this.byId("qList") as List).getItems().length;
-
-    const newQuestion = models.createQuestion("", ["", ""], []);
-
+    const newQuestion = models.createQuestion("", ["", ""], [5]);
     const aPath: string[] = (this.getView()?.getBindingContext() as Context)
       .getPath()
       .slice(1)
       .split("/");
+      
+    const prevState;
     void (this.getModel() as CRUDModel)
       .create(newQuestion, "/" + aPath[1], "/" + aPath[3])
       .then((resp) => {
@@ -573,45 +660,184 @@ export default class Main extends BaseController {
           this.getSupportModel().getProperty("/addQuestion");
         aAddQuestion.push({ id: resp.name, index: nIndex });
         this.getSupportModel().setProperty("/addQuestion", aAddQuestion);
+        this.defineAddAnswerBtnDisability();
         return resp
       })
-      // .then(() => (this.byId("qList") as List).getItems()[nIndex].firePress());
-
-    // const aListItems = (this.byId("qList") as List).getItems()
+      .then(resp => {
+        // console.log(prevState, this.getModel()?.getProperty(sPath))
+      });
   }
 
   public onPressAddAnswer(oEvent: Event) {
-    const oControls: Array<Control> = this.getInputListItem();
-    const aEmptyAnswers: string[] =
-      (this.byId("answerstable") as Table).getItems().length === 2
-        ? ["", "", ""]
-        : ["", "", "", ""];
-    // aEmptyAnswers.length === 4
-    //   ? {
-    //       (oEvent as Event).getSource()
-    //     }
-    //   : null;
-    // if (aEmptyAnswers.length === 4) {
-    //   ((oEvent as Event).getSource() as Button).setEnabled(false);
-    // } else {
-    //   ((oEvent as Event).getSource() as Button).setEnabled(true);
-    // }
-    const nIndex: number = oControls.findIndex(
-      (oControl) => oControl.getProperty("highlight") === "Information"
+    const oAddAnswerBtn = oEvent.getSource() as Button;
+    const sAnswersPath =
+      ((oAddAnswerBtn as Control).getBindingContext() as Context).getPath() +
+      "/answers";
+    const aAnswers: string[] = (this.getModel() as CRUDModel).getProperty(
+      sAnswersPath
     );
+    aAnswers.push("");
+    void (this.getModel() as CRUDModel).setProperty(sAnswersPath, aAnswers);
+    this.defineAddAnswerBtnDisability();
 
-    const aPath: string[] = (this.getView()?.getBindingContext() as Context)
-      .getPath()
-      .slice(1)
-      .split("/");
-    const sId = this.getSupportModel()
-      .getProperty("/addQuestion")
-      .filter((elem) => elem.index === nIndex)[0].id;
-    void (this.getModel() as CRUDModel).patch(
-      sId,
-      { answers: aEmptyAnswers },
-      "/" + aPath[1],
-      "/" + aPath[3]
-    );
+    // if (aAnswers.length === 4) {
+    //   (oAddAnswerBtn as Button).setEnabled(false);
+    // } else {
+    //   (oAddAnswerBtn as Button).setEnabled(true);
+    // }
+
+    // const oControls: Array<Control> = this.getInputListItem();
+    // const aEmptyAnswers: string[] =
+    //   (this.byId("answerstable") as Table).getItems().length === 2
+    //     ? ["", "", ""]
+    //     : ["", "", "", ""];
+
+    // const nIndex: number = oControls.findIndex(
+    //   (oControl) => oControl.getProperty("highlight") === "Information"
+    // );
+
+    // const aPath: string[] = (this.getView()?.getBindingContext() as Context)
+    //   .getPath()
+    //   .slice(1)
+    //   .split("/");
+
+    // const sId = this.getSupportModel()
+    //   .getProperty("/addQuestion")
+    //   .filter((elem) => elem.index === nIndex)[0].id;
+    // void (this.getModel() as CRUDModel).patch(
+    //   sId,
+    //   { answers: aEmptyAnswers },
+    //   "/" + aPath[1],
+    //   "/" + aPath[3]
+    // );
   }
+
+  public onPressDeleteAnswer(oEvent: Event) {
+    const oAddAnswerBtn = oEvent.getSource() as Button;
+    const aAnswerPath: string[] | undefined = oAddAnswerBtn
+      .getBindingContext()
+      ?.getPath()
+      .split("/");
+    const sPropertyAnswersPath: string | undefined = oAddAnswerBtn
+    .getBindingContext()
+    ?.getPath()
+    .split("/")
+      ?.splice(0, aAnswerPath.length - 1)
+      .join("/");
+    const aAnswers: string[] | undefined = oAddAnswerBtn
+      .getBindingContext()
+      ?.getProperty(sPropertyAnswersPath as string);
+    const nIndex = aAnswerPath?.slice(-1)[0] as string;
+
+    const aUpdatedAnswers =
+      aAnswers?.find((elem: string, index: number, arr: string[]) => {
+        if (index === +nIndex) {
+          return arr.splice(index, 1);
+        }
+      }) || aAnswers;
+
+    // void (this.getModel() as CRUDModel).setProperty(
+    //   sPropertyAnswersPath as string,
+    //   aUpdatedAnswers
+    // );
+
+    const sId = (sPropertyAnswersPath as string).split("/").slice(-2, -1)[0];
+    void (this.getModel() as CRUDModel).delete(sId, "/" + aAnswerPath[2], "/" + aAnswerPath[4])
+
+    this.defineAddAnswerBtnDisability();
+    //   const sAnswersPath = (
+    //     (oAddAnswerBtn as Control).getBindingContext() as Context
+    //   )
+    //     .getPath()
+    //     .split("/");
+    //   // const aAnswers: string[] = (this.getModel() as CRUDModel).getProperty(sAnswersPath);
+    //   const fetchToRemoveAnswer = () => {
+    //     void (this.getModel() as CRUDModel).delete(
+    //       sAnswersPath[6],
+    //       "/" + sAnswersPath[2],
+    //       "/" + sAnswersPath[4]
+    //     );
+    //   };
+    //   this.getConfirm(fetchToRemoveAnswer, "test", "test");
+  }
+
+  private determineManageTestPageValidity() {
+    const sPath = (this.getView()?.getBindingContext() as Context).getPath();
+    const oCurrentState = (this.getModel() as JSONModel).getProperty(
+      sPath
+    ) as IQuestionStructure;
+    const aInputListItems = this.getInputListItem();
+    const aAllQuestionsAndAnswers = Object.values(oCurrentState.questions);
+    const aAllAnswers = aAllQuestionsAndAnswers.map((elem) => elem.answers);
+    const aAllQuestions = aAllQuestionsAndAnswers.map((elem) => elem.question);
+
+    // validate questions
+    aAllQuestions.forEach((elem, index) => {
+      if (!elem) {
+        if (aInputListItems[index].getProperty("highlight") === "None") {
+          aInputListItems[index].setProperty("highlight", MessageType.Error);
+        }
+        if (this.getSupportModel().getProperty("/isManageTestPageValid")) {
+          this.getSupportModel().setProperty("/isManageTestPageValid", false);
+        }
+      } else {
+        if (aInputListItems[index].getProperty("highlight") === "Error") {
+          aInputListItems[index].setProperty("highlight", MessageType.None);
+        }
+      }
+    });
+    
+    // validate answers
+    const aAllAnswersInputs: Input[] = this.getView()
+    ?.getControlsByFieldGroupId("allAnswersId")
+    .filter(
+      (oControl) =>
+        oControl.getMetadata().getElementName() === "sap.m.Input"
+    ) as Input[];
+
+    aAllAnswersInputs?.forEach(elem => {
+      if (!elem.getProperty("value")) {
+        elem.setValueState(ValueState.Error)
+      } else {
+        elem.setValueState(ValueState.None)
+      }
+    })
+    
+    const aAllQuestionsInputs: Input[] = this.getView()
+    ?.getControlsByFieldGroupId("allQuestionsId")
+    .filter(
+      (oControl) =>
+        oControl.getMetadata().getElementName() === "sap.m.Input"
+    ) as Input[];
+    aAllQuestionsInputs?.forEach(elem => {
+      if (!elem.getProperty("value")) {
+        elem.setValueState(ValueState.Error)
+      } else {
+        elem.setValueState(ValueState.None)
+      }
+    });
+    const aAllCheckBoxes: CheckBox[] = this.getView()
+    ?.getControlsByFieldGroupId("checkBoxRightAnswers")
+    .filter(
+      (oControl) =>
+        oControl.getMetadata().getElementName() === "sap.m.CheckBox"
+    ) as CheckBox[];
+    const bIsRightAnswerSelected = aAllCheckBoxes?.every(elem => !elem.getProperty("selected"))
+    aAllCheckBoxes?.forEach(elem => {
+      if (bIsRightAnswerSelected) {
+        elem.setValueState(ValueState.Error)
+      } else {
+        elem.setValueState(ValueState.None)
+      }
+    });
+ 
+
+    const bQueestionsValidity = aAllQuestions.every((el) => el);
+    const bAnswersValidity =
+      aAllAnswers.filter((el) => el.every((el) => !el)).length == 0;
+    if (bQueestionsValidity && bAnswersValidity) {
+      this.getSupportModel().setProperty("/isManageTestPageValid", true);
+    }
+  }
+
 }

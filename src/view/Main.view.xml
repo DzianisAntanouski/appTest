@@ -16,13 +16,13 @@
 				<layoutData>
 					<l:SplitterLayoutData size="30%" />
 				</layoutData>
-				<List updateFinished="" id="qList" itemPress=".onListItemPress" items="{path: 'questions'}" width="auto">
+				<List updateFinished="setActive" id="qList" itemPress=".onListItemPress" items="{path: 'questions'}" width="auto">
 					<items>
 						<InputListItem type="Active" fieldGroupIds="questions" highlight="None">
 							<HBox width="auto">
 								<FlexBox width="100%" renderType="Bare">
 									<RadioButton visible="{= ${supportModel>/edit}}" select=".onSelect" />
-									<Input value="{question}" visible="{= ${supportModel>/edit}}" width="100%" liveChange=".onLiveChange" />
+									<Input value="{question}" visible="{= ${supportModel>/edit}}" width="100%" liveChange=".onLiveChange" fieldGroupIds="allQuestionsId"/>
 									<Text text="{question}" visible="{= !${supportModel>/edit}}" />
 								</FlexBox>
 							</HBox>
@@ -42,27 +42,29 @@
 							<OverflowToolbar>
 								<Label text="{question}"/>
 								<ToolbarSpacer />
-								<Label text="{i18n>rightAnswers}"/>
+								<Label text="{i18n>rightAnswers}" class="sapUiSmallMarginEnd"/>
 							</OverflowToolbar>
 						</infoToolbar>
 						<columns>
 							<Column />
 							<Column width="50px" visible="true" />
+							<Column width="50px" visible="{= ${supportModel>/edit}}" />
 						</columns>
 						<items>
 							<ColumnListItem vAlign="Middle">
 								<cells>
 									<HBox renderType="Bare">
 										<Text text="{}" visible="{= !${supportModel>/edit}}" />
-										<Input value="{}" visible="{= ${supportModel>/edit}}" width="100%" liveChange=".onLiveChange"/>
+										<Input value="{}" visible="{= ${supportModel>/edit}}" width="100%" liveChange="onLiveChange" fieldGroupIds="allAnswersId"/>
 									</HBox>
 									<CheckBox select="onCheck" width="50px" editable="{= ${supportModel>/edit}}" fieldGroupIds="checkBoxRightAnswers"/>
+									<Button icon="sap-icon://delete" press="onPressDeleteAnswer"/>	
 								</cells>
 							</ColumnListItem>
 						</items>
 					</Table>
 					<HBox>
-						<Button icon="sap-icon://add" press="onPressAddAnswer" class="sapUiSmallMarginEnd" enabled="{= ${answers}.length &lt; 4 &amp;&amp; ${supportModel>/edit}}"/>
+						<Button icon="sap-icon://add" press="onPressAddAnswer" class="sapUiSmallMarginEnd" enabled="{supportModel>/isAddAnswerBtnEnabled}"/>
 						<Button text="{i18n>next}" press=".onPressNext"/>
 					</HBox>
 				</VBox>

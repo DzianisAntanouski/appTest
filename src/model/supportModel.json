@@ -9,6 +9,8 @@
     "selected": false,
     "edit": false,
     "change": false,
-    "addQuestion": []
+    "addQuestion": [],
+    "isAddAnswerBtnEnabled": false,
+    "isManageTestPageValid": true
 }
 
