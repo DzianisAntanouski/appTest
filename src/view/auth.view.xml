@@ -6,8 +6,7 @@
 
 	<Button
 		text="Open Popover"
-		press="onOpenPopover"
-		ariaHasPopup="Dialog" />
+		press="onOpenPopover" />
 
 	<Page id="mPage" content="{/messages}">
 			

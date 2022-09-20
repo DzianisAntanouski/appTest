@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import UIComponent from "sap/ui/core/UIComponent";
 import { support } from "sap/ui/Device";
 import JSONModel from "sap/ui/model/json/JSONModel";
-// import models2 from "./model/models";
-// import models from "sap/firebase/SAP-Firebase-Connect/model/models";
 import Firebase from './Firebase';
 import { IAuthObject } from "./interface/Interface";
 
@@ -53,11 +54,11 @@ export default class Component extends UIComponent {
     return this.contentDensityClass;
   }
   
-  public onWindowBeforeUnload(): void {
+  public onWindowBeforeUnload(): any {
     const firebaseModel = this.getModel("firebase") as JSONModel;
     const userCollection = firebaseModel.getData().firestore.collection("userStatus");
     if (this.getModel('supportModel').getProperty('/auth')) {
-      userCollection.doc(`${(this.getModel('supportModel').getProperty("/auth") as IAuthObject).email}`).set({
+      userCollection.doc(`${(this.getModel('supportModel').getProperty("/auth") as IAuthObject).email}`).update({
         email: `${(this.getModel('supportModel').getProperty("/auth") as IAuthObject).email}`,
         online: false 
       });

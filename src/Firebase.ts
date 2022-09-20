@@ -20,7 +20,9 @@ export default class Firebase extends JSONModel {
 	}
 	
 	public initializeFirebase() {
+		
 		// Initialize Firebase with the Firebase-config
+		// this script source in index.html for firebase
 		firebase.initializeApp(this.getConfig());
 		
 		// Create a Firestore reference
