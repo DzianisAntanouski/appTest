@@ -185,13 +185,13 @@ export default class Start extends BaseController {
   public getRealTimeChats(collRefChats: any) {
     collRefChats.onSnapshot((snapshot: ISnapshot) => {
       const chatModel = this.getModel("chatModel") as JSONModel;
-      const chatData = chatModel.getData();
+      const chatData = chatModel.getData() as {chats: {id: string}[]};
 
       snapshot.docChanges().forEach((change) => {
         const oChat = change.doc.data();
         oChat.id = change.doc.id;
-        if (change.type === "added") {
-          chatData.chats.push(oChat);
+        if (change.type === "added") {          
+          chatData.chats.map(el => el.id).includes(oChat.id) ? null : chatData.chats.push(oChat);
         } else if (change.type === "modified") {
           const index = chatData.chats.map((chat: { [key: string]: any }) => chat.id as string).indexOf(oChat.id);
           chatData.chats[index] = oChat;
@@ -311,8 +311,7 @@ export default class Start extends BaseController {
       await (oEvent.getSource() as List).scrollToIndex(nIndex);
       setTimeout(() => {
         (this.byId("posttext") as Input).focus()
-      }, 750);
-      
+      }, 750);      
     }
   }
 
