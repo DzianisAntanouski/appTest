@@ -9,7 +9,7 @@
 		backgroundDesign= "Solid"
 		showNavButton="true"
 		navButtonPress=".onPressNavBack"
-		showFooter="{= ${supportModel>/edit}}">
+		showFooter="{= ${supportModel>/edit}}">		
 		<subHeader>
 			<OverflowToolbar>
 				<Button text="{i18n>btnShowStatistics}" press="onStatisticPress" type="Ghost"/>

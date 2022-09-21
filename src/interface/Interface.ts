@@ -143,3 +143,24 @@ export interface IError {
 export interface IFulfilled {
   email: string;
 }
+
+// firebase
+export interface ISnapshot {
+  docChanges: () => {doc: {data: () => {id: string}, id: string}, type: string}[]
+}
+
+export interface IDocs {
+  data: () => {
+    messages?: {text: string, author: string, date: Date}[]
+    email?: string
+  }, 
+  id: string
+}
+
+export interface IData {
+  messages: {
+      text: string;
+      author: string;
+      date: Date;
+  }[], id: string
+}
