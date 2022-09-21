@@ -12,7 +12,7 @@
 			</Toolbar>
 		</customHeader>
 		<content>
-			<custom:MyControl  header="{name}" subheader="{path: 'createdBy', formatter: '.formatter.formatCreatedBy'}" onRunButtonPress="onRunTest" onClickCard="onCardClick" onManageButtonPress='onManageTest' />
+			<custom:MyControl  header="{name}" subheader="{path: 'createdBy', formatter: '.formatter.formatCreatedBy'}" flip="true" onRunButtonPress="onRunTest" onClickCard="onCardClick" onManageButtonPress='onManageTest' />
 			<!-- <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" press="handleDetailPress" header="{name}" subheader="{path: 'createdBy', formatter: '.formatter.formatCreatedBy'}" frameType= "TwoByHalf">
 				<TileContent />
 			</GenericTile> -->
