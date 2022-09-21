@@ -2,10 +2,11 @@
 	xmlns:tnt="sap.tnt"
 	xmlns:f="sap.f"
 	xmlns:mvc="sap.ui.core.mvc" displayBlock="true" controllerName="webapp.typescript.controller.Start" height="100%">
-	<Page class="sapUiTinyMargin" showHeader="false">
+	<Page class="sapUiTinyMargin" showHeader="false" showFooter="false">
 		<tnt:ToolHeader>
 			<Text text="{i18n>testApplication}" wrapping="false" />
 			<ToolbarSpacer />
+			<Button text="Show users" type="Emphasized" press="onOpenPopover" enabled="{= ${supportModel>/auth} ? true : false}"/>
 			<Button id="emailText" text="{= ${supportModel>/auth} ? ${supportModel>/auth/email} : 'Not auth' }{}" type="Transparent" />
 			<Avatar id="avatarBtn" src="sap-icon://user" press='onPressAvatar' displaySize="XS" />
 		</tnt:ToolHeader>
@@ -13,6 +14,6 @@
 			<f:beginColumnPages>
 				<mvc:XMLView id="beginView" async="true" viewName="webapp.typescript.view.Master"/>
 			</f:beginColumnPages>
-		</f:FlexibleColumnLayout>
+		</f:FlexibleColumnLayout>		
 	</Page>
 </mvc:View>

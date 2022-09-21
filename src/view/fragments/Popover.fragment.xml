@@ -5,7 +5,7 @@
 		id="myPopover"
 		showHeader="false"
 		contentWidth="320px"
-		contentHeight="500px"
+		contentHeight="70%"
 		placement="Bottom"
 		ariaLabelledBy="master-title">
 		<NavContainer
@@ -13,36 +13,48 @@
 			<Page
 				id="master"
 				class="sapUiResponsivePadding--header"
-				title="Users">
-                <Button text="show" press="onPressShowOffLine"/>
+				title="Users">                
 				<List
 					id="list"
+                    updateFinished="onUpdateFinished"
 					items="{userModel>/users}" >
 					<StandardListItem
 						title="{userModel>email}"
                         visible="{= ${userModel>online}}"
 						description="{= ${userModel>online} ? 'user online' : 'user offline'}"
 						type="Active"
-						press="onNavToProduct"
+						press="onNavToChat"
 						iconDensityAware="false"
 						iconInset="false" />
 				</List>
 			</Page>
 			<Page
-				id="detail"
-				class="sapUiResponsivePadding--header"
+				id="detail"				
 				showNavButton="true"
-				navButtonPress="onNavBack"
-				title="Product">
-				<content>
-					<ObjectHeader title="{Name}" >
-						<attributes>
-							<ObjectAttribute text="{WeightMeasure} {WeightUnit}" />
-							<ObjectAttribute text="{Width} x {Depth} x {Height} {DimUnit}" />
-						</attributes>
-					</ObjectHeader>
-					<Text class="sapUiSmallMargin" text="{Description}" />
-				</content>
+				navButtonPress="onNavBackToUser"
+				title="Chat">
+				<content>                    
+                    <List
+                        id="chatList"
+                        updateFinished="chatListFinishedUpdate"
+                        showSeparators="Inner"
+                        items="{chatModel>}" >
+                        <FeedListItem
+                            sender="{chatModel>author}"                            
+                            senderPress="onSenderPress"
+                            showIcon="false"
+                            text="{chatModel>text}"
+                            convertLinksToAnchorTags="All"/>
+                    </List>
+                </content>
+                <footer >
+                    <Toolbar >
+                        <HBox renderType="Bare" width="100%">
+                            <Input submit="onPost" id="posttext" placeholder="Enter your message" class="sapUiTinyMarginEnd"/><Button icon="sap-icon://feeder-arrow" press="onPost"/>
+                        </HBox>
+                    </Toolbar>
+                </footer>
+				
 			</Page>
 		</NavContainer>
 	</Popover>
