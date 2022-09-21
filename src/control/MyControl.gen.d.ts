@@ -8,7 +8,8 @@ declare module "./MyControl" {
     interface $MyControlSettings extends $ControlSettings {
         text?: string;
         header?: string
-        subheader?: string
+        subheader?: string;
+        flip?: boolean
     }
 
     export default interface MyControl {

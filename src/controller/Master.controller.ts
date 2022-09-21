@@ -15,6 +15,7 @@ export default class Master extends BaseController {
 
   public handleMasterPress(oEvent: Event): void {   
     MessageToast.show(this.i18n("loadingSubcategoriesMessageText"));
+    
     this.oEventBus.publish("flexible", "setDetailPage", oEvent);
   }
 }
