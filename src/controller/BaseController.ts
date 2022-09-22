@@ -22,6 +22,7 @@ import MessageBox from "sap/m/MessageBox";
 import UI5Element from "sap/ui/core/Element";
 import CRUDModel from "../model/CRUDModel";
 import Component from '../Component';
+import Input from "sap/m/Input";
 
 /**
  * @namespace webapp.typescript.controller
@@ -68,9 +69,9 @@ export default abstract class BaseController extends Controller {
 
   public async onLogInButtonPress(): Promise<void> {
     this.oEventBus = (this.getOwnerComponent() as Component).getEventBus();
-    const sEmail = this.getSupportModel().getProperty("/email") as string;
-    const sPassword = this.getSupportModel().getProperty("/password") as string;
-
+    const sEmail = (this.byId("emailInputId") as Input).getValue();
+    const sPassword = (this.byId("passwordInputId") as Input).getValue();
+    
     await this.tryAuthorization(sEmail, sPassword);
 
     if (this.getSupportModel().getProperty("/auth")) (this.oAuthorizationDialog as Dialog).close();

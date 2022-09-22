@@ -11,6 +11,11 @@ import BaseController from "./BaseController";
 import Context from "sap/ui/model/Context";
 import formatter from "../model/formatter";
 import CRUDModel from '../model/CRUDModel';
+import JSONModel from "sap/ui/model/json/JSONModel";
+import { IOwner } from "../interface/Interface";
+import MessageBox from "sap/m/MessageBox";
+import Component from '../Component';
+import Control from 'sap/ui/core/Control';
 
 /**
  * @namespace webapp.typescript.controller
@@ -21,7 +26,7 @@ export default class Detail extends BaseController {
   formatter = formatter;
 
   public onInit(): void {
-    this.oEventBus = this.getOwnerComponent().getEventBus();
+    this.oEventBus = (this.getOwnerComponent() as Component).getEventBus();
   }
 
   /**
@@ -32,7 +37,7 @@ export default class Detail extends BaseController {
    * sap.ui.base.ObjectPool after the event handler is done.
    */
   public handleDetailPress(oEvent: Event): void {
-    MessageToast.show(this.i18n("loadingNewPageMessage") as string);
+    MessageToast.show(this.i18n("loadingNewPageMessage"));
     this.oEventBus.publish("flexible", "setDetailDetailPage", oEvent);
   }
 
@@ -94,16 +99,18 @@ export default class Detail extends BaseController {
    * sap.ui.base.ObjectPool after the event handler is done.
    */
   onRunTest(oEvent: Event) {
-    console.log(oEvent)
     this.oEventBus.publish("navigation", "navToTesting", oEvent);
     
   }
   onManageTest(oEvent: Event){
-    console.log('onManageTest')
-    this.oEventBus.publish("navigation", "navToMain", oEvent);
+    const sPath: string = ((oEvent.getSource() as Control).getBindingContext() as Context).getPath();
+    const oCreatedBy: object = ((this.getModel() as JSONModel).getProperty(sPath) as IOwner).createdBy;
+    if (!this.getSupportModel().getProperty("/auth")) this.loadAuthorizationDialog();
+    else if (!oCreatedBy || Object.values(oCreatedBy)[0] === this.getSupportModel().getProperty("/auth/email")) {
+      this.oEventBus.publish("navigation", "navToMain", oEvent);
+    } else MessageBox.error(this.i18n("authorizationMTPageErrorMessage"));
   }
   onCardClick(oEvent: Event){
-    console.log("cardClick")
     this.oEventBus.publish("flexible", "setDetailDetailPage", oEvent);
    
   }
