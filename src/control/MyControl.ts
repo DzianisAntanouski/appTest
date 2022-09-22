@@ -23,7 +23,8 @@ export default class MyControl extends Control {
 		properties: {
 			"header": "string",
 			"subheader": "string",
-			"highLight": { type: "boolean" },
+			"highLight": "boolean",
+			"flip": "boolean"
 		},
 		// aggregations: {
 		// 	// "customData": { type: "sap.ui.core.CustomData" },
@@ -47,8 +48,14 @@ export default class MyControl extends Control {
 		this.setProperty('subheader', subheader, true)
 	}
 	setHighLight(highLight: boolean) {
-
 		this.setProperty('highLight', highLight, true)
+	}
+	setFlip(flip: boolean) {
+		this.setProperty('flip', flip, true)
+	}
+	getFlip(): boolean {
+		const flip = this.getProperty('flip') as boolean
+		return flip
 	}
 	onPressRun(): void {
 		console.log('aaaa')
@@ -61,8 +68,13 @@ export default class MyControl extends Control {
 	static renderer = {
 		apiVersion: 2,
 		render: (rm: RenderManager, control: MyControl) => {
+			const pageIdName = control.getId().split('--');
+			const pageId = pageIdName[pageIdName.length - 1].replace(/-[0-9]/g, '');
+
 			rm.openStart("div", control).class('scene').openEnd();
 			rm.openStart("div", control).class('card')
+			rm.class(`${pageId}`)
+
 			if (control.getHighLight() as boolean) {
 				rm.class('highLight')
 			}
@@ -75,7 +87,6 @@ export default class MyControl extends Control {
 			rm.renderControl(new Text({
 				text: control.getSubheader(),
 				textAlign: TextAlign.Center
-
 			}).addStyleClass('subheader'))
 			rm.close("div");
 			rm.openStart("div", control).class('card__face').class('card__face--back').openEnd()
@@ -91,11 +102,13 @@ export default class MyControl extends Control {
 			}).addStyleClass('subheader'))
 			rm.renderControl(new Button({
 				text: "Run",
-				press: () => control.onPressRun()
+				press: () => control.onPressRun(),
+				width: "7rem",
 			}));
 			rm.renderControl(new Button({
 				text: "Manage",
-				press: () => control.onPressManage()
+				press: () => control.onPressManage(),
+				width: "7rem",
 			}));
 			rm.close("div");
 			rm.close("div");
@@ -103,19 +116,24 @@ export default class MyControl extends Control {
 		}
 	};
 
-	onclick = (event: Event): void => {
+	getPageIdName(element: HTMLDivElement) {
+		const className = element.id.split('--');
+		return className[className.length - 1].replace(/-[0-9]/g, '')
+	}
 
+	onclick = (event: Event): void => {
 		const element = event.target as HTMLDivElement
 		const parent = element.closest('.card') as HTMLDivElement
-		const cards = document.querySelectorAll('.card')
+		const pageIdName = this.getPageIdName(parent)
+		const cards = document.querySelectorAll(`.card.${pageIdName}`)
 		cards.forEach((card) => { card.classList.remove('is-flipped'); card.classList.remove('highLight') })
-		parent.classList.toggle('is-flipped')
-		parent.classList.toggle('highLight')
+		if (this.getFlip()) {
+			parent.classList.toggle('is-flipped')
+		}
 		if (element.classList.contains('card__face--front') || element.closest('card__face--front')) {
 			this.fireEvent('onClickCard')
 		}
-
-
+		parent.classList.toggle('highLight')
 	}
 
 }
