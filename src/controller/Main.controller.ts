@@ -110,19 +110,26 @@ export default class Main extends BaseController {
     });
     this.getSupportModel().setProperty("/selected", false);
     this.getSupportModel().setProperty("/edit", false);
+    // this.onPressNext();
     this.defineAddAnswerBtnDisability();
   }
 
   public setActive(oEvent: Event): void {
     const aListItemsArray = (oEvent.getSource() as List).getItems();
+
     if (aListItemsArray.length) {
+      // this.onPressNext();
+      //! снимаю все хайлайты
       aListItemsArray.forEach((element) => {
         element.setProperty("highlight", MessageType.None);
       });
+
+      //! сетаю на нужный лист айтем
       aListItemsArray[aListItemsArray.length - 1].setProperty(
         "highlight",
         MessageType.Information
       );
+      //! сетаю нужный контекст
       const oNecessaryContext: Context = (oEvent.getSource() as List)
         .getItems()
         [aListItemsArray.length - 1].getBindingContext() as Context;
@@ -259,6 +266,9 @@ export default class Main extends BaseController {
       oControl.setProperty("highlight", MessageType.None)
     );
     this.findListItem(oListItem as IParent);
+
+    // oListItem.setProperty("highlight", MessageType.Information);
+    //
     void this.setChecked();
     this.defineAddAnswerBtnDisability();
   }
@@ -333,6 +343,33 @@ export default class Main extends BaseController {
     );
   }
 
+  // public checkAddFragmentsField() {
+  //   const checkBoxes = ["cbanswer1", "cbanswer2", "cbanswer3", "cbanswer4"]
+  //   const checkSelected = (sId: string) => {
+  //     return (this.byId(sId) as CheckBox).getSelected()
+  //   }
+  //   const checkBoxResult = checkBoxes.map(sId => checkSelected(sId)).filter(oCheckBox => !oCheckBox);
+  //   const getAnswersLength = (sId: string) => {
+  //     return (this.byId(sId) as Input)
+  //   }
+  //   const answersId = ["answer1", "answer2", "answer3", "answer4"]
+  //   const answersResult = answersId.map(sId => getAnswersLength(sId)).filter(elem => elem.getValue().length < 3)
+  //   if (checkBoxResult.length === 4) {
+  //     MessageBox.error("Check one or more right answer")
+  //     return
+  //   } else if((this.byId("newQ") as Input).getValue().length < 3) {
+  //     void (this.byId("newQ") as Input).setValueState(ValueState.Error)
+  //     void (this.byId("newQ") as Input).setValueStateText("Error: min length 3")
+  //     return
+  //   } else if (answersResult.length) {
+  //     void answersResult.forEach(oInput => {
+  //       oInput.setValueState(ValueState.Error)
+  //       oInput.setValueStateText("Error: min length 3")
+  //     })
+  //     return
+  //   }
+  // }
+
   public onPressFragmentAdd(): void {
     const checkBoxes = ["cbanswer1", "cbanswer2", "cbanswer3", "cbanswer4"];
     const checkSelected = (sId: string) => {
@@ -364,6 +401,7 @@ export default class Main extends BaseController {
       });
       return;
     }
+    // if (checkSelected("cbanswer1") || checkSelected("cbanswer2") || checkSelected("cbanswer3") || checkSelected("cbanswer4"))
     const getTemplate = (sProp: string): string => {
       return (this.getModel() as JSONModel).getProperty(
         `/newQuestion/${sProp}`
@@ -373,6 +411,11 @@ export default class Main extends BaseController {
       ?.getControlsByFieldGroupId("checkBox")
       .filter((elem) => (elem as CheckBox).getSelected())
       .map((elem) => +elem.getId().slice(-1));
+    // const newQuestion = models.createQuestion(
+    //   getTemplate("question"),
+    //   [getTemplate("answer/0"), getTemplate("answer/1"), getTemplate("answer/2"), getTemplate("answer/3")],
+    //   aCheckedCheckBoxes
+    // );
 
     const newQuestion = models.createQuestion("", [], []);
 
@@ -509,12 +552,14 @@ export default class Main extends BaseController {
     oControls?.forEach((oRadioButton) =>
       (oRadioButton as RadioButton).setSelected(false)
     );
+    // ! this.getSupportModel().getProperty("/change")
 
     if (this.determineManageTestPageValidity()) {
       const aPath: string[] = (this.getView()?.getBindingContext() as Context)
         .getPath()
         .slice(1)
         .split("/");
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const oData: IData[] = (
         (this.getModel() as JSONModel).getData()[aPath[0]][aPath[1]][aPath[2]][
           aPath[3]
@@ -542,6 +587,7 @@ export default class Main extends BaseController {
           )
       );
 
+      // disable save btn
       this.getSupportModel().setProperty(
         "/edit",
         !this.getSupportModel().getProperty("/edit")
@@ -586,7 +632,22 @@ export default class Main extends BaseController {
   }
 
   public onPressCancel() {
+    // if (this.getSupportModel().getProperty("/change")) {
+    //   const onPressYesAction = () => {
+    //     // (this.getModel() as JSONModel).setProperty(sPath, this.oState);
+    //     this.setChecked();
+    //     this.highlightSwitcher();
+    //     this.getSupportModel().setProperty("/change", false);
+    //   };
+    //   this.getConfirm(
+    //     onPressYesAction,
+    //     "mainPageConfirmationDialogText",
+    //     "mainPageConfirmationDialogTitle"
+    //   );
+    // }
+
     const sPath = (this.getView()?.getBindingContext() as Context).getPath();
+    //! deep clone
     const oCurrentState = (this.getModel() as JSONModel).getProperty(
       sPath
     ) as IQuestionStructure;
@@ -652,12 +713,14 @@ export default class Main extends BaseController {
 
   // new logic for adding questions
   public onPressAddQuestionBtn(oEvent: Event) {
+    // const nIndex = (this.byId("qList") as List).getItems().length;
     const newQuestion = models.createQuestion("", ["", ""], [5]);
     const aPath: string[] = (this.getView()?.getBindingContext() as Context)
       .getPath()
       .slice(1)
       .split("/");
 
+    // save state
     const sPath = (this.getView()?.getBindingContext() as Context).getPath();
     const oState = (this.getModel() as JSONModel).getProperty(
       sPath
@@ -666,7 +729,12 @@ export default class Main extends BaseController {
     void (this.getModel() as CRUDModel)
       .create(newQuestion, "/" + aPath[1], "/" + aPath[3])
       .then((resp) => {
+        // const aAddQuestion: object[] =
+        //   this.getSupportModel().getProperty("/addQuestion");
+        // aAddQuestion.push({ id: resp.name, index: nIndex });
+        // this.getSupportModel().setProperty("/addQuestion", aAddQuestion);
         this.defineAddAnswerBtnDisability();
+        // this.setChecked();
         oState.questions[resp.name] = newQuestion;
         const sPath = (
           this.getView()?.getBindingContext() as Context
@@ -750,19 +818,52 @@ export default class Main extends BaseController {
     }
   }
   private validateAnswersFields(aAllQuestionsAndAnswers) {
+    //! validate answers inputs
     const aAllAnswers = aAllQuestionsAndAnswers?.map((elem) => elem.answers);
+    // const aAllAnswersInputs: Input[] = this.getView()
+    //   ?.getControlsByFieldGroupId("allAnswersId")
+    //   .filter(
+    //     (oControl) => oControl.getMetadata().getElementName() === "sap.m.Input"
+    //   ) as Input[];
+
+    // aAllAnswersInputs?.forEach((elem, index) => {
+    //   if (!elem.getProperty("value")) {
+    //     elem.setValueState(ValueState.Error);
+    //   } else {
+    //     elem.setValueState(ValueState.None);
+    //   }
+    // });
     const bAnswersValidity =
       aAllAnswers?.filter((el) => el.some((el) => !el)).length == 0;
     return bAnswersValidity;
   }
   private validateQuestionsFields(aAllQuestionsAndAnswers) {
+    //! validate questions inputs
     const aAllQuestions = aAllQuestionsAndAnswers?.map((elem) => elem.question);
+    // const aAllQuestionsInputs: Input[] = this.getView()
+    //   ?.getControlsByFieldGroupId("allQuestionsId")
+    //   .filter(
+    //     (oControl) =>
+    //       oControl.getMetadata().getElementName() ===
+    //       "webapp.typescript.extendedControl.MyExtendedInput"
+    //   ) as Input[];
+    // aAllQuestionsInputs?.forEach((elem) => {
+    //   if (!elem.getProperty("value")) {
+    //     elem.setValueState(ValueState.Error);
+    //   } else {
+    //     elem.setValueState(ValueState.None);
+    //   }
+    // });
+    //! highlightQuestions
     const aInputListItems = this.getInputListItem();
     aAllQuestions?.forEach((elem, index) => {
       if (!elem) {
         if (aInputListItems[index].getProperty("highlight") === "None") {
           aInputListItems[index].setProperty("highlight", MessageType.Error);
         }
+        // if (this.getSupportModel().getProperty("/isManageTestPageValid")) {
+        //   this.getSupportModel().setProperty("/isManageTestPageValid", false);
+        // }
       }
     });
 
@@ -770,9 +871,29 @@ export default class Main extends BaseController {
     return bQueestionsValidity;
   }
   private validateRightAnswersCheckBoxes(aAllQuestionsAndAnswers) {
+    //! validate right answers checkBoxes
     const aRightAnswers = aAllQuestionsAndAnswers?.map(
       (elem) => elem.rightAnswer
     );
+    // const aAllCheckBoxes: CheckBox[] = this.getView()
+    //   ?.getControlsByFieldGroupId("checkBoxRightAnswers")
+    //   .filter(
+    //     (oControl) =>
+    //       oControl.getMetadata().getElementName() === "sap.m.CheckBox"
+    //   ) as CheckBox[];
+    // const bIsCheckBoxesSelected = aAllCheckBoxes?.some((elem) =>
+    //   elem.getProperty("selected")
+    // );
+    // aAllCheckBoxes?.forEach((elem) => {
+    //   if (!bIsCheckBoxesSelected) {
+    //     elem.setValueState(ValueState.Error);
+    //   } else {
+    //     elem.setValueState(ValueState.None);
+    //   }
+    // });
+    // const bIsRightAnswerSelected =
+    //   aRightAnswers?.filter((el) => el?.some((el) => el == 5)).length == 0;
+    // const bIsRightAnswerSelected = !!aRightAnswers[0].length && aRightAnswers.findIndex(el => !el) < 0 && aRightAnswers.findIndex(el => el == 5) < 0;
     let isValid = true;
     aRightAnswers.forEach((elem) => {
       if (!elem.length) {
@@ -781,6 +902,10 @@ export default class Main extends BaseController {
         isValid = false;
       }
     });
+    // ! поменять логику флагов
+    // if (!isValid) {
+    //   this.getSupportModel().setProperty("/isManageTestPageValid", false);
+    // }
     return isValid;
   }
   onInputFocus(oEvent: Event) {
@@ -793,7 +918,9 @@ export default class Main extends BaseController {
     this.getInputListItem().forEach((oControl) =>
       oControl.setProperty("highlight", MessageType.None)
     );
+
     this.findListItem(oInput);
+
     void this.setChecked();
     this.defineAddAnswerBtnDisability();
   }
