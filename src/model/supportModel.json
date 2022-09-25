@@ -11,6 +11,7 @@
     "change": false,
     "addQuestion": [],
     "isAddAnswerBtnEnabled": false,
-    "isManageTestPageValid": true
+    "isManageTestPageValid": true,
+    "delButtonVisible": false
 }
 

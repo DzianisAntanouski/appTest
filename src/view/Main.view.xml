@@ -59,7 +59,7 @@
 										<Input value="{}" visible="{= ${supportModel>/edit}}" width="100%" liveChange="onLiveChange" fieldGroupIds="allAnswersId"/>
 									</HBox>
 									<CheckBox select="onCheck" width="50px" editable="{= ${supportModel>/edit}}" fieldGroupIds="checkBoxRightAnswers"/>
-									<Button icon="sap-icon://delete" press="onPressDeleteAnswer"/>
+									<Button icon="sap-icon://delete" press="onPressDeleteAnswer" enabled="{supportModel>/delButtonVisible}"/>
 								</cells>
 							</ColumnListItem>
 						</items>
