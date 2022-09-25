@@ -114,7 +114,7 @@ export default class Main extends BaseController {
 
   public setActive(oEvent: Event): void {
     const aListItemsArray = (oEvent.getSource() as List).getItems();
-
+    void this.setChecked();
     if (aListItemsArray.length) {
       aListItemsArray.forEach((element) => {
         element.setProperty("highlight", MessageType.None);
@@ -501,8 +501,14 @@ export default class Main extends BaseController {
   }
 
   public onPressSave(): void {
+    const aControls: Array<Control> = this.getInputListItem();
+    const oControl: Control | undefined = aControls.find(
+      (oControl) => oControl.getProperty("highlight") === "Information"
+    ) as Control;
+    const oContext: Context = oControl?.getBindingContext() as Context;
+    this.changeContextAndValidate(oContext);
+    
     this.getSupportModel().setProperty("/selected", false);
-
     const oControls: Control[] | undefined = this.getView()
       ?.getControlsByFieldGroupId("questions")
       .filter(
@@ -592,22 +598,7 @@ export default class Main extends BaseController {
   }
 
   public onPressCancel() {
-    // if (this.getSupportModel().getProperty("/change")) {
-    //   const onPressYesAction = () => {
-    //     // (this.getModel() as JSONModel).setProperty(sPath, this.oState);
-    //     this.setChecked();
-    //     this.highlightSwitcher();
-    //     this.getSupportModel().setProperty("/change", false);
-    //   };
-    //   this.getConfirm(
-    //     onPressYesAction,
-    //     "mainPageConfirmationDialogText",
-    //     "mainPageConfirmationDialogTitle"
-    //   );
-    // }
-
     const sPath = (this.getView()?.getBindingContext() as Context).getPath();
-    //! deep clone
     const oCurrentState = (this.getModel() as JSONModel).getProperty(
       sPath
     ) as IQuestionStructure;
@@ -673,14 +664,11 @@ export default class Main extends BaseController {
 
   // new logic for adding questions
   public onPressAddQuestionBtn(oEvent: Event) {
-    // const nIndex = (this.byId("qList") as List).getItems().length;
     const newQuestion = models.createQuestion("", ["", ""], [5]);
     const aPath: string[] = (this.getView()?.getBindingContext() as Context)
       .getPath()
       .slice(1)
       .split("/");
-
-    // save state
     const sPath = (this.getView()?.getBindingContext() as Context).getPath();
     const oState = (this.getModel() as JSONModel).getProperty(
       sPath
