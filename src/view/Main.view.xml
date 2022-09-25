@@ -1,6 +1,7 @@
 <mvc:View xmlns:l="sap.ui.layout"
 	xmlns:mvc="sap.ui.core.mvc"
-	xmlns="sap.m" controllerName="webapp.typescript.controller.Main">
+	xmlns="sap.m"
+	xmlns:extendedInput="webapp.typescript.extendedControl" controllerName="webapp.typescript.controller.Main">
 	<Page id="wrapper" class="sapUiMediumMarginEnd" title="Questions and Answers" backgroundDesign= "Solid" showNavButton="true" navButtonPress=".onPressNavBack" showFooter="{= ${supportModel>/edit}}">
 		<subHeader>
 			<OverflowToolbar>
@@ -22,13 +23,13 @@
 							<HBox width="auto">
 								<FlexBox width="100%" renderType="Bare">
 									<RadioButton visible="{= ${supportModel>/edit}}" select=".onSelect" />
-									<Input value="{question}" visible="{= ${supportModel>/edit}}" width="100%" liveChange=".onLiveChange" fieldGroupIds="allQuestionsId"/>
+									<extendedInput:MyExtendedInput value="{question}" visible="{= ${supportModel>/edit}}" width="100%" liveChange=".onLiveChange" fieldGroupIds="allQuestionsId" onFocus="onInputFocus"/>
 									<Text text="{question}" visible="{= !${supportModel>/edit}}" />
 								</FlexBox>
 							</HBox>
 						</InputListItem>
 					</items>
-					
+
 				</List>
 				<Button icon="sap-icon://add" press="onPressAddQuestionBtn" enabled="{= ${supportModel>/edit}}" class="sapUiTinyMarginBegin"/>
 			</Page>
@@ -58,7 +59,7 @@
 										<Input value="{}" visible="{= ${supportModel>/edit}}" width="100%" liveChange="onLiveChange" fieldGroupIds="allAnswersId"/>
 									</HBox>
 									<CheckBox select="onCheck" width="50px" editable="{= ${supportModel>/edit}}" fieldGroupIds="checkBoxRightAnswers"/>
-									<Button icon="sap-icon://delete" press="onPressDeleteAnswer"/>	
+									<Button icon="sap-icon://delete" press="onPressDeleteAnswer"/>
 								</cells>
 							</ColumnListItem>
 						</items>

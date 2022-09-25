@@ -109,6 +109,9 @@
 					"viewName": "Test"
 				}
 			}
+		},
+		"resources": {
+			"css": [{ "uri": "extendedControlStyle.css" }]
 		}
 	}
 }
