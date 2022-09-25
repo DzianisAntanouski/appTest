@@ -1,10 +1,11 @@
 import JSONModel from "sap/ui/model/json/JSONModel";
-import { FetchData, IResults, ISubCategory, ITestResults } from "../interface/Interface";
+import { FetchData, IPost, IResults, ISubCategory, ITestResults } from "../interface/Interface";
 interface IoParam {
     success?: () => void, 
     error?: () => void
 }
-export default class CRUDModel extends JSONModel {    
+export default class CRUDModel extends JSONModel { 
+       
     public async read(categoryName = "", subCategory = "", questions = "", oParam?: IoParam) {
         return await fetch(
           `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/Data${categoryName}${subCategory}${questions}.json`,
@@ -51,6 +52,36 @@ export default class CRUDModel extends JSONModel {
         .then((response) => {
           return this.read().then(resp => response)
           // return response as object
+        })) as Response;
+    }
+
+    /**
+     * async readPost
+     */
+     public async readPost() {
+      return await fetch(
+        `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/Posts.json`,
+        { method: "GET" }
+      )
+        .then((response) => response.json())
+        .then((response) => this.setProperty("/Posts", response))
+    }
+
+    public async createPost(categoryName: string, subCategory: string, oPost: IPost) {
+      return (await fetch(
+        `https://apptest-firebase-b0b0c-default-rtdb.europe-west1.firebasedatabase.app/Posts/${categoryName}/${subCategory}.json`,
+        {
+          method: "POST",
+          body: JSON.stringify(oPost),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((response) => {
+          void this.readPost()
+          return response as object
         })) as Response;
     }
 

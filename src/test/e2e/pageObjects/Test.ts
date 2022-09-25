@@ -1,3 +1,4 @@
+
 import Page from "./Page";
 
 class Test extends Page {
@@ -9,3 +10,4 @@ class Test extends Page {
 }
 
 export default new Test();
+

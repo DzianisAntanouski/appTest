@@ -122,8 +122,8 @@ export default class Start extends BaseController {
 
   public calculateResults(index: number, rightAnswersWord: string[][], isTrue: boolean[][]): number {
     const allRight = rightAnswersWord[index].length;
-    const clientRight = isTrue[index].filter((el) => el === true).length;
-    const clientFalse = isTrue[index].filter((el) => el === false).length;
+    const clientRight = isTrue[index].filter((el) => !!el).length;
+    const clientFalse = isTrue[index].filter((el) => !el).length;
     return +(clientRight / allRight - clientFalse / allRight).toFixed(1);
   }
 

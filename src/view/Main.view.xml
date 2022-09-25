@@ -1,8 +1,19 @@
 <mvc:View xmlns:l="sap.ui.layout"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m"
+<<<<<<< HEAD
 	xmlns:extendedInput="webapp.typescript.extendedControl" controllerName="webapp.typescript.controller.Main">
 	<Page id="wrapper" class="sapUiMediumMarginEnd" title="Questions and Answers" backgroundDesign= "Solid" showNavButton="true" navButtonPress=".onPressNavBack" showFooter="{= ${supportModel>/edit}}">
+=======
+	controllerName="webapp.typescript.controller.Main">
+	<Page id="wrapper"
+		class="sapUiMediumMarginEnd"
+		title="Questions and Answers"
+		backgroundDesign= "Solid"
+		showNavButton="true"
+		navButtonPress=".onPressNavBack"
+		showFooter="{= ${supportModel>/edit}}">		
+>>>>>>> 5191403a0113a6205c060531c5b548a659331089
 		<subHeader>
 			<OverflowToolbar>
 				<Button text="{i18n>btnShowStatistics}" press="onStatisticPress" type="Ghost"/>

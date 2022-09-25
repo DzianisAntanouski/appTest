@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import Controller from "sap/ui/core/mvc/Controller";
 import UIComponent from "sap/ui/core/UIComponent";
 import AppComponent from "../Component";
@@ -7,7 +10,7 @@ import ResourceBundle from "sap/base/i18n/ResourceBundle";
 import Router from "sap/ui/core/routing/Router";
 import History from "sap/ui/core/routing/History";
 import JSONModel from "sap/ui/model/json/JSONModel";
-import { ICategory, IOwner, IQuestion, IResponse } from "../interface/Interface";
+import { IAuthObject, ICategory, IData, IDocs, IOwner, IQuestion, IResponse } from "../interface/Interface";
 import Auth from "../db/Auth";
 import Fragment from "sap/ui/core/Fragment";
 import Dialog from "sap/m/Dialog";
@@ -17,7 +20,9 @@ import Context from "sap/ui/model/Context";
 import Detail from "./Detail.controller";
 import MessageBox from "sap/m/MessageBox";
 import UI5Element from "sap/ui/core/Element";
-import CRUDModel from '../model/CRUDModel';
+import CRUDModel from "../model/CRUDModel";
+import Component from '../Component';
+import Input from "sap/m/Input";
 
 /**
  * @namespace webapp.typescript.controller
@@ -38,10 +43,16 @@ export default abstract class BaseController extends Controller {
       }
     }
     this.getSupportModel().setProperty("/auth", oResponse);
-    if (oResponse) void (this.getModel() as CRUDModel).saveUser(oResponse.email, oResponse.idToken);
+    if (oResponse) {      
+      void (this.getModel() as CRUDModel).saveUser(oResponse.email, oResponse.idToken);
+      void this.setOnLineUser();
+    } 
     localStorage.setItem("auth", JSON.stringify(oResponse));
   }
 
+  public getUserModel (): JSONModel {
+    return this.getView()?.getModel("userModel") as JSONModel
+  }
   public loadAuthorizationDialog(oControl?: Control) {
     const oView = this.getView();
     this.oFragment = Fragment.load({
@@ -57,10 +68,10 @@ export default abstract class BaseController extends Controller {
   }
 
   public async onLogInButtonPress(): Promise<void> {
-    this.oEventBus = this.getOwnerComponent().getEventBus();
-    const sEmail = this.getSupportModel().getProperty("/email") as string;
-    const sPassword = this.getSupportModel().getProperty("/password") as string;
-
+    this.oEventBus = (this.getOwnerComponent() as Component).getEventBus();
+    const sEmail = (this.byId("emailInputId") as Input).getValue();
+    const sPassword = (this.byId("passwordInputId") as Input).getValue();
+    
     await this.tryAuthorization(sEmail, sPassword);
 
     if (this.getSupportModel().getProperty("/auth")) (this.oAuthorizationDialog as Dialog).close();
@@ -89,8 +100,8 @@ export default abstract class BaseController extends Controller {
    * Convenience method for accessing the component of the controller's view.
    * @returns The component of the controller's view
    */
-  public getOwnerComponent(): AppComponent {
-    return super.getOwnerComponent() as AppComponent;
+  public getOwnerComponent() {
+    return super.getOwnerComponent();
   }
 
   /**
@@ -138,7 +149,7 @@ export default abstract class BaseController extends Controller {
    * @returns The i18n resource bundle of the component
    */
   public getResourceBundle(): ResourceBundle | Promise<ResourceBundle> {
-    const oModel = this.getOwnerComponent().getModel("i18n") as ResourceModel;
+    const oModel = (this.getOwnerComponent() as Component).getModel("i18n") as ResourceModel;
     return oModel.getResourceBundle();
   }
 
@@ -192,7 +203,7 @@ export default abstract class BaseController extends Controller {
   }
 
   public i18n(sKey: string, aParam?: string[]) {
-    const resourceModel = this.getOwnerComponent().getModel("i18n") as ResourceModel;
+    const resourceModel = (this.getOwnerComponent() as Component).getModel("i18n") as ResourceModel;
     const oBundle = resourceModel.getResourceBundle() as ResourceBundle;
     return oBundle.getText(sKey, aParam);
   }
@@ -212,4 +223,40 @@ export default abstract class BaseController extends Controller {
     }
     void this.fragmentStatistics.then((oMessagePopover) => (oMessagePopover as Dialog).open());
   }
+
+  // work with user status  
+  public async setOnLineUser() {
+    const firebaseModel = (this.getOwnerComponent() as Component).getModel("firebase") as JSONModel;
+    const firestore = firebaseModel.getData().firestore;    
+    const userCollection = firestore.collection("userStatus");
+    const sUserEmail = (this.getSupportModel().getProperty("/auth") as IAuthObject).email
+    const oUserData: string[] = await userCollection.get().then((data: { docs: IDocs[] }) => {
+        return data.docs.map((elem) => elem.data().email)
+    })
+    if (oUserData.includes(sUserEmail)) {
+      if (this.getSupportModel().getProperty("/auth")) {
+        userCollection.doc(`${sUserEmail}`).update({ 
+          email: `${(this.getSupportModel().getProperty("/auth") as IAuthObject).email}`,
+          online: true 
+        });
+      }
+    } else {
+      userCollection.doc(sUserEmail).set({
+        email: sUserEmail,
+        online: true
+      })
+    }   
+  }
+
+  public setOffLineUser() {
+    const firebaseModel = (this.getOwnerComponent() as Component).getModel("firebase") as JSONModel;
+    const userCollection = firebaseModel.getData().firestore.collection("userStatus");
+    if (this.getSupportModel().getProperty("/auth")) {
+      userCollection.doc(`${(this.getSupportModel().getProperty("/auth") as IAuthObject).email}`).update({ 
+        email: `${(this.getSupportModel().getProperty("/auth") as IAuthObject).email}`,
+        online: false 
+      });
+    }
+  }
+  // end work with user status
 }

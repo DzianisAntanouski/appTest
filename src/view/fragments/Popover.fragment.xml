@@ -1,0 +1,62 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<Popover
+		id="myPopover"
+		showHeader="false"
+		contentWidth="320px"
+		contentHeight="70%"
+		placement="Bottom"
+		ariaLabelledBy="master-title">
+		<NavContainer
+			id="navCon">
+			<Page
+				id="master"
+				class="sapUiResponsivePadding--header"
+				title="Users">                
+				<List
+					id="list"
+                    updateFinished="onUpdateFinished"
+					items="{userModel>/users}" >
+					<StandardListItem
+						title="{userModel>email}"
+                        visible="{= ${userModel>online}}"
+						description="{= ${userModel>online} ? 'user online' : 'user offline'}"
+						type="Active"
+						press="onNavToChat"
+						iconDensityAware="false"
+						iconInset="false" />
+				</List>
+			</Page>
+			<Page
+				id="detail"				
+				showNavButton="true"
+				navButtonPress="onNavBackToUser"
+				title="Chat">
+				<content>                    
+                    <List
+                        id="chatList"
+                        updateFinished="chatListFinishedUpdate"
+                        showSeparators="Inner"
+                        items="{chatModel>}" >
+                        <FeedListItem
+                            highlight="{= ${chatModel>author} === ${supportModel>/auth/email} ? 'Information' : 'None'}"
+                            sender="{chatModel>author}"                            
+                            senderPress="onSenderPress"
+                            showIcon="false"
+                            text="{chatModel>text}"
+                            convertLinksToAnchorTags="All"/>
+                    </List>
+                </content>
+                <footer >
+                    <Toolbar >
+                        <HBox renderType="Bare" width="100%">
+                            <Input submit="onPost" id="posttext" placeholder="Enter your message" class="sapUiTinyMarginEnd"/><Button icon="sap-icon://feeder-arrow" press="onPost"/>
+                        </HBox>
+                    </Toolbar>
+                </footer>
+				
+			</Page>
+		</NavContainer>
+	</Popover>
+</core:FragmentDefinition>

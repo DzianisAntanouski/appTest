@@ -1,0 +1,27 @@
+<mvc:View
+	controllerName="webapp.typescript.controller.Auth"
+	displayBlock="true"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc">
+
+	<Button
+		text="Open Popover"
+		press="onOpenPopover" />
+
+	<Page id="mPage" content="{/messages}">
+			
+		<content>
+			<GenericTile 
+					mode="ContentMode"
+					class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" 
+					subheader="{email/mess/text}"
+					header="{email/mess/author}"					
+					frameType= "OneByOne">
+					<TileContent >
+						<Button text="post" press="onPressPost" />
+					</TileContent >
+				</GenericTile>
+		</content>
+	</Page>
+
+</mvc:View>

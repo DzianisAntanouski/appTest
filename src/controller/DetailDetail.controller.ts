@@ -3,22 +3,54 @@ import Event from "sap/ui/base/Event";
 import EventBus from "sap/ui/core/EventBus";
 import BaseController from "./BaseController";
 import Context from "sap/ui/model/Context";
-import JSONModel from "sap/ui/model/json/JSONModel";
-import MessageBox from "sap/m/MessageBox";
-import { IOwner } from "../interface/Interface";
+import { IAuthObject, IPost } from '../interface/Interface';
+import FeedInput from "sap/m/FeedInput";
+import DateFormat from "sap/ui/core/format/DateFormat";
+import CRUDModel from '../model/CRUDModel';
+import formatter from "../model/formatter";
+import Component from '../Component';
 
 /**
  * @namespace webapp.typescript.controller
  */
 export default class DetailDetail extends BaseController {
   oEventBus: EventBus;
+  formatter = formatter;
 
   public onInit(): void {
-    this.oEventBus = this.getOwnerComponent().getEventBus();
+    this.oEventBus = (this.getOwnerComponent() as Component).getEventBus();
+  }
+
+  /**
+   * onPost
+   */
+  public onPost(oEvent: Event): void {
+    if (!this.getSupportModel().getProperty('/auth')) {
+      const oControl = (oEvent.getSource() as FeedInput)
+      const sText = oControl.getValue()
+      const pReturnText = new Promise((resolve) => {
+        resolve(sText);        
+      });
+      
+      void pReturnText.then((value) => {
+        oControl.setValue(value as string);
+      });
+      return
+    } 
+    const oFormat = DateFormat.getDateTimeInstance({ style: "medium" });
+    const oDate = new Date();
+    const sDate = oFormat.format(oDate);
+    const oPost: IPost = {
+      author: (this.getSupportModel().getProperty('/auth') as IAuthObject).email,
+      text: (oEvent.getSource() as FeedInput).getValue(),
+      date: sDate
+    }
+    const aPath: string[] = (this.getView()?.getBindingContext() as Context).getPath().split("/")
+    void (this.getModel() as CRUDModel).createPost(aPath[2], aPath[3], oPost)
   }
 
   public handleClose() {
-    MessageToast.show(this.i18n("loadingNewPageMessage"));
+    MessageToast.show(this.i18n("loadingNewPageMessage") );
     this.oEventBus.publish("flexible", "setDetailPage");
   }
 
@@ -29,15 +61,15 @@ export default class DetailDetail extends BaseController {
    * Poolable and therefore an event object in the event handler will be reset by
    * sap.ui.base.ObjectPool after the event handler is done.
    */
-  public handleNavToManage(oEvent: Event) {
+  /* public handleNavToManage(oEvent: Event) {
     const sPath: string = (this.getView()?.getBindingContext() as Context).getPath();
     const oCreatedBy: object = ((this.getModel() as JSONModel).getProperty(sPath) as IOwner).createdBy;
 
     if (!this.getSupportModel().getProperty("/auth")) this.loadAuthorizationDialog();
     else if (!oCreatedBy || Object.values(oCreatedBy)[0] === this.getSupportModel().getProperty("/auth/email")) {
       this.oEventBus.publish("navigation", "navToMain", oEvent);
-    } else MessageBox.error(this.i18n("authorizationMTPageErrorMessage"));
-  }
+    } else MessageBox.error(this.i18n("authorizationMTPageErrorMessage") as string);
+  } */
 
   /**
    *
@@ -46,7 +78,7 @@ export default class DetailDetail extends BaseController {
    * Poolable and therefore an event object in the event handler will be reset by
    * sap.ui.base.ObjectPool after the event handler is done.
    */
-  public handleNavToTest(oEvent: Event) {
+  /* public handleNavToTest(oEvent: Event) {
     this.oEventBus.publish("navigation", "navToTesting", oEvent);
-  }
+  } */
 }

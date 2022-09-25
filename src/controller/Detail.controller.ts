@@ -11,6 +11,11 @@ import BaseController from "./BaseController";
 import Context from "sap/ui/model/Context";
 import formatter from "../model/formatter";
 import CRUDModel from '../model/CRUDModel';
+import JSONModel from "sap/ui/model/json/JSONModel";
+import { IOwner } from "../interface/Interface";
+import MessageBox from "sap/m/MessageBox";
+import Component from '../Component';
+import Control from 'sap/ui/core/Control';
 
 /**
  * @namespace webapp.typescript.controller
@@ -21,7 +26,7 @@ export default class Detail extends BaseController {
   formatter = formatter;
 
   public onInit(): void {
-    this.oEventBus = this.getOwnerComponent().getEventBus();
+    this.oEventBus = (this.getOwnerComponent() as Component).getEventBus();
   }
 
   /**
@@ -95,5 +100,18 @@ export default class Detail extends BaseController {
    */
   onRunTest(oEvent: Event) {
     this.oEventBus.publish("navigation", "navToTesting", oEvent);
+    
+  }
+  onManageTest(oEvent: Event){
+    const sPath: string = ((oEvent.getSource() as Control).getBindingContext() as Context).getPath();
+    const oCreatedBy: object = ((this.getModel() as JSONModel).getProperty(sPath) as IOwner).createdBy;
+    if (!this.getSupportModel().getProperty("/auth")) this.loadAuthorizationDialog();
+    else if (!oCreatedBy || Object.values(oCreatedBy)[0] === this.getSupportModel().getProperty("/auth/email")) {
+      this.oEventBus.publish("navigation", "navToMain", oEvent);
+    } else MessageBox.error(this.i18n("authorizationMTPageErrorMessage"));
+  }
+  onCardClick(oEvent: Event){
+    this.oEventBus.publish("flexible", "setDetailDetailPage", oEvent);
+   
   }
 }
