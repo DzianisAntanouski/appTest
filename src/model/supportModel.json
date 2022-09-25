@@ -8,6 +8,9 @@
     "results": {},
     "selected": false,
     "edit": false,
-    "change": false
+    "change": false,
+    "addQuestion": [],
+    "isAddAnswerBtnEnabled": false,
+    "isManageTestPageValid": true
 }
 

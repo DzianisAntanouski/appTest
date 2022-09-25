@@ -50,8 +50,8 @@ export default class CRUDModel extends JSONModel {
       )
         .then((response) => response.json())
         .then((response) => {
-          void this.read()
-          return response as object
+          return this.read().then(resp => response)
+          // return response as object
         })) as Response;
     }
 
