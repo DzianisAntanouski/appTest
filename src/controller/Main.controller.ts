@@ -27,8 +27,7 @@ import formatter from "../model/formatter";
 import CRUDModel from "../model/CRUDModel";
 import Table from "sap/m/Table";
 import Button from "sap/m/Button";
-import { events } from "sap/ui/events/PseudoEvents";
-import ListItem from "sap/ui/core/ListItem";
+import Component from '../Component';
 
 /**
  * @namespace webapp.typescript.controller
@@ -52,7 +51,7 @@ export default class Main extends BaseController {
     void this.getView()?.attachAfterRendering(
       this.changeUIAfterRendering.bind(this)
     );
-    void this.getOwnerComponent()
+    void (this.getOwnerComponent() as Component)
       .getRouter()
       .getRoute("main")
       ?.attachPatternMatched(this.onPatternMatched.bind(this), this);
@@ -110,7 +109,6 @@ export default class Main extends BaseController {
     });
     this.getSupportModel().setProperty("/selected", false);
     this.getSupportModel().setProperty("/edit", false);
-    // this.onPressNext();
     this.defineAddAnswerBtnDisability();
   }
 
@@ -118,18 +116,13 @@ export default class Main extends BaseController {
     const aListItemsArray = (oEvent.getSource() as List).getItems();
 
     if (aListItemsArray.length) {
-      // this.onPressNext();
-      //! снимаю все хайлайты
       aListItemsArray.forEach((element) => {
         element.setProperty("highlight", MessageType.None);
       });
-
-      //! сетаю на нужный лист айтем
       aListItemsArray[aListItemsArray.length - 1].setProperty(
         "highlight",
         MessageType.Information
       );
-      //! сетаю нужный контекст
       const oNecessaryContext: Context = (oEvent.getSource() as List)
         .getItems()
         [aListItemsArray.length - 1].getBindingContext() as Context;
@@ -231,7 +224,7 @@ export default class Main extends BaseController {
         })
       }
       let aInvalidInputIndex: number[] = [];
-      oValidatedData.answers.forEach((elem, index) => {
+      oValidatedData.answers.forEach((elem: string, index: number) => {
         if (!elem) {
           aInvalidInputIndex.push(index)
         }
@@ -343,33 +336,6 @@ export default class Main extends BaseController {
     );
   }
 
-  // public checkAddFragmentsField() {
-  //   const checkBoxes = ["cbanswer1", "cbanswer2", "cbanswer3", "cbanswer4"]
-  //   const checkSelected = (sId: string) => {
-  //     return (this.byId(sId) as CheckBox).getSelected()
-  //   }
-  //   const checkBoxResult = checkBoxes.map(sId => checkSelected(sId)).filter(oCheckBox => !oCheckBox);
-  //   const getAnswersLength = (sId: string) => {
-  //     return (this.byId(sId) as Input)
-  //   }
-  //   const answersId = ["answer1", "answer2", "answer3", "answer4"]
-  //   const answersResult = answersId.map(sId => getAnswersLength(sId)).filter(elem => elem.getValue().length < 3)
-  //   if (checkBoxResult.length === 4) {
-  //     MessageBox.error("Check one or more right answer")
-  //     return
-  //   } else if((this.byId("newQ") as Input).getValue().length < 3) {
-  //     void (this.byId("newQ") as Input).setValueState(ValueState.Error)
-  //     void (this.byId("newQ") as Input).setValueStateText("Error: min length 3")
-  //     return
-  //   } else if (answersResult.length) {
-  //     void answersResult.forEach(oInput => {
-  //       oInput.setValueState(ValueState.Error)
-  //       oInput.setValueStateText("Error: min length 3")
-  //     })
-  //     return
-  //   }
-  // }
-
   public onPressFragmentAdd(): void {
     const checkBoxes = ["cbanswer1", "cbanswer2", "cbanswer3", "cbanswer4"];
     const checkSelected = (sId: string) => {
@@ -401,7 +367,6 @@ export default class Main extends BaseController {
       });
       return;
     }
-    // if (checkSelected("cbanswer1") || checkSelected("cbanswer2") || checkSelected("cbanswer3") || checkSelected("cbanswer4"))
     const getTemplate = (sProp: string): string => {
       return (this.getModel() as JSONModel).getProperty(
         `/newQuestion/${sProp}`
@@ -411,11 +376,6 @@ export default class Main extends BaseController {
       ?.getControlsByFieldGroupId("checkBox")
       .filter((elem) => (elem as CheckBox).getSelected())
       .map((elem) => +elem.getId().slice(-1));
-    // const newQuestion = models.createQuestion(
-    //   getTemplate("question"),
-    //   [getTemplate("answer/0"), getTemplate("answer/1"), getTemplate("answer/2"), getTemplate("answer/3")],
-    //   aCheckedCheckBoxes
-    // );
 
     const newQuestion = models.createQuestion("", [], []);
 
@@ -671,7 +631,7 @@ export default class Main extends BaseController {
     this.getSupportModel().setProperty("/change", false);
   }
 
-  private isObjectsEqual(object1: object, object2: object) {
+  private isObjectsEqual(object1: IQuestionStructure | any, object2: IQuestionStructure | any) {
     const props1 = Object.getOwnPropertyNames(object1);
     const props2 = Object.getOwnPropertyNames(object2);
 
@@ -729,17 +689,12 @@ export default class Main extends BaseController {
     void (this.getModel() as CRUDModel)
       .create(newQuestion, "/" + aPath[1], "/" + aPath[3])
       .then((resp) => {
-        // const aAddQuestion: object[] =
-        //   this.getSupportModel().getProperty("/addQuestion");
-        // aAddQuestion.push({ id: resp.name, index: nIndex });
-        // this.getSupportModel().setProperty("/addQuestion", aAddQuestion);
         this.defineAddAnswerBtnDisability();
-        // this.setChecked();
-        oState.questions[resp.name] = newQuestion;
+        oState.questions[(resp as unknown as IQuestionStructure).name] = newQuestion;
         const sPath = (
           this.getView()?.getBindingContext() as Context
         ).getPath();
-        this.getModel().setProperty(sPath, oState);
+        (this.getModel() as CRUDModel).setProperty(sPath, oState);
         return resp;
       })
       .then((resp) => {
@@ -817,43 +772,16 @@ export default class Main extends BaseController {
       return false;
     }
   }
-  private validateAnswersFields(aAllQuestionsAndAnswers) {
+  private validateAnswersFields(aAllQuestionsAndAnswers: any[] | null) {
     //! validate answers inputs
     const aAllAnswers = aAllQuestionsAndAnswers?.map((elem) => elem.answers);
-    // const aAllAnswersInputs: Input[] = this.getView()
-    //   ?.getControlsByFieldGroupId("allAnswersId")
-    //   .filter(
-    //     (oControl) => oControl.getMetadata().getElementName() === "sap.m.Input"
-    //   ) as Input[];
-
-    // aAllAnswersInputs?.forEach((elem, index) => {
-    //   if (!elem.getProperty("value")) {
-    //     elem.setValueState(ValueState.Error);
-    //   } else {
-    //     elem.setValueState(ValueState.None);
-    //   }
-    // });
     const bAnswersValidity =
-      aAllAnswers?.filter((el) => el.some((el) => !el)).length == 0;
+      aAllAnswers?.filter((el) => el.some((el: any) => !el)).length == 0;
     return bAnswersValidity;
   }
-  private validateQuestionsFields(aAllQuestionsAndAnswers) {
+  private validateQuestionsFields(aAllQuestionsAndAnswers: any[] | null) {
     //! validate questions inputs
     const aAllQuestions = aAllQuestionsAndAnswers?.map((elem) => elem.question);
-    // const aAllQuestionsInputs: Input[] = this.getView()
-    //   ?.getControlsByFieldGroupId("allQuestionsId")
-    //   .filter(
-    //     (oControl) =>
-    //       oControl.getMetadata().getElementName() ===
-    //       "webapp.typescript.extendedControl.MyExtendedInput"
-    //   ) as Input[];
-    // aAllQuestionsInputs?.forEach((elem) => {
-    //   if (!elem.getProperty("value")) {
-    //     elem.setValueState(ValueState.Error);
-    //   } else {
-    //     elem.setValueState(ValueState.None);
-    //   }
-    // });
     //! highlightQuestions
     const aInputListItems = this.getInputListItem();
     aAllQuestions?.forEach((elem, index) => {
@@ -861,51 +789,24 @@ export default class Main extends BaseController {
         if (aInputListItems[index].getProperty("highlight") === "None") {
           aInputListItems[index].setProperty("highlight", MessageType.Error);
         }
-        // if (this.getSupportModel().getProperty("/isManageTestPageValid")) {
-        //   this.getSupportModel().setProperty("/isManageTestPageValid", false);
-        // }
       }
     });
-
     const bQueestionsValidity = aAllQuestions?.every((el) => el);
     return bQueestionsValidity;
   }
-  private validateRightAnswersCheckBoxes(aAllQuestionsAndAnswers) {
+  private validateRightAnswersCheckBoxes(aAllQuestionsAndAnswers: any[] | null) {
     //! validate right answers checkBoxes
     const aRightAnswers = aAllQuestionsAndAnswers?.map(
       (elem) => elem.rightAnswer
     );
-    // const aAllCheckBoxes: CheckBox[] = this.getView()
-    //   ?.getControlsByFieldGroupId("checkBoxRightAnswers")
-    //   .filter(
-    //     (oControl) =>
-    //       oControl.getMetadata().getElementName() === "sap.m.CheckBox"
-    //   ) as CheckBox[];
-    // const bIsCheckBoxesSelected = aAllCheckBoxes?.some((elem) =>
-    //   elem.getProperty("selected")
-    // );
-    // aAllCheckBoxes?.forEach((elem) => {
-    //   if (!bIsCheckBoxesSelected) {
-    //     elem.setValueState(ValueState.Error);
-    //   } else {
-    //     elem.setValueState(ValueState.None);
-    //   }
-    // });
-    // const bIsRightAnswerSelected =
-    //   aRightAnswers?.filter((el) => el?.some((el) => el == 5)).length == 0;
-    // const bIsRightAnswerSelected = !!aRightAnswers[0].length && aRightAnswers.findIndex(el => !el) < 0 && aRightAnswers.findIndex(el => el == 5) < 0;
     let isValid = true;
-    aRightAnswers.forEach((elem) => {
+    aRightAnswers?.forEach((elem) => {
       if (!elem.length) {
         isValid = false;
       } else if (elem.length === 1 && elem[0] == 5) {
         isValid = false;
       }
     });
-    // ! поменять логику флагов
-    // if (!isValid) {
-    //   this.getSupportModel().setProperty("/isManageTestPageValid", false);
-    // }
     return isValid;
   }
   onInputFocus(oEvent: Event) {
@@ -919,7 +820,7 @@ export default class Main extends BaseController {
       oControl.setProperty("highlight", MessageType.None)
     );
 
-    this.findListItem(oInput);
+    this.findListItem(oInput as IParent);
 
     void this.setChecked();
     this.defineAddAnswerBtnDisability();
