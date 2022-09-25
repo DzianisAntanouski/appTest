@@ -17,6 +17,7 @@ import MessageToast from "sap/m/MessageToast";
 import MessageBox, { Action } from "sap/m/MessageBox";
 import formatter from "../model/formatter";
 import CRUDModel from "../model/CRUDModel";
+import Component from '../Component';
 
 /**
  * @namespace webapp.typescript.controller
@@ -38,7 +39,7 @@ export default class Main extends BaseController {
 
   public onInit(): void {
     void this.getView()?.attachAfterRendering(this.changeUIAfterRendering.bind(this));
-    void this.getOwnerComponent().getRouter().getRoute("main")?.attachPatternMatched(this.onPatternMatched.bind(this), this);
+    void (this.getOwnerComponent() as Component).getRouter().getRoute("main")?.attachPatternMatched(this.onPatternMatched.bind(this), this);
   }
 
   public onStatisticPress(): void {

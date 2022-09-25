@@ -40,6 +40,7 @@
                         showSeparators="Inner"
                         items="{chatModel>}" >
                         <FeedListItem
+                            highlight="{= ${chatModel>author} === ${supportModel>/auth/email} ? 'Information' : 'None'}"
                             sender="{chatModel>author}"                            
                             senderPress="onSenderPress"
                             showIcon="false"

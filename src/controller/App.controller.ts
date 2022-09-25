@@ -1,14 +1,14 @@
 import BaseController from "./BaseController";
 import { IAuthObject } from "../interface/Interface";
 import CRUDModel from "../model/CRUDModel";
-import JSONModel from "sap/ui/model/json/JSONModel";
+import Component from '../Component';
 
 /**
  * @namespace webapp.typescript.controller
  */
 export default class App extends BaseController {
   public onInit(): void {
-    this.getView()?.addStyleClass(this.getOwnerComponent().getContentDensityClass());
+    this.getView()?.addStyleClass((this.getOwnerComponent() as Component).getContentDensityClass());
     const setQuestion = this.setAllQuestions.bind(this);
     const oCRUDModel = new CRUDModel();
     this.getView()?.setModel(oCRUDModel);
@@ -27,7 +27,7 @@ export default class App extends BaseController {
             : this.getSupportModel().setProperty("/auth", null);
         })
         .then(() => {
-          this.setOnLineUser();
+          void this.setOnLineUser();
         });
     }
   }
