@@ -911,4 +911,5 @@ export default class Main extends BaseController {
   public onAnswersInputFocus() {
     this.changeContextAndValidate(this.findContext());
   }
+  
 }
