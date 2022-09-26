@@ -23,7 +23,7 @@
 							<HBox width="auto">
 								<FlexBox width="100%" renderType="Bare">
 									<RadioButton visible="{= ${supportModel>/edit}}" select=".onSelect" />
-									<extendedInput:MyExtendedInput value="{question}" visible="{= ${supportModel>/edit}}" width="100%" liveChange=".onLiveChange" fieldGroupIds="allQuestionsId" onFocus="onInputFocus"/>
+									<extendedInput:MyExtendedInput value="{question}" visible="{= ${supportModel>/edit}}" width="100%" liveChange=".onLiveChange" fieldGroupIds="allQuestionsId" onFocus="onQuestionsInputFocus"/>
 									<Text text="{question}" visible="{= !${supportModel>/edit}}" />
 								</FlexBox>
 							</HBox>
@@ -56,7 +56,7 @@
 								<cells>
 									<HBox renderType="Bare">
 										<Text text="{}" visible="{= !${supportModel>/edit}}" />
-										<Input value="{}" visible="{= ${supportModel>/edit}}" width="100%" liveChange="onLiveChange" fieldGroupIds="allAnswersId"/>
+										<extendedInput:MyExtendedInput value="{}" visible="{= ${supportModel>/edit}}" width="100%" liveChange="onLiveChange" fieldGroupIds="allAnswersId" onFocus="onAnswersInputFocus"/>
 									</HBox>
 									<CheckBox select="onCheck" width="50px" editable="{= ${supportModel>/edit}}" fieldGroupIds="checkBoxRightAnswers"/>
 									<Button icon="sap-icon://delete" press="onPressDeleteAnswer" enabled="{supportModel>/delButtonVisible}"/>

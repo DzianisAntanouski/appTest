@@ -114,6 +114,7 @@ export default class Main extends BaseController {
 
   public setActive(oEvent: Event): void {
     const aListItemsArray = (oEvent.getSource() as List).getItems();
+    this.defineAddAnswerBtnDisability()
     void this.setChecked();
     if (aListItemsArray.length) {
       aListItemsArray.forEach((element) => {
@@ -195,7 +196,8 @@ export default class Main extends BaseController {
         ?.getControlsByFieldGroupId("allAnswersId")
         .filter(
           (oControl) =>
-            oControl.getMetadata().getElementName() === "sap.m.Input"
+            oControl.getMetadata().getElementName() ===
+            "webapp.typescript.extendedControl.MyExtendedInput"
         ) as Input[];
       const aAllRightAnswerCheckBoxexOnUI: CheckBox[] = this.getView()
         ?.getControlsByFieldGroupId("checkBoxRightAnswers")
@@ -304,12 +306,8 @@ export default class Main extends BaseController {
 
   public onPressNext(): void {
     this.highlightSwitcher();
-    const oControls: Array<Control> = this.getInputListItem();
-    const oControl: Control | undefined = oControls.find(
-      (oControl) => oControl.getProperty("highlight") === "Information"
-    ) as Control;
-    const oContext: Context = oControl?.getBindingContext() as Context;
-    this.changeContextAndValidate(oContext);
+
+    this.changeContextAndValidate(this.findContext());
     this.setChecked();
     this.defineAddAnswerBtnDisability();
     //
@@ -494,6 +492,7 @@ export default class Main extends BaseController {
     (this.getModel() as JSONModel).setProperty(rightAnswer, aRightAnswer);
     this.getSupportModel().setProperty("/change", true);
     void this.setChecked();
+    this.changeContextAndValidate(this.findContext());
   }
 
   public onSelect(): void {
@@ -501,13 +500,6 @@ export default class Main extends BaseController {
   }
 
   public onPressSave(): void {
-    const aControls: Array<Control> = this.getInputListItem();
-    const oControl: Control | undefined = aControls.find(
-      (oControl) => oControl.getProperty("highlight") === "Information"
-    ) as Control;
-    const oContext: Context = oControl?.getBindingContext() as Context;
-    this.changeContextAndValidate(oContext);
-
     this.getSupportModel().setProperty("/selected", false);
     const oControls: Control[] | undefined = this.getView()
       ?.getControlsByFieldGroupId("questions")
@@ -559,6 +551,7 @@ export default class Main extends BaseController {
         !this.getSupportModel().getProperty("/edit")
       );
     }
+    this.changeContextAndValidate(this.findContext());
     this.getSupportModel().setProperty("/change", false);
     this.defineAddAnswerBtnDisability();
   }
@@ -604,18 +597,23 @@ export default class Main extends BaseController {
     ) as IQuestionStructure;
 
     const aPath: string[] = (this.getView()?.getBindingContext() as Context)
-    .getPath()
-    .slice(1)
-    .split("/");
+      .getPath()
+      .slice(1)
+      .split("/");
 
     const nInitialStateLength = Object.keys(this.oState.questions).length;
 
-
-    for (let i = nInitialStateLength; i < Object.keys(oCurrentState.questions).length; i++) {
-     (this.getModel() as CRUDModel).delete(Object.keys(oCurrentState.questions)[i], "/" + aPath[1], "/" + aPath[3])
+    for (
+      let i = nInitialStateLength;
+      i < Object.keys(oCurrentState.questions).length;
+      i++
+    ) {
+      (this.getModel() as CRUDModel).delete(
+        Object.keys(oCurrentState.questions)[i],
+        "/" + aPath[1],
+        "/" + aPath[3]
+      );
     }
-
-
   }
 
   public onPressCancel1() {
@@ -627,62 +625,53 @@ export default class Main extends BaseController {
       const onPressYesAction = () => {
         // (this.getModel() as JSONModel).setProperty(sPath, this.oState);
         const aPath: string[] = (this.getView()?.getBindingContext() as Context)
-        .getPath()
-        .slice(1)
-        .split("/");
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      const oData: IData[] = (this.oState as unknown as IData).questions as IData[];
-      const oDataKeys: string[] = Object.keys(oData);
-      const aResult: IResult[] = Object.values(oData).map((elem, index) => {
-        return {
-          id: oDataKeys[index],
-          body: {
-            answers: elem.answers,
-            question: elem.question,
-            rightAnswer: elem.rightAnswer,
-          },
-        };
-      }) as unknown as IResult[];
+          .getPath()
+          .slice(1)
+          .split("/");
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        const oData: IData[] = (this.oState as unknown as IData)
+          .questions as IData[];
+        const oDataKeys: string[] = Object.keys(oData);
+        const aResult: IResult[] = Object.values(oData).map((elem, index) => {
+          return {
+            id: oDataKeys[index],
+            body: {
+              answers: elem.answers,
+              question: elem.question,
+              rightAnswer: elem.rightAnswer,
+            },
+          };
+        }) as unknown as IResult[];
 
-      void aResult.forEach(
-        (elem) =>
-          void (this.getModel() as CRUDModel).patch(
-            elem.id,
-            elem.body,
-            "/" + aPath[1],
-            "/" + aPath[3]
-          )
-      );
+        void aResult.forEach(
+          (elem) =>
+            void (this.getModel() as CRUDModel).patch(
+              elem.id,
+              elem.body,
+              "/" + aPath[1],
+              "/" + aPath[3]
+            )
+        );
 
+        const nInitialStateLength = Object.keys(this.oState.questions).length;
 
-
-
-
-      const nInitialStateLength = Object.keys(this.oState.questions).length;
-
-      new Promise(() => {
-        debugger
-         for (let i = nInitialStateLength; i < Object.keys(oCurrentState.questions).length; i++) {
-          (this.getModel() as CRUDModel).delete(Object.keys(oCurrentState.questions)[i], "/" + aPath[1], "/" + aPath[3])
-         }
-      }).then(() => {
-        debugger
-        (this.getModel() as CRUDModel).read()
-      })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        new Promise(() => {
+          
+          for (
+            let i = nInitialStateLength;
+            i < Object.keys(oCurrentState.questions).length;
+            i++
+          ) {
+            (this.getModel() as CRUDModel).delete(
+              Object.keys(oCurrentState.questions)[i],
+              "/" + aPath[1],
+              "/" + aPath[3]
+            );
+          }
+        }).then(() => {
+          
+          (this.getModel() as CRUDModel).read();
+        });
 
         this.setChecked();
         this.highlightSwitcher();
@@ -694,8 +683,6 @@ export default class Main extends BaseController {
         "mainPageConfirmationDialogText",
         "mainPageConfirmationDialogTitle"
       );
-
-      
     } else {
       this.getSupportModel().setProperty("/edit", false);
     }
@@ -788,8 +775,8 @@ export default class Main extends BaseController {
     this.defineAddAnswerBtnDisability();
   }
 
-  public onPressDeleteAnswer(oEvent: Event) { 
-    debugger
+  public onPressDeleteAnswer(oEvent: Event) {
+    
     const oAddAnswerBtn = oEvent.getSource() as Button;
     const aAnswerPath: string[] | undefined = oAddAnswerBtn
       .getBindingContext()
@@ -885,7 +872,7 @@ export default class Main extends BaseController {
     });
     return isValid;
   }
-  onInputFocus(oEvent: Event) {
+  onQuestionsInputFocus(oEvent: Event) {
     const oInput = oEvent.getSource() as Control;
     if (oInput.getBindingContext()) {
       const oContext: Context = oInput.getBindingContext() as Context;
@@ -903,9 +890,26 @@ export default class Main extends BaseController {
   }
 
   public onUpdateFinishedAnswer() {
-    let aTableItems = (this.byId("answerstable") as Table).getItems()
+    let aTableItems = (this.byId("answerstable") as Table).getItems();
     if (aTableItems) {
-      this.getSupportModel().setProperty("/delButtonVisible", aTableItems.length > 2)
+      this.getSupportModel().setProperty(
+        "/delButtonVisible",
+        aTableItems.length > 2
+      );
     }
   }
+
+  private findContext() {
+    const aControls: Array<Control> = this.getInputListItem();
+    const oControl: Control | undefined = aControls.find(
+      (oControl) => oControl.getProperty("highlight") === "Information"
+    ) as Control;
+    const oContext: Context = oControl?.getBindingContext() as Context;
+    return oContext;
+  }
+
+  public onAnswersInputFocus() {
+    this.changeContextAndValidate(this.findContext());
+  }
+  
 }
