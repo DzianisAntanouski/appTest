@@ -114,7 +114,7 @@ export default class Main extends BaseController {
 
   public setActive(oEvent: Event): void {
     const aListItemsArray = (oEvent.getSource() as List).getItems();
-    this.defineAddAnswerBtnDisability()
+    this.defineAddAnswerBtnDisability();
     void this.setChecked();
     if (aListItemsArray.length) {
       aListItemsArray.forEach((element) => {
@@ -192,7 +192,7 @@ export default class Main extends BaseController {
   public changeContextAndValidate(oContext: Context) {
     this.getView()?.byId("detailDetail")?.setBindingContext(oContext);
     if (!this.getSupportModel().getProperty("/isManageTestPageValid")) {
-      const aAllAnwerInputsOnUI: Input[] = this.getView()
+      const aAllAnswerInputsOnUI: Input[] = this.getView()
         ?.getControlsByFieldGroupId("allAnswersId")
         .filter(
           (oControl) =>
@@ -235,11 +235,11 @@ export default class Main extends BaseController {
         }
       });
 
-      aAllAnwerInputsOnUI.forEach((elem, index) => {
+      aAllAnswerInputsOnUI.forEach((elem, index) => {
         if (aInvalidInputIndex.includes(index)) {
-          aAllAnwerInputsOnUI[index].setValueState(ValueState.Error);
+          aAllAnswerInputsOnUI[index].setValueState(ValueState.Error);
         } else {
-          aAllAnwerInputsOnUI[index].setValueState(ValueState.None);
+          aAllAnswerInputsOnUI[index].setValueState(ValueState.None);
         }
       });
 
@@ -259,7 +259,6 @@ export default class Main extends BaseController {
       const oContext: Context = oListItem.getBindingContext() as Context;
       this.changeContextAndValidate(oContext);
     }
-
     this.getInputListItem().forEach((oControl) =>
       oControl.setProperty("highlight", MessageType.None)
     );
@@ -306,11 +305,9 @@ export default class Main extends BaseController {
 
   public onPressNext(): void {
     this.highlightSwitcher();
-
     this.changeContextAndValidate(this.findContext());
     this.setChecked();
     this.defineAddAnswerBtnDisability();
-    //
   }
 
   private clearFragmentInputs(): void {
@@ -554,6 +551,7 @@ export default class Main extends BaseController {
     this.changeContextAndValidate(this.findContext());
     this.getSupportModel().setProperty("/change", false);
     this.defineAddAnswerBtnDisability();
+    this.cleanQuestionsInput();
   }
 
   public onPressNavBack() {
@@ -601,7 +599,9 @@ export default class Main extends BaseController {
       .slice(1)
       .split("/");
 
-    const nInitialStateLength = Object.keys(this.oState.questions).length;
+    const nInitialStateLength = !!this.oState?.questions
+      ? Object.keys(this.oState?.questions)?.length
+      : 0;
 
     for (
       let i = nInitialStateLength;
@@ -614,107 +614,100 @@ export default class Main extends BaseController {
         "/" + aPath[3]
       );
     }
+    this.defineAddAnswerBtnDisability();
+    this.getSupportModel().setProperty("/edit", false);
+    this.cleanQuestionsInput();
   }
 
   public onPressCancel1() {
-    const sPath = (this.getView()?.getBindingContext() as Context).getPath();
-    const oCurrentState = (this.getModel() as JSONModel).getProperty(
-      sPath
-    ) as IQuestionStructure;
-    if (!this.isObjectsEqual(oCurrentState, this.oState)) {
-      const onPressYesAction = () => {
-        // (this.getModel() as JSONModel).setProperty(sPath, this.oState);
-        const aPath: string[] = (this.getView()?.getBindingContext() as Context)
-          .getPath()
-          .slice(1)
-          .split("/");
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const oData: IData[] = (this.oState as unknown as IData)
-          .questions as IData[];
-        const oDataKeys: string[] = Object.keys(oData);
-        const aResult: IResult[] = Object.values(oData).map((elem, index) => {
-          return {
-            id: oDataKeys[index],
-            body: {
-              answers: elem.answers,
-              question: elem.question,
-              rightAnswer: elem.rightAnswer,
-            },
-          };
-        }) as unknown as IResult[];
-
-        void aResult.forEach(
-          (elem) =>
-            void (this.getModel() as CRUDModel).patch(
-              elem.id,
-              elem.body,
-              "/" + aPath[1],
-              "/" + aPath[3]
-            )
-        );
-
-        const nInitialStateLength = Object.keys(this.oState.questions).length;
-
-        new Promise(() => {
-          
-          for (
-            let i = nInitialStateLength;
-            i < Object.keys(oCurrentState.questions).length;
-            i++
-          ) {
-            (this.getModel() as CRUDModel).delete(
-              Object.keys(oCurrentState.questions)[i],
-              "/" + aPath[1],
-              "/" + aPath[3]
-            );
-          }
-        }).then(() => {
-          
-          (this.getModel() as CRUDModel).read();
-        });
-
-        this.setChecked();
-        this.highlightSwitcher();
-        this.getSupportModel().setProperty("/edit", false);
-        this.defineAddAnswerBtnDisability();
-      };
-      this.getConfirm(
-        onPressYesAction,
-        "mainPageConfirmationDialogText",
-        "mainPageConfirmationDialogTitle"
-      );
-    } else {
-      this.getSupportModel().setProperty("/edit", false);
-    }
-    this.defineAddAnswerBtnDisability();
-    this.getSupportModel().setProperty("/change", false);
+    // const sPath = (this.getView()?.getBindingContext() as Context).getPath();
+    // const oCurrentState = (this.getModel() as JSONModel).getProperty(
+    //   sPath
+    // ) as IQuestionStructure;
+    // if (!this.isObjectsEqual(oCurrentState, this.oState)) {
+    //   const onPressYesAction = () => {
+    //     // (this.getModel() as JSONModel).setProperty(sPath, this.oState);
+    //     const aPath: string[] = (this.getView()?.getBindingContext() as Context)
+    //       .getPath()
+    //       .slice(1)
+    //       .split("/");
+    //     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    //     const oData: IData[] = (this.oState as unknown as IData)
+    //       .questions as IData[];
+    //     const oDataKeys: string[] = Object.keys(oData);
+    //     const aResult: IResult[] = Object.values(oData).map((elem, index) => {
+    //       return {
+    //         id: oDataKeys[index],
+    //         body: {
+    //           answers: elem.answers,
+    //           question: elem.question,
+    //           rightAnswer: elem.rightAnswer,
+    //         },
+    //       };
+    //     }) as unknown as IResult[];
+    //     void aResult.forEach(
+    //       (elem) =>
+    //         void (this.getModel() as CRUDModel).patch(
+    //           elem.id,
+    //           elem.body,
+    //           "/" + aPath[1],
+    //           "/" + aPath[3]
+    //         )
+    //     );
+    //     const nInitialStateLength = Object.keys(this.oState.questions).length;
+    //     new Promise(() => {
+    //       for (
+    //         let i = nInitialStateLength;
+    //         i < Object.keys(oCurrentState.questions).length;
+    //         i++
+    //       ) {
+    //         (this.getModel() as CRUDModel).delete(
+    //           Object.keys(oCurrentState.questions)[i],
+    //           "/" + aPath[1],
+    //           "/" + aPath[3]
+    //         );
+    //       }
+    //     }).then(() => {
+    //       (this.getModel() as CRUDModel).read();
+    //     });
+    //     this.setChecked();
+    //     this.highlightSwitcher();
+    //     this.getSupportModel().setProperty("/edit", false);
+    //     this.defineAddAnswerBtnDisability();
+    //   };
+    //   this.getConfirm(
+    //     onPressYesAction,
+    //     "mainPageConfirmationDialogText",
+    //     "mainPageConfirmationDialogTitle"
+    //   );
+    // } else {
+    //   this.getSupportModel().setProperty("/edit", false);
+    // }
+    // this.defineAddAnswerBtnDisability();
+    // this.getSupportModel().setProperty("/change", false);
   }
 
   private isObjectsEqual(
     object1: IQuestionStructure | any,
     object2: IQuestionStructure | any
   ) {
-    const props1 = Object.getOwnPropertyNames(object1);
-    const props2 = Object.getOwnPropertyNames(object2);
-
-    if (props1.length !== props2.length) {
-      return false;
-    }
-
-    for (let i = 0; i < props1.length; i += 1) {
-      const prop = props1[i];
-      const bothAreObjects =
-        typeof object1[prop] === "object" && typeof object2[prop] === "object";
-
-      if (
-        (!bothAreObjects && object1[prop] !== object2[prop]) ||
-        (bothAreObjects && !this.isObjectsEqual(object1[prop], object2[prop]))
-      ) {
-        return false;
-      }
-    }
-
-    return true;
+    // const props1 = Object.getOwnPropertyNames(object1);
+    // const props2 = Object.getOwnPropertyNames(object2);
+    // if (props1.length !== props2.length) {
+    //   return false;
+    // }
+    // for (let i = 0; i < props1.length; i += 1) {
+    //   const prop = props1[i];
+    //   const bothAreObjects =
+    //     typeof object1[prop] === "object" && typeof object2[prop] === "object";
+    //   if (
+    //     (!bothAreObjects && object1[prop] !== object2[prop]) ||
+    //     (bothAreObjects && !this.isObjectsEqual(object1[prop], object2[prop]))
+    //   ) {
+    //     return false;
+    //   }
+    // }
+    // return true;
   }
 
   public getConfirm(
@@ -776,7 +769,6 @@ export default class Main extends BaseController {
   }
 
   public onPressDeleteAnswer(oEvent: Event) {
-    
     const oAddAnswerBtn = oEvent.getSource() as Button;
     const aAnswerPath: string[] | undefined = oAddAnswerBtn
       .getBindingContext()
@@ -836,6 +828,15 @@ export default class Main extends BaseController {
   private validateAnswersFields(aAllQuestionsAndAnswers: any[] | null) {
     //! validate answers inputs
     const aAllAnswers = aAllQuestionsAndAnswers?.map((elem) => elem.answers);
+    const aInputListItems = this.getInputListItem();
+    aAllAnswers?.forEach((elem, index) => {
+      let bHasQuestionIncorrectAnswers = elem.some((el: string) => !el);
+      let bIsItChosenAnswer =
+        aInputListItems[index].getProperty("highlight") == "Information";
+      if (!bIsItChosenAnswer && bHasQuestionIncorrectAnswers) {
+        aInputListItems[index].setProperty("highlight", MessageType.Error);
+      }
+    });
     const bAnswersValidity =
       aAllAnswers?.filter((el) => el.some((el: any) => !el)).length == 0;
     return bAnswersValidity;
@@ -862,12 +863,23 @@ export default class Main extends BaseController {
     const aRightAnswers = aAllQuestionsAndAnswers?.map(
       (elem) => elem.rightAnswer
     );
+    const aInputListItems = this.getInputListItem();
     let isValid = true;
-    aRightAnswers?.forEach((elem) => {
-      if (!elem.length) {
+    aRightAnswers?.forEach((elem, index) => {
+      let bIsItChosenAnswer =
+        aInputListItems[index].getProperty("highlight") == "Information";
+      let bIsRightAnswersArrayEmpty = !elem.length;
+      let bHasQuestionIncorrectRightAnswer = elem.length === 1 && elem[0] == 5;
+      if (bIsRightAnswersArrayEmpty) {
         isValid = false;
-      } else if (elem.length === 1 && elem[0] == 5) {
+        if (!bIsItChosenAnswer) {
+          aInputListItems[index].setProperty("highlight", MessageType.Error);
+        }
+      } else if (bHasQuestionIncorrectRightAnswer) {
         isValid = false;
+        if (!bIsItChosenAnswer) {
+          aInputListItems[index].setProperty("highlight", MessageType.Error);
+        }
       }
     });
     return isValid;
@@ -911,5 +923,37 @@ export default class Main extends BaseController {
   public onAnswersInputFocus() {
     this.changeContextAndValidate(this.findContext());
   }
-  
+
+  private cleanQuestionsInput() {
+    if (!this.getSupportModel().getProperty("/edit")) {
+      const aAllQuestionsInputsOnUI: Input[] = this.getView()
+      ?.getControlsByFieldGroupId("allQuestionsId")
+      .filter(
+        (oControl) =>
+          oControl.getMetadata().getElementName() ===
+          "webapp.typescript.extendedControl.MyExtendedInput"
+      ) as Input[];
+
+      aAllQuestionsInputsOnUI.forEach(elem => elem.setValueState(ValueState.None))
+
+      const aAllAnswerInputsOnUI: Input[] = this.getView()
+      ?.getControlsByFieldGroupId("allAnswersId")
+      .filter(
+        (oControl) =>
+          oControl.getMetadata().getElementName() ===
+          "webapp.typescript.extendedControl.MyExtendedInput"
+      ) as Input[];
+
+      aAllAnswerInputsOnUI.forEach(elem => elem.setValueState(ValueState.None))
+
+      const aAllRightAnswerCheckBoxexOnUI: CheckBox[] = this.getView()
+      ?.getControlsByFieldGroupId("checkBoxRightAnswers")
+      .filter(
+        (oControl) =>
+          oControl.getMetadata().getElementName() === "sap.m.CheckBox"
+      ) as CheckBox[];
+
+      aAllRightAnswerCheckBoxexOnUI.forEach(elem => elem.setValueState(ValueState.None))
+    }
+  }
 }
